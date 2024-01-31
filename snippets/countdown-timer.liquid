@@ -1,0 +1,67 @@
+{% comment %}
+    Props:
+        - date: Date
+        - show_on_expire: Boolean
+        - show_time_fraction: Boolean
+        - digits_scale: Number
+        - us_date_format: Boolean (default:true)
+{% endcomment %}
+
+{%- liquid
+    assign NS = 'countdown-timer'
+    assign cn = '#' | append: NS
+
+    if us_date_format != false
+        assign date_parts = date | split: '-'
+        assign day = date_parts[1]
+        assign month = date_parts[0]
+        assign year = date_parts[2]
+        assign date = day | append: '-' | append: month | append: '-' | append: year
+    endif
+
+    assign target = date | date: '%s'
+    assign now = 'now' | date: '%s'
+    assign left = target | minus: now | times: 1000
+    assign digits_scale = digits_scale | default: 100 | times: 0.01 
+-%}
+
+{% if left > 0 or show_on_expire %}
+    {% render 'load-css', file: 'countdown-timer' %}
+    <{{ NS }}
+        class="{{ cn }}"
+        time-left="{{ left }}"
+        section-id="{{ section.id }}"
+        {% if shopify_attributes %}{{ shopify_attributes }}{% endif %}
+        style="--{{ NS }}-digits-scale: {{ digits_scale }}"
+    >
+        <div class="{{ cn }}-items">
+            <div class="{{ cn }}-item">
+                <span class="{{ cn }}-item-time" data-element="days">00</span>
+                {% if show_time_fraction %}
+                    <span class="{{ cn }}-item-title">{{ 'general.date_types.days' | t }}</span>
+                {% endif %}
+            </div>
+            <div class="{{ cn }}-item">
+                <span class="{{ cn }}-item-time" data-element="hours">00</span>
+                {% if show_time_fraction %}
+                    <span class="{{ cn }}-item-title">{{ 'general.date_types.hours' | t }}</span>
+                {% endif %}
+            </div>
+            <div class="{{ cn }}-item">
+                <span class="{{ cn }}-item-time" data-element="minutes">00</span>
+                {% if show_time_fraction %}
+                    <span class="{{ cn }}-item-title">{{ 'general.date_types.minutes' | t }}</span>
+                {% endif %}
+            </div>
+            <div class="{{ cn }}-item">
+                <span class="{{ cn }}-item-time" data-element="seconds">00</span>
+                {% if show_time_fraction %}
+                    <span class="{{ cn }}-item-title">{{ 'general.date_types.seconds' | t }}</span>
+                {% endif %}
+            </div>
+        </div> 
+    </{{ NS }}>
+    {% if left > 0 %}
+        <script type="module" src="{{ NS | append: '.js' | asset_url }}"></script>
+    {% endif %}
+{% endif %}

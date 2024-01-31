@@ -1,0 +1,8 @@
+{% liquid
+    assign NS = 'product-tabs-nav-item'
+    assign cn = '#' | append: NS
+%}
+
+<label for="{{ tab_id }}" class="{{ cn }} fs-d5 heading-font {% if active %}!active{% endif %}" data-element="tab-nav">
+    {{ heading }}
+</label>

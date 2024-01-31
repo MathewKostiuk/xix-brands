@@ -1,0 +1,616 @@
+{% liquid
+    assign NS = 'main-nav-mobile'
+    assign cn = '#' | append: NS
+    unless header
+        assign NS = NS | append: '-loader'
+    endunless
+%}
+
+{% render 'load-css', file: 'main-nav-mobile' %}
+
+{% capture Back_trigger_1 %}
+    <label>
+        {% render 'icon', name: 'angle-left' %}
+        <input 
+            class="{{ cn }}-level-trigger" 
+            type="radio" 
+            value="0"
+            name="{{ NS }}-level-1"
+            form=""
+        >
+    </label>
+{% endcapture %}
+{% capture Back_trigger_2 %}
+    <label>
+        {% render 'icon', name: 'angle-left' %}
+        <input 
+            class="{{ cn }}-level-trigger" 
+            type="radio" 
+            value="1"
+            name="{{ NS }}-level-2"
+            form=""
+        >
+    </label>
+{% endcapture %}
+
+{% capture Back_trigger_3 %}
+    <label>
+        {% render 'icon', name: 'angle-left' %}
+        <input 
+            class="{{ cn }}-level-trigger" 
+            type="radio" 
+            value="2"
+            name="{{ NS }}-level-3"
+            form=""
+        >
+    </label>
+{% endcapture %}
+
+<{{ NS }} class="{{ cn }}" section-id="{{ section.id }}" {% unless header %}hidden{% endunless %}>
+    {% if header %}
+        <modal-close class="{{ cn }}-close" section-id="{{ section.id }}">
+            {% render 'icon', name: 'x' %}
+        </modal-close>
+    {% endif %}
+    <div class="{{ cn }}-inner">
+        <div class="{{ cn }}-level" data-level="0" data-element="level">
+            {% if header %}
+                <div class="{{ cn }}-header">
+                    <div class="{{ cn }}-heading">
+                        {{ 'sections.header.menu' | t }}
+                    </div>
+                </div>
+            {% endif %}
+
+            {% for item in items %}
+                {% assign item_id = 'level-1' | append: item.id | append: section.id | append: forloop.index %}
+                {% case item.type %}
+                    {% when "link" %}
+                        {%- if item.settings.title != blank -%}
+                            <a class="{{ cn }}-link" href="{{ item.settings.title_link }}">{{ item.settings.title }}</a>
+                        {%- endif -%}
+
+                    {% when 'menu' %}
+                        {%- if request.design_mode -%}
+                            <div {{ item.shopify_attributes }} hidden></div>
+                        {%- endif -%}
+                        {% for link in item.settings.menu.links %}
+                            {% if link.levels > 0 %}
+                                {% assign menu_item_id =  item_id | append: forloop.index %}
+                                <label class="{{ cn }}-link" for="{{ menu_item_id }}">
+                                    {{ link.title }}
+                                    {% render 'icon', name: 'angle-right' %}
+                                </label> 
+                                {% capture level_1 %}
+                                    {{ level_1 }}
+                                    <input
+                                        class="{{ cn }}-level-trigger" 
+                                        id="{{ menu_item_id }}" 
+                                        type="radio" 
+                                        name="{{ NS }}-level-1"
+                                        value="1"
+                                    >
+                                    <div class="{{ cn }}-level-content">
+                                        <div class="{{ cn }}-header">
+                                            <label>
+                                                {% render 'icon', name: 'angle-left' %}
+                                                <input 
+                                                    class="{{ cn }}-level-trigger" 
+                                                    type="radio" 
+                                                    value="0"
+                                                    name="{{ NS }}-level-1"
+                                                >
+                                            </label>
+                                            <a class="{{ cn }}-heading" href="{{ link.url }}">
+                                                {{ link.title }}
+                                            </a>
+                                        </div>
+                                        {% for sub_link in link.links %}
+                                            {% if sub_link.levels > 0 %}
+                                                {% assign sub_menu_item_id = 'level-2' | append: menu_item_id | append: forloop.index %}
+                                                <label class="{{ cn }}-link" for="{{ sub_menu_item_id }}">
+                                                    {{ sub_link.title }}
+                                                    {% render 'icon', name: 'angle-right' %}
+                                                </label>
+                                                {% capture level_2 %}
+                                                    {{ level_2 }}
+                                                    <input
+                                                        class="{{ cn }}-level-trigger" 
+                                                        id="{{ sub_menu_item_id }}" 
+                                                        type="radio" 
+                                                        name="{{ NS }}-level-2"
+                                                        value="2"
+                                                        form=""
+                                                    >
+                                                    <div class="{{ cn }}-level-content">
+                                                        <div class="{{ cn }}-header">
+                                                            {{ Back_trigger_2 }}
+                                                            <a class="{{ cn }}-heading" href="{{ sub_link.url }}">{{ sub_link.title }}</a>
+                                                        </div>
+                                                        <div class="{{ cn }}-level-body">
+                                                            {% for sub2_link in sub_link.links %}
+                                                                <a class="{{ cn }}-link" href="{{ sub2_link.url }}">{{ sub2_link.title }}</a>
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                {% endcapture %}
+                                            {% else %}   
+                                                <a class="{{ cn }}-link" href="{{ sub_link.url }}">{{ sub_link.title }}</a>
+                                            {% endif %}   
+                                        {% endfor %}
+                                    </div>
+                                {% endcapture %}
+                            {% else %}
+                                <a class="{{ cn }}-link" href="{{ link.url }}">{{ link.title }}</a>
+                            {% endif %} 
+                        {% endfor %}
+                    {% when 
+                        'browsing_history',
+                        'image_with_text', 
+                        'featured_collection',
+                        'featured_blog',
+                        'collections_list',
+                        'product_lists',
+                        'products_catalog',
+                        'subcollections_catalog',
+                        'subcollections_grid',
+                        'catalog', 
+                        'mega_menu',
+                        'drawer'
+                    %}
+                        <label class="{{ cn }}-link" for="{{ item_id }}">
+                            {{ item.settings.title }}
+                            {% render 'icon', name: 'angle-right' %}
+                        </label> 
+                        {% capture level_1 %}
+                            {{ level_1 }}
+                            <input
+                                class="{{ cn }}-level-trigger" 
+                                id="{{ item_id }}" 
+                                type="radio" 
+                                name="{{ NS }}-level-1"
+                                value="1"
+                            >
+                        {% endcapture %}
+                    {% when 'browsing_history' %}
+                        {%- assign browsing_history_limit = 8 -%}
+                        {% capture level_1 %}
+                            {{ level_1 }}
+                            <div class="{{ cn }}-level-content" {{ item.shopify_attributes }}>
+                                <div class="{{ cn }}-header">
+                                    {{ Back_trigger_1 }}
+                                    <a class="{{ cn }}-heading" href="">
+                                        {{ item.settings.title }}
+                                    </a>
+                                </div>
+                                <div class="{{ cn }}-level-body">
+                                    {%- render 'main-nav-browsing-history', products_limit: browsing_history_limit -%}
+                                </div>
+                            </div>
+                        {% endcapture %}
+                    {% when "image_with_text" %}
+                        {% capture level_1 %}
+                            {{ level_1 }}
+                            <div class="{{ cn }}-level-content" {{ item.shopify_attributes }}>
+                                <div class="{{ cn }}-header">
+                                    {{ Back_trigger_1 }}
+                                    <a class="{{ cn }}-heading" href="">
+                                        {{ item.settings.title }}
+                                    </a>
+                                </div>          
+                                <div class="{{ cn }}-level-body">
+                                    {% render 'main-nav-image-with-text',
+                                        item: item
+                                    %}
+                                </div>
+                            </div>
+                        {% endcapture %}
+                    {% when 'featured_collection' %}
+                        {% capture level_1 %}
+                            {{ level_1 }}
+                            <div class="{{ cn }}-level-content" {{ item.shopify_attributes }}>
+                                <div class="{{ cn }}-header">
+                                    {{ Back_trigger_1 }}       
+                                    <a class="{{ cn }}-heading" href="{{ item.settings.collection.url | default: '#' }}">
+                                        {{ item.settings.title }}
+                                    </a>
+                                </div>
+                                <div class="{{ cn }}-level-body">
+                                    <div data-element="content" class="#grid @type:columns @center" style="--columns: 1; --columns-mobile: 1;">
+                                        {%- assign products_limit = item.settings.columns | times: item.settings.rows -%}
+                                        {% for nav_product in item.settings.collection.products limit: products_limit %}
+                                            {% render 'main-nav-card',
+                                                src: nav_product,
+                                                type: 'product',
+                                                show_price: item.settings.show_product_price
+                                            %}
+                                        {% endfor %}
+                                        {%- if item.settings.show_view_all -%}
+                                            <div class="{{ cn }}-view-all">
+                                                {%- render 'button',
+                                                    text: "View all",
+                                                    block: true,
+                                                    tag: 'a',
+                                                    link: item.settings.collection.url
+                                                -%}
+                                            </div>
+                                        {%- endif -%}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endcapture %}
+                    {% when 'featured_blog' %}
+                        {% capture level_1 %}
+                            {{ level_1 }}
+                            <div class="{{ cn }}-level-content" {{ item.shopify_attributes }}>
+                                <div class="{{ cn }}-header">
+                                    {{ Back_trigger_1 }}       
+                                    <a class="{{ cn }}-heading" href="{{ item.settings.blog.url | default: '#' }}">
+                                        {{ item.settings.title }}
+                                    </a>
+                                </div>
+                                <div class="{{ cn }}-level-body">
+                                    <div data-element="content" class="#grid @type:columns @center" style="--columns: 1; --columns-mobile: 1;">
+                                        {%- assign articles_limit = item.settings.columns | times: item.settings.rows -%}
+                                        {% for article in item.settings.blog.articles limit: articles_limit %}
+                                            {% render 'main-nav-card',
+                                                src: article,
+                                                type: 'article',
+                                                article_info: item.settings.article_info
+                                            %}
+                                        {% endfor %}
+                                        {%- if item.settings.show_view_all -%}
+                                            <div class="{{ cn }}-view-all">
+                                                {%- render 'button',
+                                                    text: "View all",
+                                                    block: true,
+                                                    tag: 'a',
+                                                    link: item.settings.blog.url
+                                                -%}
+                                            </div>
+                                        {%- endif -%}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endcapture %}
+                    {% when 'collections_list' %}
+                        {%- liquid
+                            assign show_price = false
+                            assign show_item_count = false
+                            case item.settings.collection_info
+                                when 'price'
+                                    assign show_price = true
+                                when 'count'
+                                    assign show_item_count = true
+                            endcase
+                        -%}
+
+                        {% capture level_1 %}
+                            {{ level_1 }}
+                            <div class="{{ cn }}-level-content" {{ item.shopify_attributes }}>
+                                <div class="{{ cn }}-header">
+                                    {{ Back_trigger_1 }}
+                                    <a class="{{ cn }}-heading" href="">
+                                        {{ item.settings.title }}
+                                    </a>
+                                </div>
+                                <div class="{{ cn }}-level-body">
+                                    <div data-element="content" class="#grid @type:columns @center" style="--columns: 1; --columns-mobile: 1;">
+                                        {% for nav_collection in item.settings.collections %}
+                                            {% render 'main-nav-card',
+                                                src: nav_collection,
+                                                type: 'collection',
+                                                image_src: item.settings.collection_image_src,
+                                                show_price: show_price,
+                                                show_item_count: show_item_count
+                                            %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endcapture %}
+                    {% when 'product_lists', 'products_catalog', 'subcollections_catalog', 'subcollections_grid' %}
+                        {%- liquid
+                            case item.type
+                                when 'subcollections_catalog', 'subcollections_grid'
+                                    assign links_src = item.settings.menu.links
+                                when 'product_lists', 'products_catalog'
+                                    assign links_src = item.settings.collections
+                            endcase
+                        -%}
+                        {% capture level_1 %}
+                            {{ level_1 }}
+                            <div class="{{ cn }}-level-content" {{ item.shopify_attributes }}>
+                                <div class="{{ cn }}-header">
+                                    {{ Back_trigger_1 }} 
+                                    <a class="{{ cn }}-heading" href="">
+                                        {{ item.settings.title }}
+                                    </a>
+                                </div>
+                                
+                                {% for link_item in links_src %}
+                                    {% if link_item.levels > 0 or link_item.products.size > 0 %}
+                                        {% assign menu_item_id = 'level-2' | append: item_id | append: forloop.index %} 
+                                        <label class="{{ cn }}-link" for="{{ menu_item_id }}">
+                                            {{ link_item.title }}
+                                            {% render 'icon', name: 'angle-right' %}
+                                        </label>
+                                        {% capture level_2 %}
+                                            {{ level_2 }}
+                                            <input
+                                                class="{{ cn }}-level-trigger" 
+                                                id="{{ menu_item_id }}" 
+                                                type="radio" 
+                                                name="{{ NS }}-level-2"
+                                                value="2"
+                                                form=""
+                                            >
+                                            <div class="{{ cn }}-level-content">
+                                                <div class="{{ cn }}-header">
+                                                    {{ Back_trigger_2 }}
+                                                    <a class="{{ cn }}-heading" href="{{ link_item.url }}">{{ link_item.title }}</a>
+                                                </div>
+                                                <div class="{{ cn }}-level-body">
+                                                    {% case item.type %}
+                                                        {% when 'subcollections_catalog', 'subcollections_grid' %}
+                                                            {%- liquid
+                                                                assign show_price = false
+                                                                assign show_item_count = false
+                                                                case item.settings.subcollection_info
+                                                                    when 'price'
+                                                                        assign show_price = true
+                                                                    when 'count'
+                                                                        assign show_item_count = true
+                                                                endcase
+                                                            -%}
+                                                            <div data-element="content" class="#grid @type:columns @center" style="--columns: 1; --columns-mobile: 1;">
+                                                                {% for sub_collection in link_item.links %}
+                                                                    {%- assign nav_collection = sub_collection.object -%}
+                                                                    {% render 'main-nav-card',
+                                                                        src: nav_collection,
+                                                                        type: 'collection',
+                                                                        image_src: item.settings.subcollection_image_src,
+                                                                        show_price: show_price,
+                                                                        show_item_count: show_item_count
+                                                                    %}
+                                                                {% endfor %}
+                                                            </div>
+                                                            
+                                                        {% when 'product_lists', 'products_catalog' %}
+                                                            {%- liquid
+                                                                if item.type == 'product_lists'
+                                                                    assign products_limit = item.settings.products_limit
+                                                                elsif item.type == 'products_catalog'
+                                                                    assign products_limit = item.settings.columns | times: item.settings.rows
+                                                                endif  
+                                                            -%}
+                                                            <div data-element="content" class="#grid @type:columns @center" style="--columns: 1; --columns-mobile: 1;">
+                                                                {% for nav_product in link_item.products limit: products_limit %}
+                                                                    {% render 'main-nav-card',
+                                                                        src: nav_product,
+                                                                        type: 'product',
+                                                                        image_src: item.settings.subcollection_image_src,
+                                                                        show_price: item.settings.show_product_price,
+                                                                        show_item_count: show_item_count
+                                                                    %}
+                                                                {% endfor %}
+                                                                {%- if item.settings.show_view_all -%}
+                                                                    <div class="{{ cn }}-view-all">
+                                                                        {%- render 'button',
+                                                                            text: "View all",
+                                                                            block: true,
+                                                                            tag: 'a',
+                                                                            link: link_item.url
+                                                                        -%}
+                                                                    </div>
+                                                                {%- endif -%}
+                                                            </div>
+                                                    {% endcase %}
+                                                </div>
+                                            </div>
+                                        {% endcapture %}
+                                    {% else %}
+                                        <a class="{{ cn }}-link" href="{{ link_item.url }}">{{ link_item.title }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        {% endcapture %}
+                    {% when 'mega_menu', 'catalog', 'drawer' %}
+                        {% capture level_1 %}
+                            {{ level_1 }}
+                            <div class="{{ cn }}-level-content" {{ item.shopify_attributes }}>
+                                <div class="{{ cn }}-header">
+                                    {{ Back_trigger_1 }} 
+                                    <a class="{{ cn }}-heading" href="">
+                                        {{ item.settings.title }}
+                                    </a>
+                                </div>
+                                
+                                {% for link in item.settings.menu.links %}
+                                    {% if link.levels > 0 %}
+                                        {% assign menu_item_id = 'level-2' | append: item_id | append: forloop.index %} 
+                                        <label class="{{ cn }}-link" for="{{ menu_item_id }}">
+                                            {{ link.title }}
+                                            {% render 'icon', name: 'angle-right' %}
+                                        </label>
+                                        {% capture level_2 %}
+                                            {{ level_2 }}
+                                            <input
+                                                class="{{ cn }}-level-trigger" 
+                                                id="{{ menu_item_id }}" 
+                                                type="radio" 
+                                                name="{{ NS }}-level-2"
+                                                value="2"
+                                                form=""
+                                            >
+                                            <div class="{{ cn }}-level-content">
+                                                <div class="{{ cn }}-header">
+                                                    {{ Back_trigger_2 }}
+                                                    <a class="{{ cn }}-heading" href="{{ link.url }}">{{ link.title }}</a>
+                                                </div>
+                                                
+                                                {% for sub_link in link.links %}
+                                                    {% if sub_link.levels > 0 and item.type == 'catalog' or item.type == 'drawer' %}
+                                                        {% assign sub_menu_item_id = 'level-3' | append: menu_item_id | append: forloop.index %}
+                                                        <label class="{{ cn }}-link" for="{{ sub_menu_item_id }}">
+                                                            {{ sub_link.title }}
+                                                            {% render 'icon', name: 'angle-right' %}
+                                                        </label>
+                                                        {% capture level_3 %}
+                                                            {{ level_3 }}
+                                                            <input
+                                                                class="{{ cn }}-level-trigger" 
+                                                                id="{{ sub_menu_item_id }}" 
+                                                                type="radio" 
+                                                                name="{{ NS }}-level-3"
+                                                                value="3"
+                                                                form=""
+                                                            >
+                                                            <div class="{{ cn }}-level-content">
+                                                                <div class="{{ cn }}-header">
+                                                                    {{ Back_trigger_3 }}
+                                                                    <a class="{{ cn }}-heading" href="{{ sub_link.url }}">{{ sub_link.title }}</a>
+                                                                </div>
+                                                                {% for sub2_link in sub_link.links %}
+                                                                    <a class="{{ cn }}-link" href="{{ sub2_link.url }}">{{ sub2_link.title }}</a>
+                                                                {% endfor %}
+                                                            </div>
+                                                        {% endcapture %}
+                                                    {% else %}
+                                                        <a class="{{ cn }}-link" href="{{ sub_link.url }}">{{ sub_link.title }}</a>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                
+                                            </div>
+                                        {% endcapture %}
+                                    {% else %}
+                                        <a class="{{ cn }}-link" href="{{ link.url }}">{{ link.title }}</a>
+                                    {% endif %}
+                                {% endfor %}
+
+                                {% if item.type == 'mega_menu' %}
+                                    {% if item.settings.image_1 != blank or item.settings.image_2 != blank %}
+                                        <div class="{{ cn }}-level-footer">
+                                            <div class="#grid @type:template">
+                                                {% liquid
+                                                    if item.settings.images_content_position == 'outside'
+                                                        assign images_overlay = blank
+                                                        assign images_inner_caption = false
+                                                    else
+                                                        assign images_overlay = item.settings.images_overlay
+                                                        assign images_inner_caption = true
+                                                        assign pos = item.settings.images_content_position | split: '-'
+                                                        assign image_content_y = pos[0]
+                                                        assign image_content_x = pos[1]
+                                                    endif 
+                                                %}
+                                                {% if item.settings.image_1 != blank %}
+                                                    {% if item.settings.images_height == 'origin' %}
+                                                        {%- capture image_1_srcsize_mobile -%}90vw{%- endcapture -%}
+                                                    {% else %}
+                                                        {%- capture image_1_srcsize_mobile -%}max({{ item.settings.images_height }}, 90vw){%- endcapture -%}
+                                                    {% endif %}
+                                                    
+                                                    {% render 'gallery-card',
+                                                        image: item.settings.image_1,
+                                                        image_srcsize_mobile: image_1_srcsize_mobile,
+                                                        heading: item.settings.image_1_heading,
+                                                        subheading: item.settings.image_1_subheading,
+                                                        caption_gap: 2,
+                                                        heading_scale: 60,
+                                                        mobile_media_height: item.settings.images_height,
+                                                        inner_caption: images_inner_caption,
+                                                        caption_x: image_content_x,
+                                                        caption_y: image_content_y,
+                                                        overlay: images_overlay,
+                                                        link: items.settings.image_1_link,
+                                                        ignore_frame: true,
+                                                        color_scheme: item.settings.images_color_scheme
+                                                    %}
+                                                {% endif %}
+                                                {% if item.settings.image_2 != blank %}
+                                                    {% if item.settings.images_height == 'origin' %}
+                                                        {%- capture image_2_srcsize_mobile -%}90vw{%- endcapture -%}
+                                                    {% else %}
+                                                        {%- capture image_2_srcsize_mobile -%}max({{ item.settings.images_height }}, 90vw){%- endcapture -%}
+                                                    {% endif %}
+
+                                                    {% render 'gallery-card',
+                                                        image: item.settings.image_2,
+                                                        image_srcsize_mobile: image_2_srcsize_mobile,
+                                                        heading: item.settings.image_2_heading,
+                                                        subheading: item.settings.image_2_subheading,
+                                                        caption_gap: 2,
+                                                        heading_scale: 60,
+                                                        mobile_media_height: item.settings.images_height,
+                                                        inner_caption: images_inner_caption,
+                                                        caption_x: image_content_x,
+                                                        caption_y: image_content_y,
+                                                        overlay: images_overlay,
+                                                        link: item.settings.image_2_link,
+                                                        ignore_frame: true,
+                                                        color_scheme: item.settings.images_color_scheme
+                                                    %}
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                        {% endcapture %}
+                {% endcase %}
+            {% endfor %}
+            {% if header %}
+                <div class="{{ cn }}-toolbar" data-element="toolbar">
+                    {% if section.settings.show_account_link and shop.customer_accounts_enabled %}
+                        <a class="{{ cn }}-toolbar-item" href="{%- if customer -%}{{ routes.account_url }}{%- else -%}{{ routes.account_login_url }}{%- endif -%}">{{ 'customer.account.title' | t }}</a>
+                    {% endif %}
+                    {%- if section.settings.show_language_selector and localization.available_languages.size > 1 -%}
+                        {%- capture Language_toolbar -%}
+                            {{ localization.language.name }} ({{ localization.language.iso_code | upcase }})
+                        {%- endcapture -%}
+                        <div class="{{ cn }}-toolbar-item" data-toolbar="language">
+                            {% render 'localization-dropdown',
+                                toggle: Language_toolbar,
+                                placement: 'bottom',
+                                src: 'language',
+                                prefix: 'mobile'
+                            %}
+                        </div>
+                    {%- endif -%}
+                    {% if section.settings.show_country_selector and localization.available_countries.size > 1 %}
+                        {%- capture Country_toolbar -%}
+                            {{ localization.country.name }} ({{ localization.country.currency.iso_code }}{% if localization.country.currency.symbol != blank %} {{ localization.country.currency.symbol }}{% endif %})
+                        {%- endcapture -%}
+                        <div class="{{ cn }}-toolbar-item" data-toolbar="currency">
+                            {% render 'localization-dropdown',
+                                toggle: Country_toolbar,
+                                placement: 'bottom',
+                                src: 'country',
+                                prefix: 'mobile'
+                            %}
+                        </div>
+                    {% endif %}
+                    {%- comment -%}
+                    {% if section.settings.wishlist_link != blank %}
+                        <a class="{{ cn }}-toolbar-item" href="{{ section.settings.wishlist_link }}">
+                            {{ 'sections.header.wishlist' | t }}
+                        </a>
+                    {% endif %}
+                    {%- endcomment -%}
+                </div>
+            {% endif %}
+        </div>
+        <div data-element="level" class="{{ cn }}-level" data-level="1">
+            {{ level_1 }}
+        </div>
+        <div data-element="level" class="{{ cn }}-level" data-level="2">
+            {{ level_2 }}
+        </div>
+        <div data-element="level" class="{{ cn }}-level" data-level="3">
+            {{ level_3 }}
+        </div>
+    </div>
+</{{ NS }}>
+
+<script type="module" src="{{ NS | append: '.js' | asset_url }}"></script>

@@ -1,0 +1,40 @@
+{% comment %}
+  Props:
+    heading: string
+    ref_product: Product
+    block: Shopify block
+{% endcomment %}
+
+{%- liquid
+    assign NS = 'cart-notification-recommendations'
+    assign cn = '#' | append: NS
+    if heading == blank
+        assign heading =  'general.cart.recommendations.heading' | t
+    endif
+-%}
+
+{% render 'load-css', file: NS, lazy: true %}
+
+<{{NS}} 
+    class="{{ cn }}" 
+    section-id="{{ section.id }}"
+    {{ block.shopify_attributes }}
+>
+    <div class="{{ cn }}-inner">
+        {% if heading != blank %}
+            <h4 class="{{ cn }}-header">
+                {{ heading }}
+            </h4>   
+        {% endif %}
+        {% render 'product-recommendations-slider', 
+            ref_product: ref_product,
+            req_section: 'r_cart-notification-recommendations',
+            slides_per_view: 2.2,
+            show_pagination: false,
+            slide_by: 'item',
+            limit: 5
+        %}
+    </div>
+</{{NS}}>
+
+<script type="module" src="{{ NS | append: '.js' | asset_url }}"></script>

@@ -1,0 +1,34 @@
+{
+  "sections": {
+    "main": {
+      "type": "s_article",
+      "blocks": {
+        "title": {
+          "type": "title",
+          "settings": {
+          }
+        },
+        "content": {
+          "type": "content",
+          "settings": {
+          }
+        },
+        "comments": {
+          "type": "comments",
+          "settings": {
+          }
+        }
+      },
+      "block_order": [
+        "title",
+        "content",
+        "comments"
+      ],
+      "settings": {
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

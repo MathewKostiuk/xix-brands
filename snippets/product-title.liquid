@@ -1,0 +1,66 @@
+{% liquid
+    # Props:
+    # - product
+    # - title_scale: int
+    # - show_wishlist_button: boolean
+    # - truncate_text: boolean
+    # - truncate_lines: int
+    # - with_link: boolean
+    # - badges_display: before | after | none
+    # - badges_scale: number
+
+    assign NS = 'product-title'
+    assign cn = '#' | append: NS 
+    assign badges_scale = badges_scale | default: 100
+    assign badges_size = badges_scale | times: 0.01
+
+    assign onboarding_title = 'onboarding.product_title' | t
+    assign product_title = product.title | default: onboarding_title
+
+    if badges_display != 'none' and badges_display != blank
+        assign badges = product.metafields.theme.custom_badges.value
+    endif
+%}
+
+{% capture Badges %}
+    {% if badges != blank and badges.size > 0 %}
+        <div class="{{ cn }}-badges">
+            {% for badge in badges %}
+                <span class="#badge @type:custom">{{ badge | strip }}</span>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endcapture %}
+
+{% render 'load-css', file: NS %}
+
+{% if with_link %}
+    {% capture title %}
+        <a class="reset-link" href="{{ product.url | default: '#'  }}">{{ product_title }}</a>
+    {% endcapture %}
+{% else %}
+    {% assign title = product_title %}
+{% endif %}
+
+<div class="{{ cn }}" style="--{{ NS }}-badge-size: {{ badges_size }}rem;">
+    {% if badges_display == 'before' %}
+        {{ Badges }}
+    {% endif %}
+    <h1 class="#heading" style="--heading-scale: {{ title_scale | times: 0.01 }};">
+        {% if truncate_text %}
+            <span class="#text-truncate" style="--text-truncate-lines: {{ truncate_lines }}">
+                {{ title }}
+            </span>
+        {% else %}
+            {{ title }}
+        {% endif %}
+    </h1>
+    {% if badges_display == 'after' %}
+        {{ Badges }}
+    {% endif %}    
+    {%- comment -%}
+    {% if show_wishlist_button %}
+        {% render 'wishlist-toggle', product_url: product.url, sync: true %}
+    {% endif %}
+    {%- endcomment -%}
+</div>

@@ -1,0 +1,71 @@
+{% liquid
+    assign NS = 'main-nav-mobile-toolbar'
+    assign cn = '#' | append: NS
+%}
+
+<{{ NS }} class="{{ cn }}" section-id="{{ section.id }}" hidden>
+    {% for block in section.blocks %}
+        {% case block.type %}
+            {% when 'link' %}
+                {% if block.settings.link_label != blank %}
+                    <a class="{{ cn }}-item" href="{{ block.settings.link }}" {{ block.shopify_attributes }}>
+                        {{ block.settings.link_label }}
+                    </a>
+                {% endif %}
+            {% when 'menu' %}
+                {% if block.settings.menu != blank %}
+                    {%- if request.design_mode -%}
+                        <div {{ block.shopify_attributes }} hidden></div>
+                    {%- endif -%}
+                    {% for nav_item in block.settings.menu.links %}
+                        <a class="{{ cn }}-item" href="{{ nav_item.url }}">
+                            {{ nav_item.title }}
+                        </a>
+                    {%- endfor -%} 
+                {% endif %}
+            {% when 'localization_selector' %}
+                {%- if block.settings.show_localization_selector and localization.available_languages.size > 1 -%}
+                    {%- capture Language_toolbar -%}
+                        {{ localization.language.name }} ({{ localization.language.iso_code | upcase }})
+                    {%- endcapture -%}
+                    <div class="{{ cn }}-item" data-toolbar="language" {{ block.shopify_attributes }}>
+                        {% render 'localization-dropdown',
+                            toggle: Language_toolbar,
+                            placement: 'bottom',
+                            src: 'language'
+                        %}
+                    </div>
+                {%- endif-%}
+                {%- if block.settings.show_country_selector and localization.available_countries.size > 1 -%}
+                    {%- capture Country_toolbar -%}
+                        {{ localization.country.name }} ({{ localization.country.currency.iso_code }}{% if localization.country.currency.symbol != blank %} {{ localization.country.currency.symbol }}{% endif %})
+                    {%- endcapture -%}
+                    <div class="{{ cn }}-item" data-toolbar="currency" {{ block.shopify_attributes }}>
+                        {% render 'localization-dropdown',
+                            toggle: Country_toolbar,
+                            placement: 'bottom',
+                            src: 'country'
+                        %}
+                    </div>
+                {%- endif-%}
+            {% when 'phone_link' %}
+                {%- if block.settings.phone_number != blank -%}
+                    <a class="{{ cn }}-item" href="tel:{{ block.settings.phone_number }}" {{ block.shopify_attributes }}>
+                        {{ block.settings.phone_number }}
+                    </a>
+                {%- endif -%}
+            {% when 'mail_link' %}
+                {%- if block.settings.mail_address != blank -%}
+                    <a class="{{ cn }}-item" href="mailto:{{ block.settings.mail_address }}" {{ block.shopify_attributes }}>
+                        {{ block.settings.mail_address }}
+                    </a>
+                {%- endif -%}
+            {% when 'social_menu' %}
+                <div class="{{ cn }}-item" {{ block.shopify_attributes }}>
+                    {% render 'social-profiles', new_tab: block.settings.social_new_tab %}
+                </div>
+        {% endcase %}
+    {% endfor %}
+</{{ NS }}>
+
+<script type="module" src="{{ NS | append: '.js' | asset_url }}"></script>

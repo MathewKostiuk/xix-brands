@@ -1,0 +1,62 @@
+{%- liquid
+  assign NS = 'collection-sort'
+  assign cn = '#' | append: NS
+  assign sort_by = src.sort_by | default: src.default_sort_by
+-%}
+
+{% render 'load-css', file: NS %}
+
+{%- capture Options -%}
+  {%- for option in src.sort_options -%}
+    <option value="{{ option.value }}" {% if option.value == sort_by %}selected{% assign current_value = option.name %}{% endif %}>{{ option.name }}</option>      
+  {%- endfor -%} 
+{%- endcapture -%}
+
+{%- capture Menu -%}
+  <div class="{{ cn }}-options" data-options>
+    {%- for option in src.sort_options -%}
+        {% assign input_id = option.value | handle | append: 'collectionSort-' | append: section.id %}
+        <div class="{{ cn }}-options-item">
+          <input 
+            type="radio"
+            hidden
+            id="{{ input_id }}"
+            value="{{ option.value }}"
+            data-dropdown-option
+            name="collection-sort-{{ section.id }}"
+            form=""
+            {% if option.value == sort_by %}checked{% assign current_value = option.name %}{% endif %}
+          >
+          <label for="{{ input_id }}" class="{{ cn }}-options-item-title">
+            {{ option.name }}
+            {% render 'icon', name: 'check' %}
+          </label>
+        </div>
+    {%- endfor -%}
+  </div>
+{%- endcapture -%}
+
+{%- capture Toggle -%}
+  <div class="{{ cn }}-toggle">
+    <span class="{{ cn }}-current" data-element="selected-value">
+      {{ current_value }}
+    </span>
+    {% render 'icon', name: 'angle-down' %}
+  </div>
+{%- endcapture -%}
+
+<{{ NS }} class="{{ cn }}" form-id="{{ form_id }}" section-id="{{ section.id }}">
+  <div class="{{ cn }}-title mobile-hidden">{{ 'products.facets.sort_by_label' | t }}</div>
+  {% render 'drop-down',
+    toggle: Toggle,
+    menu: Menu,
+    options: Options,
+    form_id: form_id,
+    input_name: 'sort_by',
+    update_value: true,
+    close_on_change: true,
+    position: 'bottom-right'
+  %}
+</{{ NS }}>
+
+<script type="module" src="{{ NS | append: '.js' | asset_url }}"></script>

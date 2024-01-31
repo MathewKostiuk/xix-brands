@@ -1,0 +1,178 @@
+{%- liquid
+    assign NS = 'breadcrumbs'
+    assign cn = '#' | append: NS    
+-%}
+
+{%- if settings.show_breadcrumb_nav -%}
+    {%- capture Arrow -%}
+        {% render 'icon', name: 'angle-right' %}
+    {%- endcapture -%}
+
+    {%- capture Home -%}
+        <div class="{{ cn }}-item">
+            <a class="{{ cn }}-item-link" href="{{ routes.root_url }}">Home</a>
+            {{ Arrow }}
+        </div>
+    {%- endcapture -%}
+
+    {%- capture Items -%}
+        {%- case request.page_type -%}
+            {%- when 'product' -%}
+                <div class="{{ cn }}-item">
+                    <a class="{{ cn }}-item-link" href="{{ routes.all_products_collection_url }}">
+                        {{ 'templates.search.products' | t }}
+                    </a>
+                    {{ Arrow }}
+                </div>
+                <div class="{{ cn }}-item">
+                    <span class="{{ cn }}-item-current" aria-current="page">
+                        {{ product.title }}
+                    </span>
+                </div>
+            {%- when 'collection' -%}
+                <div class="{{ cn }}-item">
+                    <a class="{{ cn }}-item-link" href="{{ routes.collections_url }}">
+                        {{ 'sections.collection_list.title' | t }}
+                    </a>
+                    {{ Arrow }}
+                </div>
+                <div class="{{ cn }}-item">
+                    {{ collection.title }}
+                </div>
+            {% when 'page' %}
+                <div class="{{ cn }}-item">
+                    <span class="{{ cn }}-item-current" aria-current="page">{{ page.title }}</span>
+                </div>
+            {% when 'blog' %}
+                <div class="{{ cn }}-item">
+                    <span class="{{ cn }}-item-current" aria-current="page">{{ blog.title }}</span>
+                </div>
+            {% when 'article' %}
+                <div class="{{ cn }}-item">
+                    <a class="{{ cn }}-item-link" href="{{ blog.url }}">{{ blog.title }}</a>
+                    {{ Arrow }}
+                </div>
+                <div class="{{ cn }}-item">
+                    <div class="{{ cn }}-item-current" aria-current="page">{{ article.title }}</div>
+                </div>
+        {%- endcase -%}
+    {%- endcapture -%}
+    
+    {%- if Items != blank -%}
+        {% render 'load-css', file: NS %}
+
+        <nav class="{{ cn }}" aria-label="{{ 'general.breadcrumbs' | t }}">
+            {{ Home }}
+            {{ Items }}
+        </nav>
+    {%- endif -%}
+{%- endif -%}
+
+
+{%- comment -%}
+<style>
+    .breadcrumbs {
+        font-size: .85em;
+        margin: 0 0 2em;
+    }
+
+    .breadcrumbs ol {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .breadcrumbs li {
+        display: inline-block;
+    }
+
+    .breadcrumbs a {
+        text-decoration: underline;
+    }
+
+    .breadcrumbs li:not(:last-child):after {
+        content: "›\00a0";
+        display: inline-block;
+        padding-left: .75ch;
+        speak: none;
+    }
+
+    .breadcrumbs [aria-current="page"] {
+        color: inherit;
+        font-weight: normal;
+        text-decoration: none;
+    }
+
+    .breadcrumbs [aria-current="page"]:hover,
+    .breadcrumbs [aria-current="page"]:focus {
+        text-decoration: underline;
+    }
+</style>
+
+{% unless template == 'index' or template == 'cart' or template == 'list-collections' or template == '404' %}
+    {% assign current_template = template | split: '.' | first  %}
+
+    <nav class="breadcrumbs" aria-label="breadcrumbs">
+        <ol>
+            <li>
+            <a href="/" title="Home">Home</a>
+            </li>
+
+        {% case current_template %}
+            {% when 'page' %}
+                <li>
+                    <a href="{{ page.url }}" aria-current="page">{{ page.title }}</a>
+                </li>
+
+            {% when 'product' %}
+
+                {% if collection.url %}
+                    <li>
+                        {{ collection.title | link_to: collection.url }}
+                    </li>
+                {% endif %}
+                <li>
+                    <a href="{{ product.url }}" aria-current="page">{{ product.title }}</a>
+                </li>
+            
+            {% when 'collection' and collection.handle %}
+                {% if current_tags %}
+                    <li>{{ collection.title | link_to: collection.url }}</li>
+                    <li>
+                        {% capture tag_url %}{{ collection.url }}/{{ current_tags | join: "+"}}{% endcapture %}
+                        <a href="{{ tag_url }}" aria-current="page">{{ current_tags | join: " + "}}</a>
+                    </li>
+                {% else %}
+                    <li>
+                        <a href="{{ collection.url }}" aria-current="page">{{ collection.title }}</a>
+                    </li>
+                {% endif %}
+            
+            {% when 'blog' %}
+                {% if current_tags %}
+                    <li>{{ blog.title | link_to: blog.url }}</li>
+                    <li>
+                        {% capture tag_url %}{{blog.url}}/tagged/{{ current_tags | join: "+" }}{% endcapture %}
+                        <a href="{{ tag_url }}" aria-current="page">{{ current_tags | join: " + " }}</a>
+                    </li>
+                {% else %}
+                    <li>
+                        <a href="{{ blog.url }}" aria-current="page">{{ blog.title }}</a>
+                    </li>
+                {% endif %}
+
+            
+            {% when 'article' %}
+                <li>{{ blog.title | link_to: blog.url }}</li>
+                <li><a href="{{ article.url }}" aria-current="page">{{ article.title }}</a></li>
+
+            {% else %}
+                <li aria-current="page">
+                    <a href="{{ request.path }}" aria-current="page">{{ page_title }}</a>
+                </li>
+        {% endcase %}
+
+        </ol>
+    </nav>
+{% endunless %}
+{%- endcomment -%}

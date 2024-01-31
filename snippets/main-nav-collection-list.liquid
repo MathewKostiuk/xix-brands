@@ -1,0 +1,40 @@
+{% liquid
+    assign NS = 'main-nav-collection-list'
+    assign cn = '#' | append: NS
+
+    assign columns = collection_list.count | at_least: 5 
+%}
+
+{%- capture image_srcsize_desktop -%}(min(100vw, {{ settings.container_width }}px) - min(3rem, 5vw))/{{ columns }}{%- endcapture -%}
+{%- capture image_srcsize_mobile -%}90vw/{{ mobile_columns }}{%- endcapture -%}
+
+{% render 'load-css', file: NS %}
+{% render 'load-css', file: 'collection-card' %}
+
+<div class="{{ cn }}">
+    <div class="#grid @type:columns @center" style="--columns: {{ columns }}; --columns-mobile: 2;">
+        {% if collection_list != blank %}
+            {% for collection in collection_list %}
+                <div class="{{ cn }}-item">
+                    {% render 'collection-card',
+                        collection: collection,
+                        text_position: 'center',
+                        image_srcsize_desktop: image_srcsize_desktop
+                    %}
+                </div>
+            {% endfor %}
+        {% else %}
+            {% for collection in (1..columns) %}
+            {%- capture placeholder_index -%}{%- cycle 1, 2, 3, 4 -%}{%- endcapture -%}
+                <div class="{{ cn }}-item">
+                    {% render 'collection-card',
+                        placeholder_index: placeholder_index,
+                        placeholder: 'collection',
+                        text_position: 'center',
+                        image_srcsize_desktop: image_srcsize_desktop
+                    %}
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+</div>

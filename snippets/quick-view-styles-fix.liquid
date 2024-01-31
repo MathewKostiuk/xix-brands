@@ -1,0 +1,28 @@
+{% unless false %} {%# TODO: handle with settings %}
+    {% assign first_product = collections['all'].products | first %}
+    {% assign product_url = first_product.url | split: '?' | first %}
+    {% assign product_id = first_product.id %}
+ 
+    <script defer>
+    fetch('{{ product_url }}?view=quick-view&section_id=s_product-quick-view')
+        .then(response => response.text())
+        .then(data => {
+            const doc = new DOMParser().parseFromString(data, 'text/html');
+            const quickViewContainer = doc.querySelector('#ProductQuickView')
+            const styles = quickViewContainer.querySelectorAll('link[rel="stylesheet"]');
+
+            styles.forEach(style => {
+                document.head.appendChild(style);
+            })
+        });
+    </script>
+    <script type="module" src="{{ 'drop-down.js' | asset_url }}"></script>
+    <script type="module" src="{{ 'cart-provider.js' | asset_url }}"></script>
+    <script type="module" src="{{ 'product-quick-view.js' | asset_url }}"></script>
+    <script type="module" src="{{ 'product-variant-listener.js' | asset_url }}"></script>
+    <script type="module" src="{{ 'product-variant-provider.js' | asset_url }}"></script>
+    <script type="module" src="{{ 'product-form.js' | asset_url }}"></script>
+    <script type="module" src="{{ 'slideshow-blaze.js' | asset_url }}"></script>
+    <script type="module" src="{{ 'video-player.js' | asset_url }}"></script>
+    <script type="module" src="{{ 'product-dynamic-checkout.js' | asset_url }}"></script>
+{% endunless %}

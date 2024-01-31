@@ -1,0 +1,178 @@
+{%- liquid 
+    # Renders a list of product options
+    # Accepts:
+    # - id: {String} - block.id
+    # - product: {Object}
+    # - enable_sorting: {Boolean}
+    # - enable_stock_sort: {Boolean}
+    # - show_sku: {Boolean} 
+    # - show_save_price: {Boolean}
+
+    assign NS = 'product-options-list'
+    assign cn = '#' | append: NS
+    assign stock_only_id = section.id | append: id | append: '-stock-only'
+    assign modal_id = section.id | append: id | append: product.id | append: '-modal'
+    assign use_variant_image = product.variants | where: 'featured_image' | first
+-%}
+
+{% render 'load-css', file: NS, lazy: true %}
+
+
+{% capture Modal_content %}
+    <{{ NS }} class="{{ cn }}" section-id="{{ section.id }}" {% if enable_sorting %}enable-sorting{% endif %}>
+        <div class="{{ cn }}-header">
+            <div class="{{ cn }}-header-inner">
+                {%- if popup_content -%}
+                    {{ popup_content }}
+                {%- else -%}
+                    <h2 class="{{ cn }}-product-title heading-font">{{ product.title }}</h2>
+                {%- endif -%}
+                <modal-close class="{{ cn }}-modal-close" section-id="{{ section.id }}">{% render 'icon', name: 'x' %}</modal-close>
+            </div>
+            {%- if popup_content -%}
+                <h2 class="{{ cn }}-product-title heading-font">{{ product.title }}</h2>
+            {%- endif -%}
+            {%- if enable_stock_sort -%}
+                <div class="{{ cn }}-stock-toggle">
+                    <label class="{{ cn }}-stock-toggle-label" for="{{ stock_only_id }}">
+                        <input class="{{ cn }}-stock-toggle-input" type="checkbox" id="{{ stock_only_id }}" name="stock-only" data-element="stock-only-toggle">    
+                        {{ 'products.product_options.only_in_stock' | t }}
+                    </label>
+                </div>
+            {%- endif -%}
+        </div>
+
+        <div class="{{ cn }}-table-wrapper">
+            <table class="{{ cn }}-table" data-table>
+                <thead data-table-head>
+                    <tr data-table-head-tr>
+                        {%- if use_variant_image -%}
+                            <th scope="col"></th>
+                        {%- endif -%}
+
+                        {%- if show_sku -%}
+                            <th class="{{ cn }}-table-heading {% if enable_sorting %}@sorting{% endif %}" data-element="column-header" data-col-name="sku" scope="col">
+                                <div class="{{ cn }}-table-heading-inner">
+                                    {{ 'products.product_options.sku' | t }}
+                                    <div class="{{ cn }}-sort-caret">
+                                        {% render 'icon', name: 'angle-down' %}
+                                    </div>
+                                </div>
+                            </th>
+                        {%- endif -%}
+
+                        {% for option in product.options_with_values %}
+                            <th class="{{ cn }}-table-heading {% if enable_sorting %}@sorting{% endif %}" data-element="column-header" data-col-name="option{{ option.position }}" scope="col">
+                                <div class="{{ cn }}-table-heading-inner">
+                                    {{ option.name }}
+                                    <div class="{{ cn }}-sort-caret">
+                                        {% render 'icon', name: 'angle-down' %}
+                                    </div>    
+                                </div> 
+                                
+                            </th>
+                        {% endfor %}
+
+                        <th class="{{ cn }}-table-heading {% if enable_sorting %}@sorting{% endif %}" data-element="column-header" data-col-name="price" scope="col" data-price-col>
+                            <div class="{{ cn }}-table-heading-inner">
+                                {{ 'sections.cart.headings.price' | t }}
+    
+                                <div class="{{ cn }}-sort-caret">
+                                    {% render 'icon', name: 'angle-down' %}
+                                </div>
+                            </div>
+                        </th>
+
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody data-element="table-body">
+                    {% for variant in product.variants %}
+                        <tr class="{{ cn }}-product {% if variant.available %}@available{% endif %}" data-variant-id="{{ variant.id }}">
+                            {%- if use_variant_image -%}
+                                <td>
+                                    {%- if variant.featured_image != blank -%}
+                                        <div class="{{ cn }}-product-media">
+                                            {%- render 'media',
+                                                image: variant.featured_image,
+                                                image_res: 150,
+                                                border_radius: 'inner',
+                                                aspect_ratio: '1x1'
+                                            -%}
+                                        </div>
+                                    {%- endif -%}
+                                </td>
+                            {%- endif -%}
+
+                            {%- if show_sku -%}
+                                <td>{{ variant.sku }}</td>
+                            {%- endif -%}
+
+                            {% for option in variant.options %}
+                                <td>{{ option }}</td>
+                            {% endfor %}
+
+                            <td>
+                                <div class="{{ cn }}-product-price">
+                                    {% render 'price',
+                                        variant: variant,
+                                        show_save_price: show_save_price,
+                                        show_titles: show_save_price
+                                    %}
+                                </div>
+                            </td>
+                            <td class="{{ cn }}-action-column">
+                                {%- if variant.available or variant.inventory_quantity != 0 -%} 
+                                
+                                        {%- capture Button -%}
+                                            {% render 'button',
+                                                shadow: true,
+                                                atts: 'data-element="to-cart-button"',
+                                                no_arrow: true,
+                                                size: 'h5',
+                                                t_text: 'products.product.add_to_cart',
+                                                loading: true,
+                                                display_style: 'gradient'
+                                            %}
+                                        {%- endcapture -%}
+
+                                        {% render 'product-to-cart', 
+                                            trigger: Button, 
+                                            variant: variant
+                                        %}
+
+                                {%- else -%}
+                                    <div class="{{ cn }}-product-sold-out">
+                                        {{ 'products.product.sold_out' | t }}
+                                    </div>
+                                {%- endif -%}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <script type="application/json" data-element="product-JSON">
+            {{ product.variants | json }}
+        </script>
+    </{{ NS }}>
+{% endcapture %}
+
+<div class="{{ cn }}-modal">
+    {% render 'modal',
+        content: Modal_content,
+        x: 'right',
+        height: '100%',
+        id: modal_id,
+        show_close: false,
+        animation: 'right'
+    %}
+</div>
+
+<modal-open target="{{ modal_id }}" class="{{ cn }}-modal-link styled-link" section-id="{{ section.id }}">
+    {% render 'icon', name: 'burger' %} {{'products.product_options.view_all_options' | t }}
+</modal-open>
+
+{%- if enable_sorting or enable_stock_sort -%}
+    <script type="module" src="{{ NS | append: '.js' | asset_url }}"></script>
+{%- endif -%}

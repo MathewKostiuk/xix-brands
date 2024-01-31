@@ -1,0 +1,24 @@
+{%- liquid
+    comment
+        Script of this component loads globally.
+        
+        PROPS:
+            - variant
+            - selling_plan
+            - trigger (data-element="to-cart-button" attr required)
+            - form_child
+    endcomment
+    
+    assign NS = 'product-to-cart'
+-%}
+
+<{{ NS }} 
+    variant-id="{{ variant.id }}" 
+    selling-plan-id="{{ selling_plan.id }}" 
+    section-id="{{ section.id }}"
+    {% if form_child %}
+        form-child
+    {% endif %}
+>
+    {{ trigger }}
+</{{ NS }}>

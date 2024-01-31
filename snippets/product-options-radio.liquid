@@ -1,0 +1,19 @@
+{% liquid
+    assign NS = 'product-options-radio'
+    assign cn = '#' | append: NS
+%}
+
+{% render 'load-css', file: NS %}
+
+<div class="{{ cn }} {% unless columns == 'auto' %}@columns{% endunless %}" style="--columns: {{ columns }};">
+    {% render 'product-option-values',
+        cn: cn,
+        src: 'buttons',
+        product_option: option,
+        current: current_variant,
+        matched_options_variants: matched_options_variants,
+        price_display: price_display,
+        show_variant_image: show_variant_image,
+        show_stock_alert: show_stock_alert
+    %}
+</div>

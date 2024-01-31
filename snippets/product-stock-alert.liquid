@@ -1,0 +1,24 @@
+{% liquid
+    if  product.selected_or_first_available_variant.available == false
+        assign text = 'products.product.stock_alert.out_of_stock_msg' | t
+        assign icon = 'x'
+        assign type = 'danger'
+    elsif product.selected_or_first_available_variant.inventory_quantity <= settings.stock_threshold and product.selected_or_first_available_variant.inventory_management and product.selected_or_first_available_variant.inventory_policy == 'deny'
+        assign text = 'products.product.stock_alert.low_stock_msg' | t: value: product.selected_or_first_available_variant.inventory_quantity
+        assign icon = 'exclamation'
+        assign type = 'warning' 
+    else
+        assign text = 'products.product.stock_alert.in_stock_msg' | t
+        assign icon = 'check'
+        assign type = 'success'
+    endif
+%}
+
+{% assign cn = '#product-stock-alert' %}
+
+<div class="{{ cn }} @type:{{ type }}">
+    <div class="{{ cn }}-icon">
+        {% render 'icon', name: icon %}
+    </div>
+    <div class="{{ cn }}-text">{{ text }}</div>
+</div>

@@ -1,0 +1,32 @@
+{%- liquid
+    assign NS = 'collection-toolbar'
+    assign cn = '#' | append: NS    
+-%}
+
+{% render 'load-css', file: NS %}
+
+<div class="{{ cn }} {% unless show_sidebar %}@desktop-filters{% endunless %}">
+    <div class="#container">
+        <div class="{{ cn }}-inner">
+            <modal-open class="{{ cn }}-filters-button " target="{{ drawer_id }}" section-id="{{ section.id }}">
+                {% render 'icon', name: 'filter' %} {{ 'products.facets.filter_button' | t }}
+            </modal-open>
+            <div class="{{ cn }}-header mobile-hidden"> 
+                <div class="{{ cn }}-status">
+                    <span data-element="collection-dynamic-block" id="Collection-{{ section.id }}-counter">
+                        {{ status }}
+                    </span>
+                </div>
+            </div>
+            {%- if show_sort -%}
+                <div class="{{ cn }}-sort">
+                    {% render 'collection-sort',
+                        src: src
+                        form_id: sort_form_id,
+                        show_icons: sort_show_icons
+                    %}
+                </div>
+            {%- endif -%}
+        </div>
+    </div>
+</div>

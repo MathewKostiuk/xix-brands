@@ -1,0 +1,58 @@
+{
+  "type": "custom.overlay",
+  "name": "Overlay Group",
+  "sections": {
+    "cart_drawer": {
+      "type": "g_cart-drawer",
+      "blocks": {
+        "products": {
+          "type": "products",
+          "settings": {
+          }
+        },
+        "subtotal": {
+          "type": "subtotal",
+          "settings": {
+          }
+        }
+      },
+      "block_order": [
+        "products",
+        "subtotal"
+      ],
+      "settings": {
+      }
+    },
+    "newsletter": {
+      "type": "g_newsletter-popup",
+      "blocks": {
+        "heading": {
+          "type": "heading",
+          "settings": {
+          }
+        },
+        "text": {
+          "type": "text",
+          "settings": {
+          }
+        },
+        "form": {
+          "type": "newsletter_form",
+          "settings": {
+          }
+        }
+      },
+      "block_order": [
+        "heading",
+        "text",
+        "form"
+      ],
+      "settings": {
+      }
+    }
+  },
+  "order": [
+    "cart_drawer",
+    "newsletter"
+  ]
+}

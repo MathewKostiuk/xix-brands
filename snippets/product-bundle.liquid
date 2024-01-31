@@ -1,0 +1,136 @@
+{% comment %}
+    Props:
+        product: Product
+        current_variant: Variant
+{% endcomment %}
+
+{% liquid
+    assign NS = 'product-bundle'
+    assign cn = '#' | append: NS
+    assign complementary_products = product.metafields.shopify--discovery--product_recommendation.complementary_products.value
+    assign subtotal = current_variant.price
+    assign c_products_count = 0
+    assign product_form_id = 'complemetary-products-' | append: product.id | append: section.id
+
+    assign is_variant_available = current_variant.available
+    if is_variant_available
+        if current_variant.inventory_management != nil and current_variant.inventory_policy != 'continue'
+            assign cart_product_count = cart | item_count_for_variant: current_variant.id
+            if current_variant.inventory_quantity == cart_product_count
+                assign is_variant_available = false
+            endif
+        endif
+    endif
+%}
+
+
+{% capture Complementaries %}
+    {% for c_product in complementary_products %}
+        {% if c_product.available %}
+            {% liquid
+                assign c_product_variant = c_product.first_available_variant
+                assign input_id = "coplementary-product-" | append: c_product_variant.id
+                assign subtotal = subtotal | plus: c_product_variant.price
+                assign c_products_count = c_products_count | plus: 1
+            %}
+            {% capture Checkbox %}
+                <div class="{{ cn }}-item-check">
+                    <input
+                        value="{{ c_product_variant.id }}"
+                        type="checkbox"
+                        id="{{ input_id }}"
+                        data-price-value="{{ c_product_variant.price }}"
+                        checked
+                        hidden
+                        name="buy_with_{{forloop.index}}"
+                        form="{{ product_form_id }}"
+                    >
+                    <label class="{{ cn }}-item-check-label" for="{{ input_id }}">
+                        {% render 'icon', name: 'check' %}
+                    </label>
+                </div>
+            {% endcapture %}
+            <div class="{{ cn }}-item">
+                {% render 'product-card-min',
+                    product: c_product,
+                    variant: c_product_variant,
+                    before: Checkbox
+                %}
+            </div>
+        {% endif %}
+    {% endfor %}
+{% endcapture %}
+
+{% if c_products_count > 0 %}
+    {% render 'load-css', file: NS %}
+    {% render 'load-css', file: 'product-card-min' %}
+    <product-form section-id="{{ section.id }}">
+        {%- form 'product', product, id: product_form_id, autocomplete: 'off', novalidate: 'novalidate', data-type: 'add-to-cart-form' -%}
+            <{{ NS }} 
+                class="{{ cn }}" 
+                {% if is_variant_available == false %}hidden{% endif %} 
+                section-id="{{ section.id }}" 
+                subtotal="{{ subtotal }}" 
+                selected-count="{{ c_products_count }}"
+            >
+                {% if heading != blank %}
+                    <div class="{{ cn }}-header">
+                        <h3 class="#heading" style="--heading-scale: 0.8;">{{ heading }}</h3>
+                    </div>   
+                    <div class="{{ cn }}-grid">
+                        <product-variant-listener 
+                            data-element="main-product" 
+                            section-id="{{ section.id }}" 
+                            class="{{ cn }}-item @main" 
+                            id="productBundleMain-{{ section.id }}"
+                        >
+                            <div
+                                hidden
+                                data-element="main-product-meta"
+                                data-price-value="{{ current_variant.price }}"
+                                data-available="{% if is_variant_available %}1{% endif %}"
+                            ></div>
+                            <input type="hidden" name="id" value="{{ current_variant.id }}" form="{{ product_form_id }}">
+                            {% render 'product-card-min',
+                                product: product,
+                                variant: current_variant,
+                                link: false
+                            %}
+                        </product-variant-listener>
+                        {{ Complementaries }}
+                    </div>
+                    <div class="{{ cn }}-footer" data-element="footer">
+                        <h5 class="{{ cn }}-total">
+                            <span class="#subheading">{{ 'products.total_price' | t }}</span>
+                            <span data-element="subtotal">{{ subtotal | money }}</span>
+                        </h5>
+                        {% capture Button_text %}
+                            {% assign items_count = c_products_count | plus: 1 %}
+                            {{ 'products.add_count_items_to_cart_html' | t: amount: items_count }} 
+                        {% endcapture %}
+                        <div class="{{ cn }}-button">
+                            {% capture Add_to_cart %}
+                                {% render 'button',
+                                    text: Button_text
+                                    no_arrow: true,
+                                    loading: true,
+                                    element: 'to-cart-button',
+                                    block: true
+                                %}
+                            {% endcapture %}
+                            {%- render 'product-to-cart', 
+                                trigger: Add_to_cart,
+                                variant: current_variant,
+                                form_child: true
+                            -%}
+                        </div>
+                    </div>
+                {% endif %}
+            </{{ NS }}>
+        {%- endform -%}
+    </product-form>   
+{% endif %}
+
+
+<script type="module" src="{{ 'product-form.js' | asset_url }}"></script>
+<script type="module" src="{{ NS | append: '.js' | asset_url }}"></script>

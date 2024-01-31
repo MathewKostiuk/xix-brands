@@ -1,0 +1,117 @@
+{
+  "type": "header",
+  "name": "Header group",
+  "sections": {
+    "announcements": {
+      "type": "g_announcement-bar",
+      "settings": {
+        "home_page_only": true,
+        "close_btn": true,
+        "color_scheme": "",
+        "pattern": "none",
+        "pattern_scale": 100,
+        "pattern_animation": "none",
+        "show_arrows_navigation": true,
+        "enable_autoplay": true,
+        "autoplay": 3
+      }
+    },
+    "utility": {
+      "type": "g_utility-bar",
+      "blocks": {
+        "d5d56cf5-6e57-422e-a260-490a7f2a7c07": {
+          "type": "link",
+          "settings": {
+            "position": "left",
+            "link_label": "Free Shipping Over $200",
+            "link": "shopify:\/\/collections\/all",
+            "icon": "truck-delivery"
+          }
+        },
+        "5208d5f5-93f2-473c-8cc4-8a7d5942568c": {
+          "type": "mail_link",
+          "settings": {
+            "position": "right",
+            "mail_address": "sales@xix-brands.com",
+            "icon": "mail"
+          }
+        },
+        "4f60ba52-edd8-4a62-a519-3a5abd13f445": {
+          "type": "phone_link",
+          "disabled": true,
+          "settings": {
+            "position": "right",
+            "phone_number": "(555) 555-1234",
+            "icon": "phone"
+          }
+        }
+      },
+      "block_order": [
+        "d5d56cf5-6e57-422e-a260-490a7f2a7c07",
+        "5208d5f5-93f2-473c-8cc4-8a7d5942568c",
+        "4f60ba52-edd8-4a62-a519-3a5abd13f445"
+      ],
+      "disabled": true,
+      "settings": {
+        "text_color": "#ffffff",
+        "bg_color": "#000000"
+      }
+    },
+    "header": {
+      "type": "g_header",
+      "blocks": {
+        "1f7b788c-5f06-4fe1-a92b-d62f6f65880c": {
+          "type": "menu",
+          "settings": {
+            "menu": "main-menu"
+          }
+        }
+      },
+      "block_order": [
+        "1f7b788c-5f06-4fe1-a92b-d62f6f65880c"
+      ],
+      "settings": {
+        "enable_sticky_header": true,
+        "layout": "default",
+        "toolbar": "only_icons",
+        "search_as_icon": true,
+        "logo": "shopify:\/\/shop_images\/XIX-Brands-Logo_Horizontal.png",
+        "logo_desktop_width": 240,
+        "logo_mobile_width": 100,
+        "show_country_selector": true,
+        "show_language_selector": false,
+        "cart_icon": "cart-shopping",
+        "show_cart_total": false,
+        "show_cart_counter": true,
+        "show_account_link": true
+      }
+    },
+    "navigation-bar": {
+      "type": "g_navigation-bar",
+      "blocks": {
+        "1add278d-cc8f-440f-9ce0-2652d92b9a8a": {
+          "type": "menu",
+          "disabled": true,
+          "settings": {
+            "position": "left",
+            "menu": "main-menu"
+          }
+        }
+      },
+      "block_order": [
+        "1add278d-cc8f-440f-9ce0-2652d92b9a8a"
+      ],
+      "settings": {
+        "alignment": "manual",
+        "bg_color": "#ffffff",
+        "text_color": "#000000"
+      }
+    }
+  },
+  "order": [
+    "announcements",
+    "utility",
+    "header",
+    "navigation-bar"
+  ]
+}

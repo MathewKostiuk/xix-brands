@@ -1,0 +1,9 @@
+{% comment %}
+    Props
+        - value
+{% endcomment %}
+{%- liquid
+    assign value_handle = value | handleize
+    assign css_color = value | split: ' ' | join: ''
+-%}
+background-color: var(--glob-swatch-color-{{ value_handle }}, {{ css_color }}); background-image: var(--glob-swatch-image-{{ value_handle }}, none);

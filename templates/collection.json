@@ -1,0 +1,56 @@
+{
+  "sections": {
+    "header": {
+      "type": "s_collection-header",
+      "settings": {
+        "color_scheme": "",
+        "bg_image": "shopify:\/\/shop_images\/xix_banner.jpg",
+        "image_size": "origin",
+        "mobile_image_size": "250px",
+        "bg_image_overlay": 30,
+        "text_position": "outside",
+        "show_collection_description": true
+      }
+    },
+    "child_collections": {
+      "type": "d_child-collection-list",
+      "settings": {
+        "heading": "",
+        "subheading": "",
+        "slide_every": "row",
+        "slides_per_view": 5
+      }
+    },
+    "main": {
+      "type": "s_collection",
+      "blocks": {
+        "filters": {
+          "type": "filters",
+          "settings": {
+            "hide_out_of_stock_filter": false,
+            "color_swatches": false,
+            "collapse_filters": false,
+            "show_view_all": true
+          }
+        }
+      },
+      "block_order": [
+        "filters"
+      ],
+      "settings": {
+        "columns": 4,
+        "rows": 3,
+        "pagination_type": "default",
+        "show_sort_dropdown": true,
+        "show_active_filters": true,
+        "sidebar_as_drawer": false,
+        "sidebar_width": 20
+      }
+    }
+  },
+  "order": [
+    "header",
+    "child_collections",
+    "main"
+  ]
+}

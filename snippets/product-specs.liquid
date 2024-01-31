@@ -1,0 +1,26 @@
+{% liquid
+    assign NS = 'product-specs'
+    assign cn = '#' | append: NS
+%}
+
+{% capture Specs %}
+    {% assign specs_list = specs | split: "</p>" %}
+    {% for spec in specs_list %}
+        {% assign parts = spec | strip_html | split: ':' %}
+        {% assign label = parts[0] | strip %}
+        {% assign value = parts[1] | strip %}
+        {% if value != blank and label != blank %}
+            <div class="{{ cn }}-item">
+                <span class="{{ cn }}-item-name">{{ label }}</span>
+                <span class="{{ cn }}-item-value">{{ value }}</span> 
+            </div>
+        {% endif %}
+    {% endfor %}
+{% endcapture %}
+
+{%- if Specs != blank -%}
+    {% render 'load-css', file: NS %}
+    <div class="{{ cn }}">
+        {{ Specs }}
+    </div>
+{%- endif -%}

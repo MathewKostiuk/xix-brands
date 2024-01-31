@@ -1,0 +1,81 @@
+.\#newsletter-popup {
+  display: block;
+}
+.\#newsletter-popup-modal {
+  position: relative;
+  display: flex;
+  border-radius: var(--glob-border-radius-base);
+  background: var(--color-scheme-bg-gradient, var(--color-scheme-bg, var(--color-g-bg-gradient, var(--color-g-bg))));
+  color: var(--color-scheme-text, var(--color-g-text));
+  overflow: hidden;
+  margin: 1rem;
+  box-shadow: var(--color-scheme-box-shadow-drop);
+  width: min(90vw, 500px);
+}
+.\#newsletter-popup-modal.\@with-image.\@image-position\:right, .\#newsletter-popup-modal.\@with-image.\@image-position\:left {
+  width: min(90vw, 800px);
+}
+.\#newsletter-popup-modal.\@image-position\:right {
+  flex-direction: row-reverse;
+}
+.\#newsletter-popup-modal.\@image-position\:top {
+  flex-direction: column;
+}
+.\#newsletter-popup-modal.\@image-position\:top .\#newsletter-popup-image {
+  height: 30vh;
+  width: auto;
+}
+.\#newsletter-popup-modal.\@image-position\:bg {
+  width: min(90vw, 500px);
+}
+@media (min-width: 992px) {
+  .\#newsletter-popup-modal.\@image-position\:bg .\#newsletter-popup-image {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+  }
+  .\#newsletter-popup-modal.\@image-position\:bg .\#newsletter-popup-text .\#hero {
+    position: relative;
+  }
+}
+.\#newsletter-popup-modal-close {
+  position: absolute;
+  top: var(--glob-size-2);
+  right: var(--glob-size-2);
+  cursor: pointer;
+  display: block;
+  opacity: 0.6;
+  transition: var(--transition-base);
+  z-index: 2;
+}
+.\#newsletter-popup-modal-close:hover {
+  opacity: 1;
+}
+.\#newsletter-popup-modal-close .\#icon {
+  --size: 1.5rem;
+}
+.\#newsletter-popup-text {
+  flex-grow: 1;
+  padding: min(var(--glob-size-8), 7vw);
+}
+.\#newsletter-popup-text .\#hero {
+  height: 100%;
+  justify-content: center;
+}
+.\#newsletter-popup-image {
+  flex-shrink: 0;
+  width: 40%;
+  position: relative;
+}
+.\#newsletter-popup-image .\#media {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
+.\#newsletter-popup-image .\#media-image {
+  height: 100%;
+}

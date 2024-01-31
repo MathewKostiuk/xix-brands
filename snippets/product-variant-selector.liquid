@@ -1,0 +1,138 @@
+{%- liquid
+    # - Props:
+        # - show_variant_image: string: 'all'|'colors'|'none'
+
+
+    assign NS = 'product-variant-selector'
+    assign cn = '#' | append: NS
+    if product.options_with_values.size == 1
+        assign single_option = true
+    else
+        assign single_option = false
+    endif
+    assign section_id = section_id | default: section.id 
+-%}
+
+{% render 'load-css', file: NS %}
+
+{% if color_swatches %}
+    {% render 'load-css', file: 'product-options-swatch' %}
+{% endif %}
+{% if picker_type == 'dropdown' %}
+    {% render 'load-css', file: 'product-options-dropdown' %}
+{% endif %}
+{% if picker_type == 'swatch' %}
+    {% render 'load-css', file: 'product-options-radio' %}
+{% endif %}
+
+{%- assign settings_color_option_names = settings.color_swatches_options | split: ',' | handleize -%}
+<input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}" form="{{ product_form_id }}" data-element="id-input" disabled>
+
+<product-variant-listener section-id="{{ section_id }}" id="b-{{ block_id }}">
+    <product-variant-selector section-id="{{ section_id }}">
+    <div class="{{ cn }} js-only" >
+        {%- for product_option in product.options_with_values -%}
+            
+            {% capture Inputs %}
+                {% for value in product_option.values %}
+                    {% render 'option-input', value: value, product_option: product_option, current: variant %}
+                {% endfor %}
+            {% endcapture %}
+
+
+            {%- liquid
+                assign current_option_with_position = 'option' | append: product_option.position
+                if single_option == false
+                    case product_option.position
+                        when 1
+                            assign left = 'option2'
+                            assign right = 'option3'
+                        when 2
+                            assign left = 'option1'
+                            assign right = 'option3'
+                        when 3
+                            assign left = 'option1'
+                            assign right = 'option2'
+                    endcase
+
+                    assign right_value = variant[right]
+                    assign left_value = variant[left]
+
+                    if variant[left] != blank and variant[right] != blank
+                        assign matched_options_variants = product.variants | where: left, left_value | where: right, right_value
+                    elsif variant[left] != blank
+                        assign matched_options_variants = product.variants | where: left, left_value
+                    else
+                        assign matched_options_variants = product.variants | where: right, right_value
+                    endif
+                else
+                    assign matched_options_variants = product.variants
+                endif
+
+                unless show_variant_image == 'none'
+                    assign variant_image_display = true
+                endunless
+
+                assign option_name_handle = product_option.name | handleize
+                if settings_color_option_names contains option_name_handle
+                    assign match_color = true
+                else
+                    if show_variant_image == 'colors'
+                        assign variant_image_display = false
+                    endif
+                    assign match_color = false
+                endif
+                if color_swatches and match_color
+                    assign show_color_swatches = true
+                else
+                    assign show_color_swatches = false
+                endif
+            -%}
+            
+            <div class="{{ cn }}-item">
+                <h5 class="{{ cn }}-item-heading">
+                    {{ product_option.name }}:
+                    {% if picker_type == 'swatch' or show_color_swatches %}
+                        <span class="{{ cn }}-item-heading-value" data-display-value data-option-index="{{ product_option.position | minus: 1 }}">{{ product_option.selected_value }}</span>
+                    {% endif %}
+                </h5>
+                <div class="{{ cn }}-item-body">
+                    {%- if show_color_swatches -%}
+                        {% render 'product-options-swatch',
+                            product: product,
+                            option: product_option,
+                            matched_options_variants: matched_options_variants,
+                            option_position: current_option_with_position,
+                            current_variant: variant,
+                        %}
+                    {%- elsif picker_type == 'swatch' -%}
+                        {% render 'product-options-radio',
+                            product: product,
+                            option: product_option,
+                            columns: buttons_columns,
+                            matched_options_variants: matched_options_variants,
+                            current_variant: variant,
+                            price_display: price_display,
+                            show_variant_image: variant_image_display,
+                            show_stock_alert: show_stock_alert
+                        %}
+                    {%- elsif picker_type == 'dropdown' -%}
+                        {% render 'product-options-dropdown',
+                            product: product,
+                            option: product_option,
+                            show_stock_alert: show_stock_alert,
+                            matched_options_variants: matched_options_variants,
+                            current_variant: variant,
+                            single_option: single_option,
+                            price_display: price_display,
+                            show_variant_image: variant_image_display
+                        %}
+                    {%- endif -%}
+                </div>
+            </div>     
+        {%- endfor -%}
+
+
+    </div>
+    </product-variant-selector>
+</product-variant-listener>

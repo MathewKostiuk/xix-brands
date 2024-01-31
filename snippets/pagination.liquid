@@ -1,0 +1,89 @@
+{%- liquid
+    assign NS = 'pagination'
+    assign cn = '#' | append: NS    
+-%}
+
+{% render 'load-css', file: NS %}
+
+<div class="mobile-hidden">
+    {%- if paginate.parts.size > 0 -%}
+        <nav class="{{ cn }}" role="navigation" aria-label="{{ 'general.pagination.label' | t }}">
+            <div class="{{ cn }}-inner">
+            {%- if paginate.previous -%}
+                <div class="{{ cn }}-item">
+                    <a class="{{ cn }}-link" href="{{ paginate.previous.url }}{{ anchor }}">
+                        {% render 'icon', name: 'angle-left' %}
+                    </a>
+                </div>    
+            {%- endif -%}
+            {%- for part in paginate.parts -%}
+                <div class="{{ cn }}-item">
+                    {%- if part.is_link -%}
+                        <a class="{{ cn }}-link" href="{{ part.url }}{{ anchor }}">{{ part.title }}</a>
+                    {%- elsif part.title == paginate.current_page -%}
+                        <span class="{{ cn }}-current">{{ part.title }}</span>
+                    {%- else -%}
+                        <span class="{{ cn }}-dots">{{ part.title }}</span>
+                    {%- endif -%}
+                </div>
+            {%- endfor -%}
+            {%- if paginate.next -%}
+                <div class="{{ cn }}-item">
+                    <a class="{{ cn }}-link" href="{{ paginate.next.url }}{{ anchor }}">
+                        {% render 'icon', name: 'angle-right' %}        
+                    </a>
+                </div>
+            {%- endif -%}
+            </div>
+        </nav>
+    {%- endif -%}
+</div>
+
+{%- capture Button_prev -%}
+    {%- render 'icon', name: 'angle-left' -%}
+    <span class="visually-hidden">{{ 'general.pagination.previous' | t }}</span>
+{%- endcapture -%}
+
+{%- capture Button_next -%}
+    <span class="visually-hidden">{{ 'general.pagination.next' | t }}</span>
+    {%- render 'icon', name: 'angle-right' -%}
+{%- endcapture -%}
+
+<div class="desktop-hidden">
+    {%- if paginate.parts.size > 0 -%}
+        <nav class="{{ cn }}-mobile" role="navigation" aria-label="{{ 'general.pagination.label' | t }}">
+            <div class="{{ cn }}-inner">
+
+            {%- if paginate.previous -%}
+                <div class="{{ cn }}-item">
+                    <a class="{{ cn }}-link" href="{{ paginate.previous.url }}{{ anchor }}">
+                        {% render 'icon', name: 'angle-left' %}
+                    </a>
+                </div> 
+            {%- else -%}
+                {% # TODO: better handle empty space %}
+                <div></div>
+            {%- endif -%}
+
+            {% for part in paginate.parts %}
+                {%- if part.title == paginate.current_page-%}
+                    <div class="{{ cn }}-item-mobile">
+                        <span class="{{ cn }}-current-mobile">{{ part.title }} {{ 'general.slider.of' | t }} {{ paginate.pages }}</span>
+                    </div>
+                {%- endif -%}
+            {% endfor %}
+
+            {%- if paginate.next -%}
+                <div class="{{ cn }}-item">
+                    <a class="{{ cn }}-link" href="{{ paginate.next.url }}{{ anchor }}">
+                        {% render 'icon', name: 'angle-right' %}        
+                    </a>
+                </div>
+            {%- else -%}
+                {% # TODO: better handle empty space %}
+                <div></div>
+            {%- endif -%}
+            </div>
+        </nav>
+    {%- endif -%}
+</div>

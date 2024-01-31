@@ -1,0 +1,42 @@
+{%- comment -%}
+    Props:
+        product: object
+        image_srcsize_desktop
+        image_srcsize_mobile
+        placeholder_index
+{%- endcomment -%}
+
+{% liquid
+    assign NS = 'product-card-nav'
+    assign cn = '#' | append: NS    
+    
+    assign onboarding_title = 'onboarding.product_title' | t
+    assign title = product.title | default: onboarding_title 
+    
+    assign placeholder_price = 1999 | money
+    assign price = product.price | money_without_trailing_zeros
+    unless product
+        assign price = placeholder_price
+    endunless
+        
+%}
+
+<div class="{{ cn }} {% if card_min %}@card-min{% endif %}">
+    <a class="stretched-link" href="{{ product.url }}" aria-label="{{ product.title }}"></a>
+    <div class="{{ cn }}-media">
+        {% render 'media'
+            image: product.featured_image,
+            srcsize_desktop: image_srcsize_desktop,
+            placeholder_index: placeholder_index,
+            placeholder: 'product-apparel',
+            size: 'square',
+            image_res: image_res
+        %}
+    </div>
+    <div class="{{ cn }}-body">
+        <h5 class="{{ cn }}-title">
+            <span class="{{ cn }}-title-text">{{ title }}</span>
+        </h5>
+        <div class="{{ cn }}-price">{{ price }}</div>
+    </div>
+</div>

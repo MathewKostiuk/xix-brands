@@ -1,0 +1,123 @@
+{% comment %}
+    - paint: full|content|none
+    - force_bg_color: color
+{% endcomment %}
+
+{%- liquid
+    assign NS = 'section-body'
+    assign cn = '#' | append: NS
+    assign section_layout = section_layout | default: section.settings.section_layout
+    assign container = container | default: 'full'
+    assign paint = paint | default: 'full'
+   
+    if container == true or container == 'container'
+        assign container = 'default'
+    endif
+
+    if section_layout == 'full' and force_layout != true
+        assign spaced = false
+        assign curved = false
+    endif
+
+    if curved == true
+        if container == 'offset-right'
+            assign curved_dir = 'right'
+        elsif container == 'offset-left'
+            assign curved_dir = 'left'
+        endif
+    endif
+    
+    if section_layout == 'narrow' or section_layout == 'x-narrow'
+        assign header_container_width = section_layout
+    endif
+
+    if settings.design_center_layout 
+        assign section_text_align = 'center'
+    else
+        assign section_text_align = 'left'
+    endif
+-%}
+
+{% if bg_pattern != blank and bg_pattern != 'none' %}
+    {% assign with_pattern = true %}
+    {% capture Bg_pattern %}
+        {% render 'bg-pattern', 
+            pattern: bg_pattern, 
+            pattern_scale: bg_pattern_scale,
+            pattern_opacity: bg_pattern_opacity,
+            animation: bg_pattern_animation
+        %}
+    {% endcapture %}
+{% endif %}
+
+{%- capture Section_button -%}
+    {% if button_label != blank %}
+        <div class="{{ cn }}-button @align:{{ section_text_align }}">
+            {% render 'button',
+                text: button_label,
+                link: button_link,
+                tier: settings.button_section_cta,
+                tag: 'a',
+                size: settings.section_button_size,
+                display_style: settings.section_button_style
+            %}
+        </div>
+    {% endif %}
+{%- endcapture -%}
+
+<div class="
+    {{ cn }} 
+    {% if section_layout != blank %}@layout:{{ section_layout }}{% endif %}
+    {% if with_pattern %}@with-pattern{% endif %}
+    {% if spaced == true %}@spaced{% endif %}
+    {% if curved == true %}@curved{% endif %} 
+    {% if padded == true %}@padded{% endif %} 
+    {% if shadow == true and curved != true %}@shadow{% endif %}
+    @paint:{{ paint }}
+    {% if color_scheme != blank and color_scheme.id != settings.color_scheme.id %}color-scheme-{{ color_scheme.id }}{% endif %}
+"
+    style="
+        {% if force_bg_color != blank %}--{{ NS }}-force-bg-color: {{ force_bg_color }};{% endif %}
+        {% if content_width != blank %}--{{ NS }}-content-width: {{ content_width }}%;{% endif %}
+    "
+>
+    {% if paint == 'full' %}
+        {{ Bg_pattern }}
+    {% endif %}
+
+    {% if heading != blank or subheading != blank %}
+        <div class="{{ cn }}-header">
+            <div class="#container @width:{{ header_container_width | default: 'default' }}">
+                <div class="{{ cn }}-header-inner {% if section_text_align == 'left' and settings.section_button_position == 'before' %}@align-button{% endif %}">
+                    {% render 'hero',
+                        heading: heading,
+                        heading_scale: settings.type_section_heading_scale,
+                        subheading: subheading,
+                        accent: settings.section_heading_accent,
+                        align: section_text_align,
+                        size: settings.section_text_size
+                    %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    
+    
+    {% if content != blank %}
+        <div class="#container @width:{{ container }}">
+            <div class="{{ cn }}-wrapper {% if curved == true %}@curved{% if curved_dir != blank %}:{{ curved_dir }}{% endif %}{% endif %}">
+                {% if paint == 'content' %}
+                    {{ Bg_pattern }}
+                {% endif %}
+                <div class="{{ cn }}-content">
+                    {{ content }}
+                </div>
+            </div>
+        </div>
+        {% if Section_button != blank %}
+            <div class="#container @width:{{ header_container_width | default: 'default' }}">
+                {{ Section_button }}
+            </div>
+        {% endif %}
+    {% endif %}
+</div>

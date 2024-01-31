@@ -1,0 +1,33 @@
+{% liquid
+    assign NS = 'collection-card-min'
+    assign cn = '#' | append: NS
+    if show_thumbnail != false
+        assign first_product = collection.products | first
+        assign thumbnail = collection.metafields.theme.thumbnail
+        if thumbnail.type == 'file_reference' and thumbnail.value != blank
+            assign image = thumbnail.value
+        else
+            assign image = first_product.featured_image
+        endif
+    endif
+%}
+
+
+<div class="{{ cn }}">
+    <a href="{{ collection.url }}" class="stretched-link" aria-label="{{ collection.title }}"></a>
+    {% if image %}
+        <div class="{{ cn }}-media">
+            {% render 'media',
+                image: image,
+                image_res: 70,
+                size: 'square'
+            %}
+        </div>   
+    {% endif %}
+    <div class="{{ cn }}-caption">
+        <h5 class="{{ cn }}-title">{{ collection.title }}</h5>
+    </div>
+    <div class="{{ cn }}-arrow">
+        {% render 'icon', name: 'angle-right' %}
+    </div>
+</div>

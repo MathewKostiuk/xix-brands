@@ -1,0 +1,276 @@
+{%- liquid
+    assign NS = 'customer-address'
+    assign cn = '#' | append: NS
+
+    assign modal_edit_id = 'modal-edit-' | append: address.id | append: section.id
+    assign modal_remove_id = 'modal-remove-' | append: address.id | append: section.id
+
+    if is_new
+        assign base_id = 'NewAddress'
+        assign form_address = customer.new_address
+    else
+        assign base_id = address.id
+        assign form_address = address
+    endif 
+
+    assign input_id_first_name = 'AddressFirstName_' | append: base_id
+    assign input_id_last_name  = 'AddressLastName_'  | append: base_id
+    assign input_id_company    = 'AddressCompany_'   | append: base_id
+    assign input_id_address1   = 'AddressAddress1_'  | append: base_id
+    assign input_id_address2   = 'AddressAddress2_'  | append: base_id
+    assign input_id_city       = 'AddressCity_'      | append: base_id
+    assign input_id_country    = 'AddressCountry_'   | append: base_id
+    assign input_id_province   = 'AddressProvince_'  | append: base_id
+    assign input_id_zip        = 'AddressZip_'       | append: base_id
+    assign input_id_phone      = 'AddressPhone_'     | append: base_id
+-%}
+
+{%- capture Modal_edit_content -%}
+    <div class="{{ cn }}-modal @type:edit">
+        <modal-close class="{{ cn }}-modal-close" section-id="{{ section.id }}">
+            {% render 'icon', name: 'x' %}
+        </modal-close>
+        <h2 class="{{ cn }}-modal-title">
+            {%- if is_new -%}
+                {{ 'customer.addresses.add_new' | t }}
+            {%- else -%}
+                {{ 'customer.addresses.edit_address' | t }}
+            {%- endif -%}
+        </h2>
+        {%- form 'customer_address', form_address -%}
+            <div class="#grid @type:span" style="--span-def: 12; --gap: 1.5rem;">
+                <div style="--span: 6">
+                    <div class="{{ cn }}-modal-field">
+                        <label for="{{ input_id_first_name }}">{{ 'customer.addresses.first_name' | t }}</label>
+                        <input 
+                            type="text" 
+                            id="{{ input_id_first_name }}" 
+                            name="address[first_name]" 
+                            value="{{ form.first_name }}" 
+                            autocomplete="given-name" 
+                            placeholder="{{ 'customer.addresses.first_name' | t }}">
+                    </div>
+                </div>
+                <div style="--span: 6">
+                    <div class="{{ cn }}-modal-field">
+                        <label for="{{ input_id_last_name }}">{{ 'customer.addresses.last_name' | t }}</label>
+                        <input 
+                            type="text" 
+                            id="{{ input_id_last_name }}" 
+                            name="address[last_name]" 
+                            value="{{ form.last_name }}" 
+                            autocomplete="family-name" 
+                            placeholder="{{ 'customer.addresses.last_name' | t }}">
+                    </div>
+                </div>
+                <div class="{{ cn }}-modal-field">
+                    <label for="{{ input_id_company }}">{{ 'customer.addresses.company' | t }}</label>
+                    <input 
+                        type="text" 
+                        id="{{ input_id_company }}" 
+                        name="address[company]" 
+                        value="{{ form.company }}" 
+                        autocomplete="organization" 
+                        placeholder="{{ 'customer.addresses.company' | t }}">
+                </div>
+                <div class="{{ cn }}-modal-field">
+                    <label for="{{ input_id_address1 }}">{{ 'customer.addresses.address1' | t }}</label>
+                    <input 
+                        type="text" 
+                        id="{{ input_id_address1 }}" 
+                        name="address[address1]" 
+                        value="{{ form.address1 }}" 
+                        autocomplete="address-line1" 
+                        placeholder="{{ 'customer.addresses.address1' | t }}">
+                </div>
+                <div class="{{ cn }}-modal-field">
+                    <label for="{{ input_id_address2 }}">{{ 'customer.addresses.address2' | t }}</label>
+                    <input 
+                        type="text" 
+                        id="{{ input_id_address2 }}" 
+                        name="address[address2]" 
+                        value="{{ form.address2 }}" 
+                        autocomplete="address-line2" 
+                        placeholder="{{ 'customer.addresses.address2' | t }}">
+                </div>
+                <div class="{{ cn }}-modal-field">
+                    <label for="{{ input_id_city }}">{{ 'customer.addresses.city' | t }}</label>
+                    <input 
+                        type="text" 
+                        id="{{ input_id_city }}" 
+                        name="address[city]" 
+                        value="{{ form.city }}" 
+                        autocomplete="address-level2" 
+                        placeholder="{{ 'customer.addresses.city' | t }}">
+                </div>
+                <customer-address-country-selector
+                    form-id="{{ form.id }}"
+                    default="{{ form.country }}"  
+                    class="{{ cn }}-modal-field"
+                    section-id="{{ section.id }}"
+                >
+                    <label for="{{ input_id_country }}">
+                        {{ 'customer.addresses.country' | t }}
+                    </label>
+                    <div class="{{ cn }}-modal-select">
+                        <select
+                            id="{{ input_id_country }}"
+                            name="address[country]"
+                            autocomplete="country"
+                        >
+                            {{ all_country_option_tags }}
+                        </select>
+                        {% render 'icon', name: 'angle-down' %}
+                    </div>
+                </customer-address-country-selector>
+                <customer-address-province-selector 
+                    form-id="{{ form.id }}" 
+                    class="{{ cn }}-modal-field"
+                    default="{{ form.province }}" 
+                    hidden
+                    section-id="{{ section.id }}"
+                >
+                    <label for="{{ input_id_province }}">{{ 'customer.addresses.province' | t }}</label>
+                    <div class="{{ cn }}-modal-select">
+                        <select
+                            id="{{ input_id_province }}"
+                            name="address[province]"
+                            autocomplete="address-level1"    
+                            data-element="selector"
+                        ></select>
+                        {% render 'icon', name: 'angle-down' %}
+                    </div>
+                </customer-address-province-selector>
+                <div class="{{ cn }}-modal-field">
+                    <label for="{{ input_id_zip }}">{{ 'customer.addresses.zip' | t }}</label>
+                    <input
+                        type="text" 
+                        id="{{ input_id_zip }}" 
+                        name="address[zip]" 
+                        value="{{ form.zip }}" 
+                        autocapitalize="characters" 
+                        autocomplete="postal-code" 
+                        placeholder="{{ 'customer.addresses.zip' | t }}">
+                </div>
+                <div class="{{ cn }}-modal-field">
+                    <label for="{{ input_id_phone }}">{{ 'customer.addresses.phone' | t }}</label>
+                    <input 
+                        type="tel" 
+                        id="{{ input_id_phone }}"  
+                        name="address[phone]" 
+                        value="{{ form.phone }}" 
+                        autocomplete="tel" 
+                        placeholder="{{ 'customer.addresses.phone' | t }}">
+                </div>
+                <div class="{{ cn }}-modal-field">
+                    <div class="{{ cn }}-modal-checkbox">
+                        {{ form.set_as_default_checkbox }}
+                        <label for="address_default_address_{{ form.id }}">
+                          {{ 'customer.addresses.set_default' | t }}
+                        </label>
+                      </div>
+                </div>
+                <button class="{{ cn }}-modal-submit">
+                    {%- if is_new -%}                        
+                        {{ 'customer.addresses.add' | t }}
+                    {%- else -%}
+                        {{ 'customer.addresses.update' | t }}
+                    {%- endif -%}
+                </button>
+            </div>
+        {%- endform -%}
+    </div>
+{%- endcapture -%}
+{%- capture Modal_remove_content -%}
+    {%- capture Buttons -%}
+        <form method="post" action="{{ address.url }}">
+            <input type="hidden" name="_method" value="delete">    
+            <div class="{{ cn }}-modal-delete-buttons">
+                <button class="{{ cn }}-modal-delete-buttons-ok">
+                    {{ 'customer.addresses.delete_address' | t }}
+                </button>
+                <modal-close class="{{ cn }}-modal-delete-buttons-cancel" section-id="{{ section.id }}">
+                    {{ 'customer.addresses.cancel' | t }}
+                </modal-close>
+            </div>
+        </form>
+    {%- endcapture -%}
+
+    {% render 'splash-msg',
+        t_heading: 'customer.addresses.delete_confirm',
+        t_subheading: 'customer.addresses.delete_confirm_warning',
+        footer: Buttons
+    %}
+{%- endcapture -%}
+
+<div class="{{ cn }}">
+    {%- if is_new -%}
+        <div class="{{ cn }}-new">
+            <modal-open
+                section-id="{{ section.id }}"
+                class="{{ cn }}-new-button" 
+                target="{{ modal_edit_id }}"
+            >
+                <div class="{{ cn }}-new-icon">
+                    {% render 'icon', name: 'plus' %}
+                </div>
+                <div class="{{ cn }}-new-title">
+                    {{ 'customer.addresses.add_new' | t }}
+                </div>
+            </modal-open>
+            {%- render 'modal' 
+                content: Modal_edit_content,
+                id: modal_edit_id,
+                show_close: false,
+                y: 'top'
+            -%}
+        </div>
+    {%- else -%}
+        {%- if address == customer.default_address -%}
+            <div class="{{ cn }}-default-badge">
+                {% render 'icon', name: 'star' %}
+                {{ 'customer.addresses.default' | t }}
+            </div>
+        {%- endif -%}
+        <div class="{{ cn }}-body">
+            {{ address | format_address }}
+        </div>
+        <div class="{{ cn }}-actions">
+            <div
+            class="{{ cn }}-actions-item">
+                <modal-open
+                    section-id="{{ section.id }}"
+                    target="{{ modal_edit_id }}"
+                    class="{{ cn }}-actions-item-button"
+                >
+                    {% render 'icon', name: 'receipt', load: true %}
+                    {{ 'customer.addresses.edit' | t }}
+                </modal-open>
+                {%- render 'modal' 
+                    content: Modal_edit_content,
+                    id: modal_edit_id,
+                    show_close: false,
+                    y: 'top'
+                -%}
+            </div>
+            <div
+            class="{{ cn }}-actions-item">
+                <modal-open
+                    section-id="{{ section.id }}"
+                    target="{{ modal_remove_id }}"
+                    class="{{ cn }}-actions-item-button"
+                >
+                    {% render 'icon', name: 'x' %}
+                    {{ 'customer.addresses.delete' | t }}
+                </modal-open>
+                {%- render 'modal' 
+                    content: Modal_remove_content,
+                    id: modal_remove_id,
+                    show_close: true,
+                    y: 'top',
+                    animation: 'top'
+                -%}
+            </div>
+        </div>
+    {%- endif -%} 
+</div>

@@ -1,0 +1,59 @@
+{%- liquid
+    assign NS = 'hero-newsletter'
+    assign cn = '#' | append: NS
+    
+    case size
+        when 'xs'
+            assign fs = 'body'
+        when 'sm'
+            assign fs = 'body'
+        when 'md'
+            assign fs = 'h5'
+        when 'lg'
+            assign fs = 'h3'
+        when 'xl'
+            assign fs = 'h1'
+    endcase
+
+    assign newsletter_form_id = 'NewsletterForm-' | append: section.id
+    assign base_class = cn | append: ' initial-hidden'
+-%}
+
+{% render 'load-css', file: NS, lazy: true %}
+{% form 'customer', id: newsletter_form_id, class: base_class %}
+    <input type="hidden" name="contact[tags]" value="newsletter"> 
+    {%- if form.posted_successfully? -%}
+        <div class="{{ cn }}-msg @type:success" id="Newsletter-success--{{ section.id }}" tabindex="-1" autofocus>
+            <div class="{{ cn }}-msg-icon">
+                {% render 'icon', name: 'check' %}
+            </div>
+            {{ 'newsletter.success' | t }}
+        </div>
+    {%- endif -%}
+    {%- if form.errors -%}
+        <div class="{{ cn }}-msg @type:error" id="Newsletter-error--{{ section.id }}">
+            <div class="{{ cn }}-msg-icon">
+                {% render 'icon', name: 'alert' %}
+            </div>
+            {{ form.errors.translated_fields['email'] | capitalize }} {{ form.errors.messages['email'] }}
+        </div>
+    {%- endif -%}  
+    <div class="{{ cn }}-inner">
+        <input 
+            class="{{ cn }}-input"
+            id="NewsletterForm--{{ section.id }}"
+            type="email"
+            name="contact[email]"
+            value="{{ form.email | escape }}"
+            aria-required="true"
+            autocorrect="off"
+            autocapitalize="off"
+            autocomplete="email"
+            placeholder="{{ 'newsletter.label' | t }}"
+            required
+        >
+        <button class="{{ cn }}-submit" title="{{ 'customer.login_page.submit' | t }}" type="submit">
+            {% render 'icon', name: 'arrow-right' %}
+        </button>
+    </div>
+{% endform %}

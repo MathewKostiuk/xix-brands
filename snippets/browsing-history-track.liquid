@@ -1,0 +1,14 @@
+{% if request.page_type == 'product' %}
+    <script type="module">
+        const productUrl = {{ product.url | json }};
+        const historyLimit = 10;
+        const history = JSON.parse(localStorage.getItem('browsingHistory'));
+        if (history) {
+            const updatedHistory = [productUrl, ...history.filter(url => url !== productUrl)];
+            if (updatedHistory.length > historyLimit) updatedHistory.length = historyLimit;
+            localStorage.setItem('browsingHistory', JSON.stringify(updatedHistory));
+        } else{
+            localStorage.setItem('browsingHistory', JSON.stringify([productUrl]));
+        }
+    </script>
+{% endif %}

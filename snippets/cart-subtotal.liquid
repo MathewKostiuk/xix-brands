@@ -1,0 +1,43 @@
+{%- liquid
+    assign NS = 'cart-subtotal'
+    assign cn = '#' | append: NS 
+    if cart.total_price != cart.original_total_price
+        assign has_discount = true
+        assign subtotal_title = 'sections.cart.new_subtotal' | t
+    else
+        assign has_discount = false
+        assign subtotal_title = 'sections.cart.subtotal' | t
+    endif   
+-%}
+
+<div class="{{ cn }}">
+    {%- if has_discount -%}
+    <div class="{{ cn }}-item">
+        <h5 class="{{ cn }}-item-title">
+            {{ 'sections.cart.subtotal' | t }}
+        </h5>
+        <h5 class="{{ cn }}-item-spacer"></h5>
+        <h5 class="{{ cn }}-item-price">
+            {{ cart.original_total_price | money }}
+        </h5>
+    </div>
+    <div class="{{ cn }}-item">
+        <h5 class="{{ cn }}-item-title">
+            {{ 'customer.order.discount' | t }}
+        </h5>
+        <h5 class="{{ cn }}-item-spacer"></h5>
+        <h5 class="{{ cn }}-item-price">
+            -{{ cart.total_discount | money }}
+        </h5>
+    </div>    
+    {%- endif -%}
+    <div class="{{ cn }}-item @final">
+        <h5 class="{{ cn }}-item-title">
+            {{ subtotal_title }}
+        </h5>
+        <h5 class="{{ cn }}-item-spacer"></h5>
+        <h5 class="{{ cn }}-item-price">
+            {{ cart.total_price | money }}
+        </h5>
+    </div>
+</div>

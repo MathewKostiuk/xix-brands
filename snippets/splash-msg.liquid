@@ -1,0 +1,47 @@
+{% comment %}
+    Props:
+        - heading
+        - t_heading
+        - subheading
+        - t_subheading
+        - text_size
+        - button_label
+        - button_t_label
+        - button_link
+{% endcomment %}
+
+{%- liquid
+    assign NS = 'splash-msg'
+    assign cn = '#' | append: NS
+    if t_heading != blank
+        assign heading = t_heading | t
+    endif
+    if t_subheading != blank
+        assign subheading = t_subheading | t
+    endif
+    if button_t_label != blank
+        assign button_label = button_t_label | t
+    endif 
+-%}
+
+{% render 'load-css', file: NS, lazy: true %}
+
+<div
+    class="{{ cn }} initial-hidden"
+>
+    {% render 'hero',
+        heading: heading,
+        text: subheading,
+        f_button_label: button_label,
+        f_button_link: button_link,
+        f_button_shadow: true,
+        align: 'center',
+        gap: 4,
+        size: text_size
+    %}
+    {%- if footer != blank -%}
+        <div class="{{ cn }}-footer">
+            {{ footer }}
+        </div>
+    {%- endif -%}
+</div>

@@ -1,0 +1,39 @@
+.spr-icon {
+  color: var(--color-g-star-rating);
+}
+
+.spr-summary-actions-newreview,
+.spr-review-reportreview {
+  color: inherit;
+}
+
+.spr-container {
+  padding: 0 !important;
+}
+
+.spr-review {
+  background: var(--color-g-fg);
+  padding: 1.5rem !important;
+}
+
+.spr-form-input-text, .spr-form-input-email, .spr-form-input-textarea {
+  padding: 0.7rem;
+  border-radius: 0.3em;
+  border: 1px solid #b3b3b3;
+  font-family: inherit;
+}
+.spr-form-input-text:focus, .spr-form-input-email:focus, .spr-form-input-textarea:focus {
+  border-color: var(--color-g-accent);
+}
+
+.spr-button-primary {
+  background: var(--color-g-button-bg);
+  color: var(--color-g-button-text);
+  border: none;
+  padding: 1rem 1.5rem;
+  font-size: 1.1rem;
+  border-radius: 2rem;
+}
+.spr-button-primary:hover {
+  background: var(--color-g-button-bg-hover);
+}

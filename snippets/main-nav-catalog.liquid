@@ -1,0 +1,164 @@
+{% comment %}
+    Props:
+        src_type: string menu|subcollections|product_lists
+        src: Menu|Collection_list
+        show_collection_bg: boolean
+        masonry_layout: boolean
+        sidebar_image_type
+        show_collection_thumbnails: boolean
+
+        show_price
+        show_item_count
+        subcollection_image_src
+
+        nav_card_image_position
+        show_price
+        show_view_all
+
+        columns
+        rows
+{% endcomment %}
+
+{% liquid
+    assign NS = 'main-nav-catalog'
+    assign cn = '#' | append: NS 
+
+    unless src_type == 'product_lists'
+        assign src = src.links
+    endunless
+
+    unless sidebar_image_type == 'none'
+        assign sidebar_thumbnail = true
+    endunless
+
+    assign sidebar_width = '225px'
+%}
+
+{% render 'load-css', file: NS %}
+
+<div class="{{ cn }}">
+    {% for src_item in src %}
+        {%-  liquid
+            assign with_sub = false 
+            case src_type
+                when 'menu', 'subcollections'
+                    if src_item.levels > 0
+                        assign with_sub = true
+                    endif
+
+                    if src_item.type == 'collection_link' 
+                        assign parent_collection = src_item.object
+                    else
+                        assign parent_collection = blank
+                    endif
+                when 'product_lists'
+                    if src_item.products.size > 0
+                        assign with_sub = true
+                    endif
+
+                    assign parent_collection = src_item
+            endcase
+            
+            if sidebar_thumbnail and parent_collection
+                if sidebar_image_type == 'collection_image'
+                    assign thumbnail = parent_collection.image
+                elsif sidebar_image_type == 'thumbnail'
+                    assign meta_thumbnail = parent_collection.metafields.theme.thumbnail
+                    if meta_thumbnail.type == 'file_reference' and meta_thumbnail.value != blank
+                        assign thumbnail = meta_thumbnail.value
+                    else
+                        assign first_product = parent_collection.products[0] 
+                        assign thumbnail = first_product.featured_image 
+                    endif
+                endif
+            else
+                assign thumbnail = nil
+            endif 
+        -%}
+
+         <div class="{{ cn }}-item">
+            <a class="{{ cn }}-sidebar-link" href="{{ src_item.url }}">
+                {% if thumbnail %}
+                    <div class="{{ cn }}-sidebar-link-thumbnail">
+                        {% render 'media',
+                            image: thumbnail,
+                            image_res: 50,
+                            size: 'square'
+                        %}
+                    </div>
+                {% endif %}
+                {{ src_item.title }}
+                {% if with_sub %}
+                    {% render 'icon', name: 'angle-right' %}
+                {% endif %}
+            </a>
+            <div class="{{ cn }}-sub">
+                <div class="{{ cn }}-sub-inner">
+                    {% if parent_collection.image != blank and show_collection_bg %}
+                        <div class="{{ cn }}-sub-overlay-wrapper">
+                            <img class="{{ cn }}-sub-overlay-image" src="{{ parent_collection.image | img_url: '1200x' }}" alt="{{ parent_collection.title }}">
+                            <div class="{{ cn }}-sub-overlay"></div>
+                        </div>
+                    {% endif %}
+                    {% if with_sub %}
+                        {% case src_type %}
+                            {% when 'menu' %}
+                                <div class="{{ cn }}-sub-content">
+                                    {% render 'main-nav-grid',
+                                        menu: src_item,
+                                        columns: columns,
+                                        masonry_layout: masonry_layout,
+                                        show_collection_thumbnails: show_collection_thumbnails
+                                    %}
+                                </div>
+                            {% when 'subcollections' %}
+                                {%- capture image_srcsize_desktop -%}(min(100vw, {{ settings.container_width }}px) - min(3rem, 5vw) - {{ sidebar_width }})/{{ columns }}{%- endcapture -%}
+                                <div class="{{ cn }}-sub-content">
+                                    <div class="#grid @type:columns" style="--columns: {{ columns }};">
+                                        {% for sub_collection in src_item.links %}
+                                            {% assign nav_collection = sub_collection.object %}
+                                            {% render 'main-nav-card',
+                                                src: nav_collection,
+                                                type: 'collection',
+                                                image_src: subcollection_image_src,
+                                                show_price: show_price,
+                                                show_item_count: show_item_count, 
+                                                image_position: nav_card_image_position,
+                                                image_srcsize_desktop: image_srcsize_desktop
+                                            %}
+                                        {% endfor %}
+                                    </div>
+                                </div>                              
+                            {% when 'product_lists' %}
+                                {%- capture image_srcsize_desktop -%}(min(100vw, {{ settings.container_width }}px) - min(3rem, 5vw) - {{ sidebar_width }})/{{ columns }}{%- endcapture -%}
+                                {%- assign products_limit = columns | times: rows -%}
+                                <div class="{{ cn }}-sub-content">
+                                    <div class="#grid @type:columns" style="--columns: {{ columns }};">
+                                        {% for nav_product in src_item.products limit: products_limit %}
+                                            {% render 'main-nav-card',
+                                                src: nav_product,
+                                                type: 'product',
+                                                show_price: show_price,
+                                                image_position: nav_card_image_position,
+                                                image_srcsize_desktop: image_srcsize_desktop
+                                            %}
+                                        {% endfor %}
+                                    </div>
+                                    {% if show_view_all %}
+                                        <div class="{{ cn }}-sub-content-view-all">
+                                            {%- render 'button',
+                                                t_text: 'sections.featured_collection.view_all',
+                                                tag: 'a',
+                                                tier: 'link',
+                                                link: src_item.url
+                                            -%}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                        {% endcase %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>

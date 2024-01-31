@@ -1,0 +1,152 @@
+{%-  liquid  
+     assign NS = 'sticky-add-to-cart'
+     assign cn = '#' | append: NS
+
+     assign ns_od = 'product-options-dropdown'
+     assign cn_od = '#' | append: ns_od
+-%}
+
+{% render 'load-css', file: NS %}
+{% render 'load-css', file: 'product-options-dropdown' %}
+
+{%- capture Button_atts -%}form="{{ product_form_id }}" data-element="to-cart-button"{%- endcapture -%}
+    <{{ NS }} class="{{ cn }}" section-id="{{ section.id }}">
+        <div data-element="observer-trigger"></div>
+        <product-variant-listener section-id="{{ section.id }}" id="sticky-add-to-cart" variant-selector>
+
+            <div class="{{ cn }}-wrapper" data-element="wrapper">
+                <div class="{{ cn }}-loading-overlay">
+                    {% render 'spinner', size: 'sm' %}
+                </div>
+                <div class="#container">    
+                    <div class="{{ cn }}-inner">
+                        <div class="{{ cn }}-info mobile-hidden">
+                            <a class="stretched-link" href="#productPageContainer-{{ section.id }}" aria-label="{{ product.title }}"></a>
+                            <div class="{{ cn }}-info-media">
+                                {%- assign image = current_variant.featured_image | default: product.featured_image -%}
+                                {% render 'media', 
+                                    image: image, 
+                                    image_res: 60,
+                                    image_fit: 'contain',
+                                    aspect_ratio: '1x1',
+                                    border-radius: 'inner',
+                                    placeholder: 'product',
+                                    placeholder_index: placeholder_index,
+                                %}
+                            </div>
+                            <div>
+                                <h3 class="{{ cn }}-info-title">{{ product.title }}</h3>
+                                {%- unless product.has_only_default_variant -%}
+                                    <p class="{{ cn }}-info-variant">{{ current_variant.title }}</p>
+                                {%- endunless -%}
+                            </div>
+                        </div>
+
+                        <div class="{{ cn }}-control">    
+                            {%- capture Button_label -%}
+                                {%- assign button_label = 'products.product.add_to_cart' | t  -%}
+                                <span>{{ button_label }}</span>
+                                <span class="{{ cn }}-control-button-price desktop-hidden">{{ current_variant.price | money }}</span>
+                            {%- endcapture -%}
+
+                            <div class="{{ cn }}-control-price">
+                                {% render 'price',
+                                    variant: current_variant
+                                %}
+                            </div>
+                            {%- unless product.has_only_default_variant -%}
+                                <div class="{{ cn }}-control-selector mobile-hidden">
+                                    {%- capture Toggle -%}
+                                        <div class="{{ cn_od }}-toggle">
+                                            <div data-current>{{ current_variant.title }}</div>
+                                            <span class="{{ cn_od }}-toggle-caret">
+                                                {% render 'icon', name: 'angle-down' %}
+                                            </span>
+                                        </div>
+                                    {%- endcapture -%}
+                                    {%- capture Menu -%}
+                                        <div class="{{ cn_od }}-menu">
+                                            {% for variant in product.variants %}
+                                                {%- assign input_id = 'variant-option-' | append: variant.id | append: section.id -%}
+                                                    <label class="{{ cn_od }}-item" for="{{ input_id }}">
+                                                        <input 
+                                                            id="{{ input_id }}"
+                                                            type="radio"
+                                                            class="{{ cn_od }}-item-input"
+                                                            hidden
+                                                            name="{{ variant.id }}"
+                                                            data-option-value
+                                                            value="{{ variant.title }}"
+                                                            data-variant-id="{{ variant.id }}"
+                                                            data-variant-image-position="{{ variant.featured_media.position }}"
+                                                            {% if variant.id == current_variant.id %}checked{% endif %}
+                                                        >
+                                                        
+                                                        <div class="{{ cn_od }}-item-body">
+                                                            {%- liquid
+                                                                assign price = variant.price   
+                                                            -%}
+                                                
+                                                            <div class="{{ cn_od }}-item-value">
+                                                                <div class="{{ cn_od }}-item-title">
+                                                                    {{ variant.title }}
+                                                                </div>
+                                                                {%- if price != blank and product.price_varies -%}
+                                                                    <div class="{{ cn_od }}-item-price">
+                                                                        {{ price | money }}
+                                                                    </div>
+                                                                {%- endif -%}
+                                                            </div>
+                                                        </div>
+                                                    </label>
+                                            {% endfor %}
+                                        </div>
+                                    {%- endcapture -%}
+                    
+                                    <product-variant-selector section-id="{{ section.id }}">
+                                        <{{ ns_od }} class="{{ cn_od }}" section-id="{{ section.id }}">
+                                            {% render 'drop-down',
+                                                toggle: Toggle,
+                                                menu: Menu,
+                                                position: 'top-center',
+                                                close_on_change: true,
+                                                update_value: true,
+                                                select: false
+                                            %}
+                                        </{{ ns_od }}>
+                                    </product-variant-selector>
+                                </div>
+                            {%- endunless -%}
+                            <div class="{{ cn }}-control-button">
+                                {% if current_variant.available %}
+                                    {%- capture Add_to_cart -%}
+                                        {% render 'button',
+                                            type: 'submit',
+                                            size: 'h5',
+                                            text: Button_label,
+                                            loading: true,
+                                            atts: Button_atts,
+                                            no_arrow: true
+                                        %}
+                                    {%- endcapture -%}
+                                    {% render 'product-to-cart', 
+                                        trigger: Add_to_cart,
+                                        form_child: true
+                                    %}
+                                {% else %}
+                                    {%- assign disabled_button_t_label = 'products.product.sold_out' -%}
+                                    {% render 'button',
+                                        t_text: disabled_button_t_label,
+                                        atts: 'disabled',
+                                        no_arrow: true
+                                    %}
+                                {% endif %}
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </product-variant-listener>  
+    </{{ NS }}>
+<script type="module" src="{{ NS | append: '.js' | asset_url }}"></script>

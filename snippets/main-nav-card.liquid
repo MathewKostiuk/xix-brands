@@ -1,0 +1,89 @@
+{% comment %}
+    Props:
+        - type: string product|collection|article
+        - image_position: string left|top
+        - image_srcsize_desktop: string
+        - image_src: string collection_image|thumbnail
+        - show_price: boolean
+        - show_item_count: boolean
+        - article_info: author | date | none
+        - src: object product|collection|article
+{% endcomment %}
+
+{%- liquid
+    assign NS = 'main-nav-card'
+    assign cn = '#' | append: NS
+    assign image_position = image_position | default: 'left'   
+    assign image_res = false
+    if image_position == 'left'
+        assign image_srcsize_desktop = false
+        assign image_res = 50
+    endif
+
+    case type
+        when 'product'
+            assign image = src.featured_image
+            if show_price
+                if settings.product_price_trailing_zeros
+                    assign subtitle = src.price | money
+                else
+                    assign subtitle = src.price | money_without_trailing_zeros
+                endif
+            endif
+        when 'collection'
+            if image_src == 'collection_image'
+                assign image = src.image
+            elsif image_src == 'thumbnail'
+                assign thumbnail = src.metafields.theme.thumbnail
+                if thumbnail.type == 'file_reference' and thumbnail.value != blank
+                    assign image = thumbnail.value
+                else
+                    assign first_product = src.products | first
+                    assign image = first_product.featured_image
+                endif
+            endif
+
+            if show_item_count
+                assign products_count = src.all_products_count
+                assign subtitle = products_count | append: ' items'
+            elsif show_price
+                assign cheapest_product = src.products | sort: 'price' | first
+                if cheapest_product
+                    if settings.product_price_trailing_zeros
+                        assign cheapest_product_price = cheapest_product.price | money
+                    else
+                        assign cheapest_product_price = cheapest_product.price | money_without_trailing_zeros
+                    endif
+                    assign subtitle = 'products.product.price.from_price_html' | t: price: cheapest_product_price
+                endif
+            endif
+        when 'article'
+            assign image = src.image
+            if article_info != 'none'
+                if article_info == 'author'
+                    assign subtitle = src.author
+                elsif article_info == 'date'
+                    assign subtitle = src.published_at | date: "%B %e, %Y"
+                endif
+            endif
+    endcase
+-%}
+
+<div class="{{ cn }} @image-position:{{ image_position }}">
+    <a class="stretched-link" href="{{ src.url }}"  aria-label="{{ src.title }}"></a>
+    {% if image != blank %}
+        {% render 'media',
+            image: image,
+            srcsize_desktop: image_srcsize_desktop,
+            image_res: image_res,
+            border_radius: 'base',
+            size: 'square'
+        %}
+    {% endif %}
+    <div class="{{ cn }}-desc">
+        <h6 class="{{ cn }}-title">{{ src.title }}</h6>
+        {% if subtitle != blank %}
+            <p class="{{ cn }}-subtitle">{{ subtitle }}</p>
+        {% endif %}
+    </div>
+</div>

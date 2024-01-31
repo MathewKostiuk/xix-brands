@@ -1,0 +1,247 @@
+{
+  "sections": {
+    "header": {
+      "type": "s_page-header",
+      "settings": {
+        "color_scheme": "",
+        "image_size": "250px",
+        "mobile_image_size": "250px",
+        "bg_image_overlay": 30,
+        "text_position": "inside",
+        "custom_text": ""
+      }
+    },
+    "main": {
+      "type": "s_page",
+      "disabled": true,
+      "settings": {
+        "content_width": 80,
+        "font_scale": 100
+      }
+    },
+    "399a1e9b-b820-45f4-82e5-84f0ef259ba6": {
+      "type": "d_image-with-text",
+      "blocks": {
+        "template--21507371401409__399a1e9b-b820-45f4-82e5-84f0ef259ba6-subheading-1": {
+          "type": "subheading",
+          "settings": {
+            "subheading": "WHO WE ARE"
+          }
+        },
+        "template--21507371401409__399a1e9b-b820-45f4-82e5-84f0ef259ba6-heading-1": {
+          "type": "heading",
+          "settings": {
+            "heading": "Established North American Embellishment Company",
+            "heading_scale": 80
+          }
+        },
+        "template--21507371401409__399a1e9b-b820-45f4-82e5-84f0ef259ba6-text-1": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Your branding, marketing and event promotional partner.<\/p>",
+            "enlarge_text": false
+          }
+        }
+      },
+      "block_order": [
+        "template--21507371401409__399a1e9b-b820-45f4-82e5-84f0ef259ba6-subheading-1",
+        "template--21507371401409__399a1e9b-b820-45f4-82e5-84f0ef259ba6-heading-1",
+        "template--21507371401409__399a1e9b-b820-45f4-82e5-84f0ef259ba6-text-1"
+      ],
+      "settings": {
+        "color_scheme": "main",
+        "section_layout": "container",
+        "image": "shopify:\/\/shop_images\/Group_48095710.png",
+        "image_size": "origin",
+        "mobile_image_size": "origin",
+        "image_width": 50,
+        "image_position": "right",
+        "text_position": "center-left",
+        "pattern": "none",
+        "pattern_scale": 100,
+        "pattern_animation": "none"
+      }
+    },
+    "ac3e8959-cc71-49c4-aac1-8fb2dee447f0": {
+      "type": "d_image-with-text",
+      "blocks": {
+        "template--21507371401409__ac3e8959-cc71-49c4-aac1-8fb2dee447f0-subheading-1": {
+          "type": "subheading",
+          "settings": {
+            "subheading": "What We Provide"
+          }
+        },
+        "template--21507371401409__ac3e8959-cc71-49c4-aac1-8fb2dee447f0-heading-1": {
+          "type": "heading",
+          "settings": {
+            "heading": "Comprehensive Solutions",
+            "heading_scale": 120
+          }
+        },
+        "template--21507371401409__ac3e8959-cc71-49c4-aac1-8fb2dee447f0-text-1": {
+          "type": "text",
+          "settings": {
+            "text": "<p>We integrate branding, graphic design + merchandising into a cohesive, unified experience.<\/p>",
+            "enlarge_text": false
+          }
+        }
+      },
+      "block_order": [
+        "template--21507371401409__ac3e8959-cc71-49c4-aac1-8fb2dee447f0-subheading-1",
+        "template--21507371401409__ac3e8959-cc71-49c4-aac1-8fb2dee447f0-heading-1",
+        "template--21507371401409__ac3e8959-cc71-49c4-aac1-8fb2dee447f0-text-1"
+      ],
+      "settings": {
+        "color_scheme": "accent",
+        "section_layout": "container",
+        "image": "shopify:\/\/shop_images\/Group_48095711.png",
+        "image_size": "origin",
+        "mobile_image_size": "origin",
+        "image_width": 50,
+        "image_position": "left",
+        "text_position": "center-left",
+        "pattern": "none",
+        "pattern_scale": 100,
+        "pattern_animation": "none"
+      }
+    },
+    "34e51c1a-8cff-495b-b18c-66a20a8940a7": {
+      "type": "d_image-with-text",
+      "blocks": {
+        "template--21507371401409__34e51c1a-8cff-495b-b18c-66a20a8940a7-subheading-1": {
+          "type": "subheading",
+          "settings": {
+            "subheading": "OUR MISSION"
+          }
+        },
+        "template--21507371401409__34e51c1a-8cff-495b-b18c-66a20a8940a7-heading-1": {
+          "type": "heading",
+          "settings": {
+            "heading": "Build Trust In Your Brand",
+            "heading_scale": 120
+          }
+        },
+        "template--21507371401409__34e51c1a-8cff-495b-b18c-66a20a8940a7-text-1": {
+          "type": "text",
+          "settings": {
+            "text": "<p>To grow brands that your consumers will trust, support, and ultimately, want to experience and connect with.<\/p>",
+            "enlarge_text": false
+          }
+        }
+      },
+      "block_order": [
+        "template--21507371401409__34e51c1a-8cff-495b-b18c-66a20a8940a7-subheading-1",
+        "template--21507371401409__34e51c1a-8cff-495b-b18c-66a20a8940a7-heading-1",
+        "template--21507371401409__34e51c1a-8cff-495b-b18c-66a20a8940a7-text-1"
+      ],
+      "custom_css": [
+
+      ],
+      "settings": {
+        "color_scheme": "main",
+        "section_layout": "container",
+        "image": "shopify:\/\/shop_images\/Group_48095712.png",
+        "image_size": "origin",
+        "mobile_image_size": "origin",
+        "image_width": 50,
+        "image_position": "right",
+        "text_position": "top-left",
+        "pattern": "none",
+        "pattern_scale": 100,
+        "pattern_animation": "none"
+      }
+    },
+    "d_image_columns_AcQN69": {
+      "type": "d_image-columns",
+      "blocks": {
+        "column_rArfUD": {
+          "type": "column",
+          "settings": {
+            "heading": "Hassle Free",
+            "subheading": "",
+            "text": "From choosing a product to ordering takes less than 5 min.",
+            "link": "",
+            "button_label": ""
+          }
+        },
+        "column_qzR4zh": {
+          "type": "column",
+          "settings": {
+            "heading": "Turnaround",
+            "subheading": "",
+            "text": "Less than 72 hours. \n*not including shipping time.",
+            "link": "",
+            "button_label": ""
+          }
+        },
+        "column_adTtJJ": {
+          "type": "column",
+          "settings": {
+            "heading": "Variety Of Selection",
+            "subheading": "",
+            "text": "Choose from many different apparel items.",
+            "link": "",
+            "button_label": ""
+          }
+        },
+        "column_VjNpVL": {
+          "type": "column",
+          "settings": {
+            "heading": "Great Customer Experience",
+            "subheading": "",
+            "text": "Helping you at every stage, from ordering to shipping, ensuring a response in less than 24 hours.",
+            "link": "",
+            "button_label": ""
+          }
+        },
+        "column_eWQcAg": {
+          "type": "column",
+          "settings": {
+            "heading": "Top Quality Products",
+            "subheading": "",
+            "text": "Choose from brands you trust Stormteck, Carhartt.",
+            "link": "",
+            "button_label": ""
+          }
+        },
+        "column_YpBGg7": {
+          "type": "column",
+          "settings": {
+            "heading": "Consolidated Facility",
+            "subheading": "",
+            "text": "Design to print under one roof.",
+            "link": "",
+            "button_label": ""
+          }
+        }
+      },
+      "block_order": [
+        "column_rArfUD",
+        "column_qzR4zh",
+        "column_adTtJJ",
+        "column_VjNpVL",
+        "column_eWQcAg",
+        "column_YpBGg7"
+      ],
+      "disabled": true,
+      "settings": {
+        "heading": "Why Us?",
+        "subheading": "",
+        "heading_scale": 70,
+        "enlarge_text": false,
+        "image_size": "square",
+        "columns": 3,
+        "align_blocks_height": true,
+        "button_tier": "primary"
+      }
+    }
+  },
+  "order": [
+    "header",
+    "main",
+    "399a1e9b-b820-45f4-82e5-84f0ef259ba6",
+    "ac3e8959-cc71-49c4-aac1-8fb2dee447f0",
+    "34e51c1a-8cff-495b-b18c-66a20a8940a7",
+    "d_image_columns_AcQN69"
+  ]
+}

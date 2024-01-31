@@ -1,0 +1,126 @@
+{
+  "sections": {
+    "header": {
+      "type": "s_page-header",
+      "disabled": true,
+      "settings": {
+        "color_scheme": "",
+        "image_size": "250px",
+        "mobile_image_size": "250px",
+        "bg_image_overlay": 30,
+        "text_position": "inside",
+        "custom_text": ""
+      }
+    },
+    "main": {
+      "type": "s_page",
+      "disabled": true,
+      "settings": {
+        "content_width": 80,
+        "font_scale": 100
+      }
+    },
+    "87b2f456-5c3b-4aa0-a4e7-441fd9cecb38": {
+      "type": "d_hero-image",
+      "blocks": {
+        "template--21452575834305__87b2f456-5c3b-4aa0-a4e7-441fd9cecb38-subheading-1": {
+          "type": "subheading",
+          "settings": {
+            "subheading": ""
+          }
+        },
+        "template--21452575834305__87b2f456-5c3b-4aa0-a4e7-441fd9cecb38-heading-1": {
+          "type": "heading",
+          "settings": {
+            "heading": "",
+            "heading_scale": 120
+          }
+        },
+        "template--21452575834305__87b2f456-5c3b-4aa0-a4e7-441fd9cecb38-text-1": {
+          "type": "text",
+          "settings": {
+            "text": "",
+            "enlarge_text": false
+          }
+        },
+        "template--21452575834305__87b2f456-5c3b-4aa0-a4e7-441fd9cecb38-buttons-1": {
+          "type": "buttons",
+          "settings": {
+            "mobile_hidden": false,
+            "info": "",
+            "f_button_label": "",
+            "f_button_link": "",
+            "f_button_tier": "primary",
+            "s_button_label": "",
+            "s_button_link": "",
+            "s_button_tier": "secondary"
+          }
+        }
+      },
+      "block_order": [
+        "template--21452575834305__87b2f456-5c3b-4aa0-a4e7-441fd9cecb38-subheading-1",
+        "template--21452575834305__87b2f456-5c3b-4aa0-a4e7-441fd9cecb38-heading-1",
+        "template--21452575834305__87b2f456-5c3b-4aa0-a4e7-441fd9cecb38-text-1",
+        "template--21452575834305__87b2f456-5c3b-4aa0-a4e7-441fd9cecb38-buttons-1"
+      ],
+      "custom_css": [
+        ".#hero {color: #000000;}",
+        ".#floating-content {justify-content: center;}"
+      ],
+      "settings": {
+        "color_scheme": "",
+        "section_layout": "full",
+        "image": "shopify:\/\/shop_images\/Dunnenzies_Pizza_Co._Official_Online_Apparel_Store_-_Desktop.png",
+        "image_size": "origin",
+        "mobile_image": "shopify:\/\/shop_images\/Dunnenzies_Pizza_Co._Official_Online_Apparel_Store_-_Mobile.png",
+        "mobile_image_size": "origin",
+        "overlay": 0,
+        "use_box": false,
+        "text_position": "center-left",
+        "mobile_offset": true
+      }
+    },
+    "d_featured_collection_grid_8DxCXH": {
+      "type": "d_featured-collection-grid",
+      "blocks": {
+        "products_b6b39z": {
+          "type": "products",
+          "settings": {
+            "show_only_products_in_stock": false
+          }
+        },
+        "banner_fcC3fy": {
+          "type": "banner",
+          "settings": {
+            "color_scheme": "main",
+            "image": "shopify:\/\/shop_images\/Dunnenzies_Pizza_Company_E-Store_Powered_By_XIX-Brands_1.png",
+            "image_overlay": 90,
+            "heading": "{{ section.settings.collection.title }}",
+            "heading_scale": 80,
+            "subheading": "Shop All",
+            "button": "Shop All",
+            "button_tier": "primary"
+          }
+        }
+      },
+      "block_order": [
+        "products_b6b39z",
+        "banner_fcC3fy"
+      ],
+      "settings": {
+        "heading": "Featured collection grid",
+        "subheading": "",
+        "collection": "dunnenzies-all-products",
+        "columns": 4,
+        "rows": 3,
+        "section_button_label": ""
+      }
+    }
+  },
+  "order": [
+    "header",
+    "main",
+    "87b2f456-5c3b-4aa0-a4e7-441fd9cecb38",
+    "d_featured_collection_grid_8DxCXH"
+  ]
+}

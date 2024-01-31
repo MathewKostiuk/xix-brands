@@ -1,0 +1,99 @@
+{%- comment -%}
+    Props:
+        title: string
+        collection: object
+        browsing_history: boolean
+        products_limit: number
+        show_product_title: boolean
+        show_product_price: boolean
+        show_view_all: boolean
+{%- endcomment -%}
+
+{% liquid
+    assign columns = products_limit
+    if show_view_all
+        assign columns = columns | plus: 1
+    endif
+    assign NS = 'main-nav-collection'
+    assign cn = '#' | append: NS    
+
+    assign placeholder_price = 1999 | money
+    assign onboarding_title = 'onboarding.product_title' | t
+%}
+
+
+{% render 'load-css', file: 'product-card-nav' %}
+{% render 'load-css', file: NS %}
+
+{%- capture Product_grid -%}
+    <div data-element="content" class="#grid @type:columns @center" style="--columns: {{ columns | at_least: 6  }}; --columns-mobile: 2;">
+        {%- unless browsing_history -%}
+            {%- capture image_srcsize_desktop -%}(min(100vw, {{ settings.container_width }}px) - min(3rem, 5vw))/{{ columns }}{%- endcapture -%}
+            {%- capture image_srcsize_mobile -%}90vw/{{ mobile_columns }}{%- endcapture -%}
+            {%- if collection != blank -%}
+                {%- for product in collection.products limit: products_limit %}
+                    {%- render 'product-card-nav'
+                        product: product,
+                        image_srcsize_desktop: image_srcsize_desktop,
+                        image_srcsize_mobile: image_srcsize_mobile
+                    -%}
+                {%- endfor -%}
+            {%- else -%}
+                {%- for product in (1..products_limit) -%}
+                    {%- capture placeholder_index -%}{%- cycle 1, 2, 3, 4 -%}{%- endcapture -%}
+                    {%- render 'product-card-nav'
+                        product: false,
+                        placeholder_index: placeholder_index,
+                        image_srcsize_desktop: image_srcsize_desktop,
+                        image_srcsize_mobile: image_srcsize_mobile
+                    -%}
+                {%- endfor -%}
+            {%- endif -%}    
+        {%- endunless -%}
+
+        {%- if show_view_all -%}
+            <div class="{{ cn }}-view-all">
+                <div class="{{ cn }}-view-all-title">
+                    <h5 class="#subheading">{{ title }}</h5>
+                </div>
+                {%- render 'button',
+                    t_text: 'sections.featured_collection.view_all',
+                    block: true,
+                    tag: 'a',
+                    link: collection.url
+                -%}
+            </div>
+        {%- endif -%}
+    </div>
+{%- endcapture -%}
+
+{%- capture Product_card_mods -%}
+    {% if show_product_title %}
+        @show-product-titles
+    {% endif %}
+    {% if show_product_price %}
+        @show-product-prices
+    {% endif %}
+{%- endcapture -%}
+
+{%- if browsing_history -%}
+    {% if load_history %}
+        <browsing-history-loader section-id="{{ section.id }}" req-section="r_product-card-nav" limit="{{ products_limit }}">
+            <browsing-history-nav class="{{ cn }} {{ Product_card_mods }}" section-id="{{ section.id }}">
+                {{ Product_grid }}
+                <h4 class="{{ cn }}-fallback">{{ 'general.browsing_history.fallback' | t }}</h4>
+            </browsing-history-nav>
+        </browsing-history-loader>
+    {% else %}
+        <browsing-history-nav class="{{ cn }} {{ Product_card_mods }}" section-id="{{ section.id }}">
+            {{ Product_grid }}
+            <h4 class="{{ cn }}-fallback">{{ 'general.browsing_history.fallback' | t }}</h4>
+        </browsing-history-nav>
+    {% endif %}
+    <script type="module" src="{{ 'browsing-history-nav.js' | asset_url }}"></script>
+    <script type="module" src="{{ 'browsing-history-loader.js' | asset_url }}"></script>
+{%- else -%}
+    <div class="{{ cn }} {{ Product_card_mods }}">
+        {{ Product_grid }}
+    </div>
+{%- endif -%}

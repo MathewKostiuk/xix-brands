@@ -1,0 +1,47 @@
+{% liquid
+    assign NS = 'collection-sidebar'
+    assign cn = '#' | append: NS
+%}
+
+{% render 'load-css', file: NS %}
+
+<div class="{{ cn }} {% if drawer == true %}@drawer{% endif %} {% if drawer != true and settings.design_bg_pattern_show %}@show-bg{% endif %}">
+    {% if sync_sort %}
+        <collection-sync-sort section-id="{{ section.id }}" id="collection-sync-sort-{{ section.id }}-{{ form_id }}">
+            <input type="hidden" name="sort_by" form="{{ form_id }}" {% if collection.sort_by %}value="{{ collection.sort_by }}"{% endif %}>
+        </collection-sync-sort>
+        <script type="module" src="{{ 'collection-sync-sort.js' | asset_url }}"></script>
+    {% endif %}
+
+    {% for block in section.blocks %}
+        {% case block.type %}
+            {% when 'filters' %}
+                <div class="{{ cn }}-filters" {{ block.shopify_attributes }}>
+                    {% render 'load-css', file: 'collection-filter' %}
+                    {% for filter in collection.filters %}
+                        {% render 'collection-filter', 
+                            filter: filter,
+                            collapse_filters: collapse_filters,
+                            form: form_id, 
+                            index: forloop.index,
+                            hide_out_of_stock_filter: block.settings.hide_out_of_stock_filter,
+                            color_swatches: block.settings.color_swatches,
+                            show_view_all: block.settings.show_view_all
+                        %}
+                        {% if filter.type == 'price_range' %}
+                            <script type="module" src="{{ 'collection-filter-price.js' | asset_url }}"></script>
+                        {% endif %}
+                    {% endfor %}
+                    <script type="module" src="{{ 'collection-filter.js' | asset_url }}"></script>
+                    {% if drawer == true %}
+                        <modal-close class="{{ cn }}-filters-close-button" section-id="{{ section.id }}">
+                            {% render 'button',
+                                t_text: 'products.facets.apply',
+                                block: true
+                            %}
+                        </modal-close>
+                    {% endif %}
+                </div>
+        {% endcase %}
+    {% endfor %}
+</div>

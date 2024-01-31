@@ -1,0 +1,86 @@
+.\#collection-filter-price {
+  --collection-filter-price-range-min: 0;
+  --collection-filter-price-range-max: 100%;
+  display: block;
+}
+.\#collection-filter-price-values {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1rem;
+  margin-bottom: var(--glob-size-4);
+}
+.\#collection-filter-price-slider {
+  display: grid;
+  margin-bottom: var(--glob-size-2);
+}
+.\#collection-filter-price-slider-range {
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
+  grid-row: 1;
+  grid-column: 1;
+  pointer-events: none;
+}
+.\#collection-filter-price-slider-range:focus {
+  outline: none;
+}
+.\#collection-filter-price-slider-range::-webkit-slider-runnable-track {
+  height: 0.5rem;
+  background: var(--color-g-border);
+  border-radius: 10px;
+}
+.\#collection-filter-price-slider-range::-moz-range-track {
+  height: 0.5rem;
+  background: var(--color-g-border);
+  border-radius: 10px;
+}
+.\#collection-filter-price-slider-range::-webkit-slider-thumb {
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1.25rem;
+  height: 1.25rem;
+  background-color: var(--color-g-text);
+  box-shadow: 0px 0px 0px 2px var(--color-g-bg);
+  -moz-box-shadow: 0px 0px 0px 2px var(--color-g-bg);
+  border-radius: 50%;
+  z-index: 1;
+  cursor: grab;
+  -moz-transform: translate3d(0, 0, 1px);
+  pointer-events: auto;
+  -webkit-appearance: none;
+}
+.\#collection-filter-price-slider-range::-moz-range-thumb {
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1.25rem;
+  height: 1.25rem;
+  background-color: var(--color-g-text);
+  box-shadow: 0px 0px 0px 2px var(--color-g-bg);
+  -moz-box-shadow: 0px 0px 0px 2px var(--color-g-bg);
+  border-radius: 50%;
+  z-index: 1;
+  cursor: grab;
+  -moz-transform: translate3d(0, 0, 1px);
+  pointer-events: auto;
+  border: none;
+}
+.\#collection-filter-price-slider-range.\@value\:min {
+  margin-right: calc(1.25rem + 2px);
+}
+.\#collection-filter-price-slider-range.\@value\:max {
+  margin-left: calc(1.25rem + 2px);
+}
+.\#collection-filter-price-slider::after {
+  --diff: calc(100% - var(--collection-filter-price-range-max) - var(--collection-filter-price-range-min));
+  content: "";
+  width: calc((100% - var(--collection-filter-price-range-min)) - (100% - var(--collection-filter-price-range-max)));
+  margin-left: calc(var(--collection-filter-price-range-min) - var(--diff) * -0.09);
+  height: 0.5rem;
+  grid-row: 1;
+  grid-column: 1;
+  background: var(--color-g-text);
+  border-radius: 10px;
+  align-self: center;
+}

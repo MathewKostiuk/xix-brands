@@ -1,0 +1,18 @@
+{% liquid
+     assign NS = 'tabs-pane'
+     assign cn = '#' | append: NS
+     assign input_name = 'tabbed-radio-' | append: section.id
+%}
+
+<input
+    class="{{ cn }}-input"
+    type="radio"
+    name="{{ input_name }}"
+    id="{{ tab_id }}"
+    {% if active %}
+        checked
+    {% endif %}
+>
+<div class="{{ cn }}-content">
+    {{ content }}
+</div>

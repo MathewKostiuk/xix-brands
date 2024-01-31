@@ -1,0 +1,240 @@
+{%- liquid
+    comment
+        Props:
+            - blocks
+            - heading
+            - subheading
+            - text
+            - enlarge_text
+            - heading_scale
+            - size 
+            - f_button_label
+            - f_button_link
+            - f_button_tier
+            - f_button_new_tab
+            - s_button_label
+            - s_button_link
+            - s_button_tier
+            - s_button_new_tab
+            - outer_gap
+            - mobile_box
+            - box
+            - full_width_text
+            - align
+            - align_mobile_center
+            - gap
+            - text_color
+            - bg_color
+            - hide_mobile_buttons
+            - icon
+            - icon_scale
+            - f_button_atts (From g_age-confirm-popup)
+            - s_button_tier
+            - box_padding
+            - mobile_text_color
+            - mobile_bg_color
+            - shopify_attributes (Shopify Editor block.shopify_attributes)
+            - heading_tag: default: h2
+    endcomment
+
+    assign NS = 'hero'
+    assign cn = '#' | append: NS
+
+    assign heading_scale = heading_scale | default: 100
+    assign heading_tag = heading_tag | default: 'h2'
+-%}
+
+<div
+    class="{{ cn }} {% if full_width_text == true %}@full-width-text{% endif %} {% if outer_gap == true %}@outer-gap{% endif %} {% if mobile_box == true %}@mobile-box{% endif %} {% if box == true %}@box{% endif %} @align:{{ align | default: 'left' }} {% if align_mobile_center == true %}@mobile-center{% endif %}"
+    style="
+        {% if gap != blank %}--{{ NS }}-gap: var(--glob-size-{{ gap }});{% endif %}
+        {% if box_padding != blank %}--{{ NS }}-box-padding: {{ box_padding }};{% endif %}
+        {% if text_color != blank %}--{{ NS }}-text-color: {{ text_color }};{% endif %} 
+        {% if bg_color != blank %}--{{ NS }}-bg-color: {{ bg_color | color_modify: 'alpha', 0.8 }};{% endif %}
+        {% if mobile_text_color %}--{{ NS }}-mobile-text-color: {{ mobile_text_color }};{% endif %}
+        {% if mobile_bg_color %}--{{ NS }}-mobile-bg-color: {{ mobile_bg_color }};{% endif %}
+    "
+>
+    {% if blocks %}
+        {% for block in blocks %}
+            <div class="{{ cn }}-item {% if block.type == 'buttons' and hide_mobile_buttons %}mobile-hidden{% endif %}" {{ block.shopify_attributes }}>
+                {% case block.type %}
+                    {% when 'icon' %}
+                        <div class="{{ cn }}-icon" style="
+                            --icon-scale: {{ block.settings.icon_scale | default: 100 | times: 0.01 }};
+                        ">
+                            {% render 'icon',
+                                name: block.settings.icon,
+                                load: true
+                            %}
+                        </div>
+                    {% when 'image' %}
+                        {%- capture image_srcsize_desktop -%}min(100vw, {{ settings.container_width }}px) * {{ block.settings.image_width | divided_by: 100.0 }}{%- endcapture -%}
+                        {%- capture image_srcsize_mobile -%}90vw * {{ block.settings.image_width | divided_by: 100.0 }}{%- endcapture -%}
+                        <div class="{{ cn }}-image" style="--width: {{ block.settings.image_width }}%">
+                            {% render 'media',
+                                image: block.settings.image,
+                                srcsize_desktop: image_srcsize_desktop,
+                                srcsize_mobile: image_srcsize_mobile,
+                                border_radius: 'inner'
+                            %}
+                        </div>
+                    {% when 'newsletter_form' %}
+                        {% render 'hero-newsletter', size: size %}
+                    {% when 'video_popup' %}
+                        {%- assign video_popup_id = 'VideoPopup-' | append: block.id -%}
+                        {%- capture cover_image_srcsize_desktop -%}min(100vw, {{ settings.container_width }}px) * {{ block.settings.image_width | divided_by: 100.0 }}{%- endcapture -%}
+                        {%- assign video = block.settings.hosted_video | default: block.settings.embedded_video -%}
+                        {% render 'hero-video-popup',
+                            icon_color: block.settings.icon_color,
+                            cover_image: block.settings.cover_image,
+                            cover_image_srcsize_desktop: cover_image_srcsize_desktop,
+                            width: block.settings.image_width,
+                            id: video_popup_id,
+                            video: video,
+                            autoplay: block.settings.autoplay
+                        %}
+                    {% when 'heading' %}
+                        {% assign heading_scale = block.settings.heading_scale | default: heading_scale %}
+                        {% assign heading_scale = heading_scale | times: 0.01 %}
+                        <{{ heading_tag }} class="{{ cn }}-heading"
+                            style="--heading-scale: {{ heading_scale }};"
+                        >
+                            {% render 'accent-text',
+                                text: block.settings.heading,
+                                color: block.settings.heading_accent_color
+                            %}
+                        </{{ heading_tag }}>
+                    {% when 'subheading' %}
+                        <p class="{{ cn }}-subheading">{{ block.settings.subheading }}</p>
+                    {% when 'social_menu' %}
+                        <div class="{{ cn }}-social">
+                            {% render 'social-profiles', new_tab: block.settings.social_new_tab %}
+                        </div>
+                    {% when 'text' %}
+                        {% assign enlarge_text = block.settings.enlarge_text | default: enlarge_text %}
+                        <div class="{{ cn }}-text {% if enlarge_text %}@enlarge{% endif %}">
+                            <div class="#rte-block">
+                                {{ block.settings.text }}
+                            </div>
+                        </div>
+                    {% when 'timer' %}
+                        {% liquid
+                            if block.settings.hide_on_complete == true
+                                assign show_on_expire = false
+                            else
+                                assign show_on_expire = true
+                            endif
+                        %}
+                        
+                        {% render 'countdown-timer',
+                            date: block.settings.date,
+                            show_on_expire: show_on_expire,
+                            show_time_fraction: true,
+                            digits_scale: 350
+                        %}
+                    {% when 'product' %}
+                        <div class="{{ cn }}-product color-scheme-{{ settings.color_scheme.id }}">
+                            {% render 'product-card-min',
+                                product: block.settings.product,
+                                add_to_cart: block.settings.show_add_to_cart
+                            %}
+                        </div>
+                    {% when 'buttons' %} 
+                        {%- if block.settings.f_button_label != blank or block.settings.s_button_label != blank -%}
+                            <div class="{{ cn }}-buttons gap-{{ gap_size }}">
+                                {%- if block.settings.f_button_label != blank -%}
+                                    {% render 'button',
+                                        tier: block.settings.f_button_tier,
+                                        text: block.settings.f_button_label,
+                                        link: block.settings.f_button_link,
+                                        tag: 'a',
+                                        new_tab: block.settings.f_button_new_tab,
+                                        atts: f_button_atts
+                                    %}
+                                {%- endif -%}
+                                {%- if block.settings.s_button_label != blank -%}
+
+                                    {% if s_button_tier == blank %}
+                                        {% assign s_button_tier = block.settings.s_button_tier %}
+                                    {% endif %}
+                                    {% render 'button',
+                                        tier: s_button_tier,
+                                        text: block.settings.s_button_label,
+                                        link: block.settings.s_button_link,
+                                        tag: 'a',
+                                        new_tab: block.settings.s_button_new_tab
+                                    %}
+                                {%- endif -%}
+                                {% if block.settings.info != blank %}
+                                    <p class="{{ cn }}-buttons-info">{{ block.settings.info }}</p>
+                                {% endif %}
+                            </div>
+                        {%- endif -%}                        
+                {% endcase %}
+            </div>
+        {% endfor %}
+    {% else %}
+        {%- capture Subheading_content -%}
+            {% if subheading != blank %}
+                <p class="{{ cn }}-subheading">{{ subheading }}</p>
+            {% endif %}
+        {%- endcapture -%}
+        {%- if icon != 'none' and icon != blank -%}
+            <div class="{{ cn }}-icon" style="--icon-scale: {{ icon_scale | default: 100 | times: 0.01 }};">
+                {% render 'icon',
+                    name: icon,
+                    load: true
+                %}
+            </div>
+        {%- endif -%}  
+        {%- if Subheading_content != blank and settings.type_subheading_position == 'above' -%}
+            {{ Subheading_content }}
+        {%- endif -%}
+        {% if heading != blank %}
+            {% assign heading_scale = heading_scale | times: 0.01 %}
+            <{{ heading_tag }} class="{{ cn }}-heading" style="--heading-scale: {{ heading_scale }};" {% if shopify_attributes %}{{ shopify_attributes }}{% endif %}>
+                {% render 'accent-text',
+                    text: heading,
+                %}
+            </{{ heading_tag }}>
+        {% endif %}
+        {%- if Subheading_content != blank and settings.type_subheading_position == 'below' -%}
+            {{ Subheading_content }}
+        {%- endif -%}
+        {% if text != blank %}
+            <div class="{{ cn }}-text {% if enlarge_text %}@enlarge{% endif %}">
+                <div class="#rte-block">
+                    {{ text }}
+                </div>
+            </div> 
+        {% endif %}
+
+        {%- if f_button_label != blank or s_button_label != blank -%}
+            <div class="{{ cn }}-buttons gap-{{ gap_size }} {% if hide_mobile_buttons %}mobile-hidden{% endif %}">
+                {%- if f_button_label != blank -%}
+                    {% render 'button',
+                        text: f_button_label,
+                        link: f_button_link,
+                        tier: f_button_tier,
+                        tag: 'a',
+                        new_tab: f_button_new_tab,
+                        atts: f_button_atts
+                    %}
+                {%- endif -%}
+                {%- if s_button_label != blank -%}
+                    {% render 'button',
+                        text: s_button_label,
+                        link: s_button_link,
+                        tier: s_button_tier,
+                        tag: 'a',
+                        new_tab: s_button_new_tab
+                    %}
+                {%- endif -%}
+                {% if buttons_info != blank %}
+                    <p class="{{ cn }}-buttons-info">{{ buttons_info }}</p>
+                {% endif %}
+            </div>
+        {%- endif -%}
+    {% endif %}
+</div>

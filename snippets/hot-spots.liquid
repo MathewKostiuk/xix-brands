@@ -1,0 +1,208 @@
+{% liquid
+    # props:
+    # - blocks - section blocks
+    # - image
+    # - image_srcsize_desktop
+    # - image_srcsize_mobile
+    # - spots_color
+    # - spots_icon_color
+    # - spots_icon_type - String
+    # - show_product_rating - Boolean
+
+    assign NS = 'hot-spots'
+    assign cn = '#' | append: NS 
+%}
+
+{% render 'load-css', file: NS %}
+
+<{{ NS }} class="{{ cn }}" section-id="{{ section.id }}" style="
+    --{{ NS }}-spot-color: {{ spots_color }};
+    --{{ NS }}-spot-icon-color: {{ spot_icon_color }};
+">
+    <div class="{{ cn }}-stage" >
+        <div data-element="stage">
+            {% render 'media',
+                image: image,
+                srcsize_desktop: image_srcsize_desktop,
+                srcsize_mobile: image_srcsize_mobile,
+                size: 'origin',
+                placeholder: 'hero-apparel'
+            %}
+        </div>
+
+        {%- for block in blocks -%}
+            {%- liquid
+                case block.type
+                    when 'spot_product'
+                        assign onboarding_title = 'onboarding.product_title' | t
+                        assign onboarding_price = 1999
+                        assign spot_product = block.settings.product
+                        assign card_title = spot_product.title | default: onboarding_title
+                        assign card_text = spot_product.price | default: onboarding_price  | money_without_trailing_zeros
+                        assign card_link = spot_product.url
+                        assign card_image = spot_product.featured_image
+                        if spot_product == blank
+                            assign onboarding_image = 'product-apparel'
+                            assign card_title = onboarding_title
+                            assign card_text = onboarding_price  | money_without_trailing_zeros    
+                        endif
+
+                        if show_product_rating
+                            assign rating_value = spot_product.metafields.reviews.rating.value
+                            assign rating_value = rating_value | strip | plus: 0
+                        endif
+
+                        if show_product_custom_badges
+                            assign badges = spot_product.metafields.theme.custom_badges.value
+                        endif
+
+                    when 'spot_text'
+                        assign card_title = block.settings.heading
+                        assign card_text = block.settings.text
+                        assign card_link = block.settings.link
+                        assign card_image = block.settings.image
+                endcase
+
+                assign spot_icon_name = spots_icon_type | default: 'plus'
+                
+                assign spot_id = block.id | append: section.id | append: '-spot'
+                assign spot_id_mobile = spot_id | append: '-mobile'
+
+                assign position_y = 'top'
+                assign position_x = 'left'
+                
+                if block.settings.coord_x > 33 and block.settings.coord_x <= 67
+                    assign position_x = 'center'
+                endif
+
+                if block.settings.coord_y > 33 and block.settings.coord_y <= 67
+                    assign position_y = 'center'
+                endif
+
+                if block.settings.coord_x > 67
+                    assign position_x = 'right'
+                endif
+
+                if block.settings.coord_y > 67
+                    assign position_y = 'bottom'
+                endif
+            -%}
+
+            {% capture Spot_card %}
+                {%- if card_title != blank -%}
+                    <div class="{{ cn }}-spot-card @position:{{ position_y }}-{{ position_x }} @position-x:{{ position_x }} @position-y:{{ position_y }}">
+                        {% if card_image != blank or onboarding_image != blank %}
+                            <div class="{{ cn }}-spot-card-media">
+                                {% render 'media',
+                                    image: card_image,
+                                    border_radius: 'inner',
+                                    image_res: 100,
+                                    size: 'square',
+                                    placeholder: onboarding_image
+                                %}
+                            </div>
+                        {% endif %}
+                        <div class="{{ cn }}-spot-card-desc">
+                            {%- if block.type == 'spot_product' -%}
+                                {% capture Badges %}
+                                    {% if badges != blank and badges.size > 0 %}
+                                        <div class="{{ cn }}-spot-card-product-badges">
+                                            {% for badge in badges %}
+                                                <span class="#badge @type:custom">{{ badge | strip }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                {% endcapture %}
+
+                                {{ Badges }}
+                            {%- endif -%}
+                            <h5 class="{{ cn }}-spot-card-title">
+                                {{ card_title }}
+                            </h5>
+                            {%- if block.type == 'spot_product' -%}
+                                {%- if show_product_rating and rating_value > 0-%}
+                                    <div class="{{ cn }}-spot-card-product-rating">
+                                        {% render 'star-rating', 
+                                            value: spot_product.metafields.reviews.rating.value,
+                                            count: spot_product.metafields.reviews.rating_count,
+                                            show_count_brackets: true
+                                        %}
+                                    </div>
+                                {%- endif -%}
+                            {%- endif -%}
+                            {% if card_text != blank %}
+                                <p class="{{ cn }}-spot-card-text">
+                                    {{ card_text }}
+                                </p>
+                            {% endif %}
+                        </div>
+                        {%- if card_link != blank -%}
+                            <a class="stretched-link" href="{{ card_link }}" aria-label="{{ card_title }}"></a>
+                        {%- endif -%}
+                    </div>
+                {%- endif -%}
+            {% endcapture %}
+            
+            <div class="{{ cn }}-spot" style="--x: {{ block.settings.coord_x }}%; --y: {{ block.settings.coord_y }}%;" data-spot {{ block.shopify_attributes }}>
+                <div class="{{ cn }}-spot-control">
+                    <label class="{{ cn }}-spot-label" for="{{ spot_id_mobile }}" data-element="mobile-label"></label>
+                    <label class="{{ cn }}-spot-label mobile-hidden" for="{{ spot_id }}">
+                        <span class="{{ cn }}-spot-label-icon">
+                            {%  render 'icon', name: spot_icon_name %}
+                        </span>
+                    </label>
+
+                    <div class="mobile-hidden">
+                        <input class="{{ cn }}-spot-input" type="checkbox" id="{{ spot_id }}" hidden data-element="trigger" />
+                        {{ Spot_card }}
+                    </div>
+                    
+                </div>
+            </div>
+
+            {% capture Spot_cards %}
+                {{ Spot_cards }}
+                <input class="{{ cn }}-spot-input" type="checkbox" id="{{ spot_id_mobile }}" hidden data-element="trigger" />
+                {{ Spot_card }}
+            {% endcapture %}
+        {%- endfor -%}
+    </div>
+    <div class="{{ cn }}-spot-cards-mobile desktop-hidden">
+        {{ Spot_cards }}
+    </div>
+</{{ NS }}>
+
+<script type="module" src="{{ NS | append: '.js' | asset_url  }}"></script>
+
+{%- if request.design_mode -%}
+    <script type="module">
+        const { MediaQueries } = Global;
+
+        class EditorHotSpots extends window.Editor {
+            events = {
+                block: {
+                    select: this._onHotSpotsBlockSelect,
+                    deselect: this._onHotSpotsBlockDeselect
+                }
+            }
+
+            _onHotSpotsBlockSelect(e) {
+                e.target.querySelector(this.triggerSelector).click();
+            }
+                
+            _onHotSpotsBlockDeselect(e) {
+                document.querySelector(`[section-id="${this.sectionId}"]`).querySelector('[data-element="stage"]').click();
+            }
+
+            get triggerSelector() {
+                return `[data-element="${this.isMobile ? 'mobile-label' : 'trigger'}"]`;
+            }
+
+            get isMobile() {
+                return MediaQueries.MOBILE.matches;
+            }
+        }
+        const hotSpotsEditorUX = new EditorHotSpots('{{ section.id }}');
+        hotSpotsEditorUX.render();
+    </script>
+{%- endif -%}

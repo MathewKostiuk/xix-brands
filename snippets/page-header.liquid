@@ -1,0 +1,89 @@
+{% comment %}
+    Props:
+        - heading
+        - t_heading
+        - subheading
+        - text
+        - container (width)
+        - text_position: inside | outside
+{% endcomment %}
+
+{%- liquid
+    assign NS = 'page-header'
+    assign cn = '#' | append: NS
+    if t_heading != blank
+        assign heading = t_heading | t
+    endif
+    assign container = container | default: 'default'
+
+    if bg_image == blank
+        assign text_position = 'outside'
+    endif
+
+    if color_scheme == settings.color_scheme
+        assign color_scheme = blank
+    endif
+
+    if color_scheme != blank 
+        if bg_image != blank and text_position == 'outside'
+            assign outside_image = true
+        endif
+        if bg_image == blank or outside_image
+            assign text_position = 'inner'
+        endif
+    endif
+-%}
+
+{% render 'load-css', file: NS %}
+
+
+{% capture Text %}
+    <div class="#container @width:{{ container }}">
+        {%- if settings.show_breadcrumb_nav -%}
+            {% render 'breadcrumbs' %}
+        {%- endif -%}
+        {% if settings.design_center_layout %}
+            {% assign hero_align = 'center' %}
+        {% endif %}
+        {% render 'hero',
+            heading: heading,
+            heading_tag: 'h1',
+            text: text,
+            align: hero_align,
+            heading_scale: settings.type_page_title_scale,
+            accent: settings.page_header_accent_heading
+        %}
+    </div> 
+{% endcapture %}
+
+{% capture Image %}
+    {% if bg_image != blank %}
+        {% if text_position == 'inside' %}
+            {% assign image_height = '100%' %}
+            {% assign mobile_image_height = '100%' %}
+        {% else %}
+            {% assign image_height = bg_image_size | default: '250px' %}
+            {% assign mobile_image_height = bg_image_mobile_size | default: '250px' %}
+            {% assign bg_image_overlay = nil %}
+        {% endif %}
+        <div class="{{ cn }}-media">
+            {% render 'media',
+                image: bg_image,
+                height: image_height,
+                height_mobile: mobile_image_height,
+                type: 'height',
+                overlay: bg_image_overlay,
+                image_loading: 'eager'
+            %}
+        </div>
+    {% endif %}
+{% endcapture %}
+
+<div class="{{ cn }} @text-position:{{ text_position }} {% if color_scheme != blank %}color-scheme-{{ color_scheme }}{% endif %}">
+    {% if Image != blank %}
+        {{ Image }}    
+    {% endif %}
+    <div class="{{ cn }}-text">
+        {{ Text }}
+    </div>
+</div>

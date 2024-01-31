@@ -1,0 +1,33 @@
+{% comment %}
+    Props:
+        ref_product: Product
+        req_section: string
+        slides_per_view: number
+        slides_per_view_mobile: number
+        limit: number
+        slide_by: string -> row | item
+        container?: boolean
+{% endcomment %}
+
+{% liquid
+    assign NS = 'product-recommendations-slider'
+    assign limit = limit | default: 10
+
+    unless container
+        assign container = false
+    endunless
+%}
+
+<{{ NS }} section-id="{{ section.id }}" req-url="{{ routes.product_recommendations_url }}" req-section="{{ req_section }}" ref-product-id="{{ ref_product.id }}" limit="{{ limit }}">
+    {% render 'slideshow-inline-blaze',
+        slides_per_view: slides_per_view,
+        slides_per_view_mobile: slides_per_view_mobile,
+        show_pagination: show_pagination,
+        slide_by: slide_by,
+        container: container,
+        inert: true
+    %}
+</{{ NS }}>
+
+<script type="module" src="{{ NS | append: '.js' | asset_url }}"></script>
+

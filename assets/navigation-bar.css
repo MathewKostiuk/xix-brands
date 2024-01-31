@@ -1,0 +1,20 @@
+.\#navigation-bar {
+  --navigation-bar-text-color: var(--color-g-text);
+  --navigation-bar-bg-color: var(--color-g-bg);
+  --navigation-bar-nav-item-gap: var(--glob-size-4);
+  background-color: var(--navigation-bar-bg-color);
+  position: relative;
+  z-index: 51;
+}
+.\#navigation-bar:hover {
+  z-index: 100;
+}
+.\#navigation-bar .\#main-nav {
+  --main-nav-font: var(--glob-header-family);
+  --main-nav-font-weight: var(--glob-header-weight, normal);
+  --main-nav-text-transform: var(--glob-header-transform);
+  --main-nav-gap: var(--navigation-bar-nav-item-gap);
+  --main-nav-text-color: var(--navigation-bar-text-color);
+  --main-nav-font-size: var(--glob-header-size);
+  --main-nav-alignment: var(--navigation-bar-alignment);
+}

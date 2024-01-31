@@ -1,0 +1,191 @@
+{%- if predictive_search.performed -%}
+    {%- liquid
+        assign NS = 'predictive-search-results'
+        assign cn = '#' | append: NS
+        assign has_results = false
+        for type in predictive_search.types
+            assign resource_type = type | append: 's'
+            if type == 'query'
+                assign resource_type = 'queries'
+            endif
+            if predictive_search.resources[resource_type].size > 0
+                assign has_results = true
+                break
+            endif
+        endfor
+    -%}
+    <template data-template {% unless has_results %}data-empty-results{% endunless %}>
+        {%- if has_results -%}
+            {%- liquid
+                assign queries = predictive_search.resources.queries
+                assign products = predictive_search.resources.products
+                assign articles = predictive_search.resources.articles
+                assign collections = predictive_search.resources.collections
+                assign pages = predictive_search.resources.pages
+            -%}
+            
+            <div class="{{ cn }}-types">
+                {%- if queries.size > 0 -%}
+                    <div class="{{ cn }}-type">
+                        <h3 class="{{ cn }}-type-title">
+                            {{ 'general.search.predictive_search.suggestions' | t }}
+                        </h3>
+                        <div class="{{ cn }}-items">
+                            {%- for query in queries -%}
+                                <div class="{{ cn }}-item">
+                                    <a class="stretched-link" href="{{ query.url | append: '&type=product' }}" aria-label="{{ 'general.accessibility.search' | t }}"></a>
+                                    <div class="{{ cn }}-item-body">
+                                        <h5 class="{{ cn }}-item-title">{{ query.styled_text }}</h5>
+                                    </div>
+                                    <div class="{{ cn }}-item-arrow">
+                                        {% render 'icon',
+                                            name: 'arrow-left'
+                                        %}
+                                    </div>
+                                </div>
+                            {%- endfor -%}
+                        </div>
+                    </div>
+                {%- endif -%}
+
+                {%- if collections.size > 0 -%}
+                    <div class="{{ cn }}-type">
+                        {% render 'load-css', file: 'collection-card-min' %}
+                        <h3 class="{{ cn }}-type-title">
+                            {{ 'general.search.predictive_search.collections' | t }}
+                        </h3>
+                        <div class="#grid @type:template" style="--template: repeat(auto-fill, minmax(11rem, 1fr));  --gap: 1rem;">
+                            {%- for collection in collections -%}
+                                {% render 'collection-card-min'
+                                    collection: collection,
+                                    text_position: 'center',
+                                    text_size: 'body',
+                                    image_res: 150,
+                                    shadow: false
+                                %}
+                            {%- endfor -%}
+                        </div>
+                    </div>    
+                {%- endif -%}
+
+                {% if products.size > 0 %}
+                    <div class="{{ cn }}-type">
+                        <h3 class="{{ cn }}-type-title">
+                            {{ 'general.search.predictive_search.products' | t }}
+                        </h3>
+                        <div class="{{ cn }}-items">
+                            {%- for product in products -%}
+                                {%- if settings.predictive_search_show_custom_badges -%}
+                                    {%- assign badges = product.metafields.theme.custom_badges.value -%}
+                                    {% capture Badges %}
+                                        {% if badges != blank and badges.size > 0 %}
+                                            <div class="{{ cn }}-badges">
+                                                {% for badge in badges %}
+                                                    <span class="#badge @type:custom">{{ badge | strip }}</span>
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    {% endcapture %}
+                                {% endif %}
+
+                                <div class="{{ cn }}-item">
+                                    <a class="stretched-link" href="{{ product.url }}" aria-label="{{ product.title }}"></a>
+                                    <div class="{{ cn }}-item-media">
+                                        {% render 'media',
+                                            image: product.featured_image,
+                                            image_res: 70,
+                                            border_radius: 'inner',
+                                            size: 'square'
+                                        %}
+                                    </div>
+                                    <div class="{{ cn }}-item-body">
+                                        {{ Badges }}
+                                        <h5 class="{{ cn }}-item-title">{{ product.title }}</h5>
+                                        <div class="{{ cn }}-item-price">
+                                            {% render 'price', product: product, display_units: false %}
+                                        </div>
+                                    </div>
+                                    <div class="{{ cn }}-item-arrow">
+                                        {% render 'icon',
+                                            name: 'arrow-left'
+                                        %}
+                                    </div>
+                                </div>
+                            {%- endfor -%}
+                        </div>
+                    </div>
+                {% endif %}
+
+                {%- if articles.size > 0 -%}
+                    <div class="{{ cn }}-type">
+                        <h3 class="{{ cn }}-type-title">
+                            {{ 'general.search.predictive_search.posts' | t }}
+                        </h3>
+                        <div class="{{ cn }}-items">
+                            {%- for article in articles -%}
+                                <div class="{{ cn }}-item">
+                                    <a class="stretched-link" href="{{ article.url }}" aria-label="{{ article.title }}"></a>
+                                    {%- if article.image != blank -%}
+                                        <div class="{{ cn }}-item-media">
+                                            {% render 'media',
+                                                image: article.image,
+                                                aspect_ratio: '1x1',
+                                                image_res: 70,
+                                                border_radius: 'base'
+                                            %}
+                                        </div>
+                                    {%- endif -%}
+                                    <div class="{{ cn }}-item-body">
+                                        <h5 class="{{ cn }}-item-title">{{ article.title }}</h5>
+                                        <div class="{{ cn }}-item-date">{{ article.published_at | date: "%B %e, %Y" }}</div>
+                                    </div>
+                                    <div class="{{ cn }}-item-arrow">
+                                        {% render 'icon',
+                                            name: 'arrow-left'
+                                        %}
+                                    </div>
+                                </div> 
+                            {%- endfor -%}
+                        </div>
+                    </div>
+                {%- endif -%}
+                
+                {%- if pages.size > 0 -%}
+                    <div class="{{ cn }}-type">
+                        <h3 class="{{ cn }}-type-title">
+                            {{ 'general.search.predictive_search.pages' | t }}
+                        </h3>
+                        {%- for page in pages -%}
+                            <div class="{{ cn }}-item">
+                                <a class="stretched-link" href="{{ page.url }}" aria-label="{{ page.title }}"></a>
+                                <div class="{{ cn }}-item-body">
+                                    <h5 class="{{ cn }}-item-title">{{ page.title }}</h5>
+                                    {%- if page.content != blank -%}
+                                        <div class="{{ cn }}-item-excerpt">
+                                            {{ page.content | strip_html | truncate: 200 }}
+                                        </div> 
+                                    {%- endif -%}
+                                </div>
+                                <div class="{{ cn }}-item-arrow">
+                                    {% render 'icon',
+                                        name: 'arrow-left'
+                                    %}
+                                </div>
+                            </div>
+                        {%- endfor -%} 
+                    </div>
+                {%- endif -%}
+            </div>
+        {%- else -%}
+            <div class="{{ cn }}-no-results">
+                <div class="{{ cn }}-no-results-icon">
+                    {% render 'icon', name: 'magnifying-glass' %}
+                </div>
+                <div class="{{ cn }}-no-results-text">                    
+                    <h2 class="{{ cn }}-no-results-heading">{{ 'templates.search.no_results_title' | t: terms: predictive_search.terms }}</h2>
+                    <p class="{{ cn }}-no-results-subheading">{{ 'templates.search.no_results_subtitle' | t }}</p>
+                </div>
+            </div>
+        {%- endif -%}
+    </template>
+{%- endif -%}

@@ -1,0 +1,108 @@
+{% comment %}
+  Props:
+    name: {String}
+    load: {boolean} default: false
+    size: {String}
+{% endcomment %}
+
+{% liquid 
+    if load == blank
+        assign load = false
+    endif    
+%}
+{% if load %}
+    {% capture Icon %}
+        {% case name %}
+            {% when "star" %}
+                {% render 'icon-star', size: size %}
+            {% when "help" %}
+                {% render 'icon-help', size: size %}
+            {% when "info" %}
+                {% render 'icon-info', size: size %}
+            {% when "check" %}
+                {% render 'icon-check', size: size %}
+            {% when "clock" %}
+                {% render 'icon-clock', size: size %}
+            {% when "heart" %}
+                {% render 'icon-heart', size: size %}
+            {% when "flag" %}
+                {% render 'icon-flag', size: size %}
+            {% when "message" %}
+                {% render 'icon-message', size: size %}
+            {% when "thumbs-up" %}
+                {% render 'icon-thumbs-up', size: size %}
+            {% when "bell" %}
+                {% render 'icon-bell', size: size %}
+            {% when "mail" %}
+                {%- assign round_strokes = true -%}
+                {% render 'icon-mail', size: size %}
+            {% when "lock" %}
+                {% render 'icon-lock', size: size %}
+            {% when "tag" %}
+                {% render 'icon-tag', size: size %}
+            {% when "map-marker" %}
+                {% render 'icon-map-marker', size: size %}
+            {% when "credit-card" %}
+                {% render 'icon-credit-card', size: size %}
+            {% when "users" %}
+                {% render 'icon-users', size: size %}
+            {% when "headphones" %}
+                {% render 'icon-headphones', size: size %}
+            {% when "phone" %}
+                {% render 'icon-phone', size: size %}
+            
+            {% when "pig-money" %}
+                {%- assign round_strokes = true -%}
+                {% render 'icon-pig-money', size: size %}
+            {% when "building-store" %}
+                {%- assign round_strokes = true -%}
+                {% render 'icon-building-store', size: size %}
+            {% when "receipt" %}
+                {%- assign round_strokes = true -%}
+                {% render 'icon-receipt', size: size %}
+            {% when "coins" %}
+                {% render 'icon-coins', size: size %}
+            {% when "discount" %}
+                {% render 'icon-discount', size: size %}
+            {% when "truck-delivery" %}
+                {% render 'icon-truck-delivery', size: size %}
+            {% when "package" %}
+                {%- assign round_strokes = true -%}
+                {% render 'icon-package', size: size %}
+            {% when "mood-happy" %}
+                {%- assign round_strokes = true -%}
+                {% render 'icon-mood-happy', size: size %}
+            {% when "mood-smile" %}
+                {% render 'icon-mood-smile', size: size %}
+            {% when "leaf" %}
+                {% render 'icon-leaf', size: size %}
+            {% when "recycle" %}
+                {%- assign round_strokes = true -%}
+                {% render 'icon-recycle', size: size %}
+            {% when "shield-check" %}
+                {% render 'icon-shield-check', size: size %}
+            {% when "rocket" %}
+                {%- assign round_strokes = true -%}
+                {% render 'icon-rocket', size: size %}
+            {% else %}
+        {% endcase %}
+    {% endcapture %}
+{% endif %}
+
+{%- if name != blank -%}
+    {%- if load -%}
+        <svg 
+            class="#icon {% if round_strokes %}@round-stroke{% endif %}" 
+            {% if size != blank %}
+                style="--size: {{ size }};"
+            {% endif %} 
+            xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+        >
+            {{ Icon }}
+        </svg>
+    {%- else -%}
+        <svg class="#icon" {% if size != blank %}style="--size: {{ size }};"{% endif %}>
+            <use href="#svg-icon-{{ name }}"></use>
+        </svg>
+    {%- endif -%}
+{%- endif -%}

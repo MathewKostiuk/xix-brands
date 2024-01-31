@@ -1,0 +1,73 @@
+{%- liquid
+    assign NS = 'product-reviews'
+    assign cn = '#' | append: NS
+
+    assign rating_value = product.metafields.reviews.rating.value
+    assign rating_value = rating_value | strip | plus: 0
+    assign rating_floor = rating_value | floor
+    assign rating_remainder = rating_value | minus: rating_floor
+    assign count = product.metafields.reviews.rating_count
+-%}
+
+
+{%- if count > 0 -%}
+    {% render 'load-css', file: NS %}
+    <div class="{{ cn }}">
+        <div class="{{ cn }}-stars">
+            {%- for i in (1..5) -%}
+                {%- if rating_value >= 0.6 -%}
+                    {%- assign icon_name = 'star' -%}
+                {%- elsif rating_value <= 0.2 -%}
+                    {%- assign icon_name = 'star-empty' -%}
+                {%- else -%}
+                    {%- assign icon_name = 'star-half' -%}
+                {%- endif -%}
+                {% render 'icon', name: icon_name %}
+                {%- assign rating_value = rating_value | minus: 1 -%}                
+            {%- endfor -%}
+        </div>
+        {% if show_count %}
+            <div class="{{ cn }}-count">
+                <span>{{ count }}</span>
+                <span>{{ 'products.product.review_count' | t: count: count }}</span>
+            </div>
+        {% endif %}
+    </div>
+
+{%- endif -%}
+
+
+{%- comment -%}
+{{ 'product-meta-reviews.css' | asset_url | stylesheet_tag }}
+
+{%- assign cn = '#product-meta-reviews' -%}
+{%- assign rating_value = product.metafields.reviews.rating.value -%}
+{%- assign rating_value = rating_value | strip | plus: 0 -%}
+{%- assign rating_floor = rating_value | floor -%}
+{%- assign rating_remainder = rating_value | minus: rating_floor -%}
+{%- assign count = product.metafields.reviews.rating_count -%}
+
+<div>
+    <div>
+        {%- for i in (1..rating_floor) -%}
+            {% render 'icon', name: 'star' %}
+        {%- endfor -%}
+        {% if rating_remainder > 0.15 %}
+            {% if rating_remainder <= 0.6 %}
+                {% render 'icon', name: 'half-star' %}
+            {% else %}
+                {% render 'icon', name: 'star' %}
+            {% endif %}
+        {% endif %}
+    </div>
+    {% if show_count %}
+        <div>
+            <span>{{ count }}</span>
+            <span>{{ 'products.product.review_count' | t: count: count }}</span>
+        </div>
+    {% endif %}
+</div>
+{%- endcomment -%}
+
+
+

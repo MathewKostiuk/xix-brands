@@ -1,0 +1,8 @@
+{%- liquid
+    assign NS = 'cart-counter'
+    assign cn = "#" | append: NS    
+-%}
+{% render 'load-css', file: NS %}
+
+<{{ NS }} class="{{ cn }}" style="--color:{{ color }};" {% if cart.item_count == 0 %}hidden{% endif %}>{{ cart.item_count }}</{{ NS }}>
+<script type="module" src="{{ NS | append: '.js' | asset_url }}"></script>

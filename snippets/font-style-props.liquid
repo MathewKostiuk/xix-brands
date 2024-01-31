@@ -1,0 +1,24 @@
+{%- liquid
+    # props:
+    # - name: string
+    # - src: body | body_bold | heading
+    # - uppercase: boolean
+    if src == 'body_bold'
+        assign src_weight = 'body-bold'
+        assign src = 'body'
+    else
+        assign src_weight = src
+    endif
+-%}
+
+--glob-{{ name }}-family: var(--glob-{{ src }}-family);
+--glob-{{ name }}-weight: var(--glob-{{ src_weight }}-weight);
+--glob-{{ name }}-style: var(--glob-{{ src }}-style);
+--glob-{{ name }}-size: {{ scale | times: 0.01 }}rem;
+--glob-{{ name }}-scale: {{ scale | times: 0.01 }};
+{% if uppercase != blank %}
+    --glob-{{ name }}-transform: {% if uppercase %}uppercase{% else %}none{% endif %};
+{%- endif -%}
+{% if letter_spacing != blank %}
+    --glob-{{ name }}-letter-spacing: {{ letter_spacing | times: 0.002 }}em;
+{%- endif -%}

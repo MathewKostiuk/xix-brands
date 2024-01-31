@@ -1,0 +1,49 @@
+{%- liquid
+    assign NS = 'slideshow-thumbnails'
+    assign cn = '#' | append: NS
+-%}
+
+{% render 'load-css', file: NS %}
+
+{%- capture Thumbnails -%}
+    {% for media in src.media %}
+        {%- if media.media_type == 'video' or media.media_type == 'external_video' -%}
+            {%- assign icon = 'play' -%}
+        {%- elsif media.media_type == 'model' -%}
+            {% assign icon = 'cube' %}    
+        {%- else -%}                
+            {%- assign icon = blank -%}
+        {%- endif -%}
+
+        {% if media.media_type == 'image' %}
+            {%- assign image = media -%}  
+        {% else %}
+            {%- assign image = media.preview_image -%}
+        {% endif %}
+        <div class="{{ cn }}-item" data-item>
+            {% render 'media',
+                image: image,
+                image_res: 70
+            %}
+            {%- if icon != blank -%}
+                <div class="{{ cn }}-item-icon">
+                    {% render 'icon', name: icon %}
+                </div>
+            {%- endif -%}
+        </div>
+    {% endfor %}
+{%- endcapture -%}
+
+<{{ NS }} class="{{ cn }} mobile-hidden @layout-type:{{ layout_type }}" ref="{{ ref }}">
+    {% if layout_type == 'grid' %}
+        <div class="#grid @type:columns {{ cn }}-inner" style="--use-columns: 8; --gap: 1rem;">
+            {{ Thumbnails }}
+        </div>
+    {% else %}
+        <div class="{{ cn }}-inner">
+            {{ Thumbnails }}
+        </div>
+    {% endif %}
+</{{ NS }}>
+
+<script type="module" src="{{  NS | append: '.js' | asset_url }}"></script>

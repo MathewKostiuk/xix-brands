@@ -1,0 +1,52 @@
+{%- liquid
+    assign NS = 'cart-notification-recommended-product'
+    assign cn = '#' | append: NS
+    
+    assign variant = product.selected_or_first_available_variant
+
+    if variant.image
+        assign image = variant.image
+    else
+        assign image = product.featured_image
+    endif
+-%}
+
+<{{ NS }} class="{{ cn }}">
+    <div class="{{ cn }}-media">
+        {% render 'media',
+            image: image,
+            border_radius: 'base',
+            link: variant.url
+        %}
+        <div class="{{ cn }}-submit">
+            {% capture Button %}
+                {% render 'button',
+                    text: '+ &nbsp; Add',
+                    size: 'h6',
+                    type: 'submit',
+                    atts: 'data-element="to-cart-button"',
+                    loading: true,
+                    spinner_size: 'xs'
+                %}
+            {% endcapture %}
+            {% render 'product-to-cart', trigger: Button, variant: variant %}
+        </div>
+    </div>
+    <div class="{{ cn }}-caption">
+        <div class="{{ cn }}-price">
+            {% render 'price',
+                variant: variant
+            %}
+        </div>
+        <h5 class="{{ cn }}-title">
+            <a href="{{ variant.url }}">{{ product.title }}</a>
+        </h5>
+        {%- unless product.has_only_default_variant -%}
+            {%- assign rest_variants = product.variants.size | minus: 1 -%}
+            <div class="{{ cn }}-variant">
+                <div class="{{ cn }}-variant-title">{{ variant.title }}</div>
+                <a class="{{ cn }}-variant-product-link" href="{{ product.url }}">+ {{ rest_variants }} {{ rest_variants | pluralize: 'option', 'options' }}</a>
+            </div>
+        {%- endunless -%}
+    </div>
+</{{ NS }}>

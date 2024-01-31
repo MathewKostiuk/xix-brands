@@ -1,0 +1,52 @@
+{%- liquid
+    assign NS = 'footer-localization'
+    assign cn = '#' | append: NS    
+-%}
+
+{% render 'load-css', file: NS, lazy: true %}
+
+<div class="{{ cn }}">
+    {%- if show_country -%}
+        <div class="{{ cn }}-item">
+            {%- capture Country_toggle -%}
+                <div class="{{ cn }}-item-button">
+                    <span class="{{ cn }}-item-button-title">
+                        {{ localization.country.name }} ({{ localization.country.currency.iso_code }}{% if localization.country.currency.symbol != blank %} {{ localization.country.currency.symbol }}{% endif %})
+                    </span>
+                    <img class="{{ cn }}-item-button-flag" width="25" height="25" src="https://flagicons.lipis.dev/flags/1x1/{{ localization.country.iso_code | downcase }}.svg" alt="{{ 'localization.country_label' | t }}"/>
+                    <div class="{{ cn }}-item-button-caret">
+                        {% render 'icon', name: 'angle-down' %}
+                    </div>
+                </div>
+            {%- endcapture -%}
+            {% render 'localization-dropdown',
+                toggle: Country_toggle,
+                position: 'top-center',
+                placement: 'top',
+                src: 'country'
+            %}
+        </div>
+    {%- endif -%}
+    {%- if show_language -%}
+        <div class="{{ cn }}-item">
+            {%- capture Language_toggle -%}
+                <div class="{{ cn }}-item-button">
+                    <span class="{{ cn }}-item-button-title">
+                        {{ localization.language.endonym_name | capitalize }}
+                    </span>
+                    <span class="{{ cn }}-item-button-iso">
+                        {{ localization.language.iso_code | upcase }}
+                    </span>
+                    <div class="{{ cn }}-item-button-caret">
+                        {% render 'icon', name: 'angle-down' %}
+                    </div>
+                </div>
+            {%- endcapture -%}
+            {% render 'localization-dropdown',
+                toggle: Language_toggle,
+                position: 'top-center',
+                src: 'language'
+            %}
+        </div>
+    {%- endif -%}
+</div>

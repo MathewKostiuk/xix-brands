@@ -1,0 +1,50 @@
+{%- liquid
+    assign NS = 'product-options-dropdown'
+    assign cn = '#' | append: NS   
+-%}
+
+{% render 'load-css', file: NS %}
+
+{%- capture Toggle -%}
+    <div class="{{ cn }}-toggle">
+        <div data-element="current">{{ option.selected_value }}</div>
+        <span class="{{ cn }}-toggle-caret">
+            {% render 'icon', name: 'angle-down' %}
+        </span>
+    </div>
+{%- endcapture -%}
+
+{%- capture Menu -%}
+    <div class="{{ cn }}-menu">
+        {% render 'product-option-values',
+            product: product,
+            product_option: option,
+            current: current_variant,
+            cn: cn,
+            unavailable_title: true,
+            out_of_stock_title: true,
+            show_stock_alert: show_stock_alert,
+            matched_options_variants: matched_options_variants,
+            price_display: price_display,
+            show_variant_image: show_variant_image
+        %}
+    </div>
+{%- endcapture -%}
+
+<{{ NS }} class="{{ cn }}" section-id="{{ section.id }}">
+    {% render 'drop-down',
+        toggle: Toggle,
+        menu: Menu,
+        placement: 'bottom-start',
+        select: false
+    %}
+    <select class="{{ cn }}-a11y-select" name="{{ option.name }}" data-option-index="{{ option.position | minus: 1 }}">
+        {%- for value in option.values -%}
+            <option value="{{ value | escape }}">{{ value }}</option>
+        {%- endfor -%}
+    </select>
+</{{ NS }}>
+
+
+
+<script type="module" src="{{ NS | append: '.js' | asset_url }}"></script>

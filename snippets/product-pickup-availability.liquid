@@ -1,0 +1,52 @@
+{% liquid
+    assign pick_up_availabilities = variant.store_availabilities | where: 'pick_up_enabled', true
+    assign closest_location = pick_up_availabilities.first
+    assign modal_url = routes.root_url | append: 'variants/' | append: variant.id | append: '?section_id=r_pickup-availability'
+    assign modal_target = '#pickupAviabilitySection'
+    assign modal_id = 'pickup-aviability' | append: section.id
+    assign cn = '#product-pickup-availability'
+%}
+
+{% render 'load-css', file: 'pickup-availability' %}
+
+
+{%- if pick_up_availabilities.size > 0 and variant.available -%}
+    <div class="{{ cn }}">
+        <div class="{{ cn }}-icon">
+            {% render 'icon', name: 'building-store', load: true %}
+        </div>
+        <div class="{{ cn }}-body">
+            {%- if closest_location.available -%}
+                <h3 class="{{ cn }}-status">{{ 'products.product.pickup_availability.pick_up_available_at_html' | t: location_name: closest_location.location.name }}</h3>
+                <p class="{{ cn }}-time">{{ closest_location.pick_up_time }}</p>
+                <modal-open 
+                    class="{{ cn }}-popup-link" 
+                    url="{{ modal_url }}" 
+                    target="{{ modal_id }}"
+                    section-id="{{ section.id }}"
+                >
+                    {%- if pick_up_availabilities.size == 1 -%}
+                        {{ 'products.product.pickup_availability.view_store_info' | t }}
+                    {%- else -%}
+                        {{ 'products.product.pickup_availability.check_other_stores' | t }}
+                    {%- endif -%}
+                </modal-open>
+            {%- else -%}
+                <h3 class="{{ cn }}-status">{{ 'products.product.pickup_availability.pick_up_unavailable_at_html' | t: location_name: closest_location.location.name }}</h3>
+                <modal-open class="{{ cn }}-popup-link" url="{{ modal_url }}" target="{{ modal_id }}" section-id="{{ section.id }}">
+                    {{ 'products.product.pickup_availability.check_other_stores' | t }}
+                </modal-open>
+            {%- endif -%}
+        </div>
+    </div>
+    {% render 'modal',
+        id: modal_id,
+        remote_url: modal_url,
+        remote_target: modal_target
+        x: 'right',
+        height: '100%',
+        width: 'min(450px, 90vw)',
+        show_close: false,
+        animation: 'right'
+    %}
+{%- endif -%}

@@ -1,0 +1,157 @@
+{%- liquid
+    assign NS = 'collection-filter'
+    assign cn = '#' | append: NS
+    assign show_pricing = false
+-%}
+
+<div
+    class="{{ cn }}" 
+    section-id="{{ section.id }}" 
+    id="collection-filter-{{ section.id }}-{{ index }}"
+>
+    <details class="{{ cn }}-wrapper" {% unless collapse_filters %} open {% endunless %}>
+        <summary class="{{ cn }}-header">
+            <span class="{{ cn }}-header-heading">
+                {{ filter.label }}
+            </span>
+            <div class="{{ cn }}-header-icon">
+                {% render 'icon', name: 'angle-down' %}
+            </div>
+        </summary>
+        <div class="{{ cn }}-body" data-body>
+            {% if filter.type == 'list' or filter.type == 'boolean' %}
+                {%- liquid
+                    assign show_view_all_threshold = 5
+                    assign size_threshold = show_view_all_threshold | plus: 2
+                    if color_swatches
+                        assign settings_color_option_names = settings.color_swatches_options | split: ',' | handleize
+                        assign filter_label_handle = filter.label | handleize
+                        if settings_color_option_names contains filter_label_handle
+                            assign match_color = true
+                        else
+                            assign match_color = false
+                        endif
+                        if match_color
+                            assign show_color_swatches = true
+                            assign cn_swatch = cn | append: '-swatch'
+                            render 'load-css', file: 'collection-filter-swatch'
+                            assign show_view_all_threshold = 8
+                            assign size_threshold = show_view_all_threshold | plus: 4
+                        else
+                            assign show_color_swatches = false
+                        endif
+                    endif
+              
+                    assign limit_filter = false
+                    if show_view_all
+                        if filter.values.size > size_threshold
+                            assign limit_filter = true
+                        endif
+                    endif
+
+                    if show_color_swatches
+                        assign list_layout = 'swatches'
+                    else
+                        assign list_layout = 'list'
+                    endif
+                -%}
+                {% if limit_filter %}
+                    <input 
+                        class="{{ cn }}-view-all-checkbox"
+                        hidden
+                        type="checkbox"
+                        id="{{ filter.label | handleize | append: '-view-all' |append: form  }}"
+                    >
+                {% endif %}
+                <collection-filter-list class="{{ cn }}-list" form-id="{{ form }}" section-id="{{ section.id }}" id="collection-filter-{{ section.id }}-{{ filter.label | handlelize }}-{{ index }}-{{ form }}">
+                    <ul class="{{ cn }}-items @layout:{{ list_layout }} reset-list">
+                        {% for value in filter.values %}
+                            {%- liquid
+                                if value.param_name == "filter.v.availability" and hide_out_of_stock_filter
+                                    if value.value == "0"
+                                        assign skip_filter_value = true
+                                    else
+                                        assign in_stock_only_label = 'products.product_options.in_stock_only' | t
+                                    endif
+                                endif
+                            -%}
+
+                            {%- unless skip_filter_value -%}
+                                {%- capture Excess_state -%}{% if limit_filter and forloop.index > show_view_all_threshold %} !excess {% endif %}{%- endcapture -%}
+                                {%- assign input_id = 'Filter-' | append: filter.label | escape | append: forloop.index | append: form -%}
+
+                                {%- if show_color_swatches -%}
+                                    <li class="{{ Excess_state }}">
+                                        <label class="{{ cn_swatch }}-item" for="{{ input_id }}">
+                                            <input 
+                                                class="{{ cn_swatch }}-item-input visually-hidden"
+                                                type="checkbox"
+                                                name="{{ value.param_name }}"
+                                                value="{{ value.value | escape }}"
+                                                id="{{ input_id }}"
+                                                form="{{ form }}"
+                                                {% if value.active %}checked{% endif %}
+                                                {% if value.count == 0 and value.active == false %}disabled{% endif %}
+                                            >
+                                            <div class="{{ cn_swatch }}-item-body" style="{%- render 'swatch-color-style', value: value.value -%}"></div>
+                                        </label>
+                                    </li>
+                                {%- else -%}
+                                    <li class="{{ Excess_state }}">
+                                        <label 
+                                            class="{{ cn }}-item-label" 
+                                            for="{{ input_id }}"
+                                        >
+                                        <input 
+                                            class="{{ cn }}-item-input visually-hidden"
+                                            type="checkbox"
+                                            name="{{ value.param_name }}"
+                                            value="{{ value.value | escape }}"
+                                            id="{{ input_id }}"
+                                            form="{{ form }}"
+                                            {% if value.active %}checked{% endif %}
+                                            {% if value.count == 0 and value.active == false %}disabled{% endif %}
+                                        >
+                                            {%- if in_stock_only_label -%}
+                                                <span class="{{ cn }}-item-switch"></span>
+                                            {%- else -%}
+                                                <div class="{{ cn }}-item-icon">
+                                                    {% render 'icon', name: 'check' %}
+                                                </div>
+                                            {%- endif -%}
+                                            <span class="{{ cn }}-item-value">
+                                                {%- if in_stock_only_label -%}
+                                                    {{ in_stock_only_label }}
+                                                {%- else -%}
+                                                    {{ value.label | escape }}
+                                                {%- endif -%}
+                                            </span>
+                                            <span class="{{ cn }}-item-counter">{{ value.count }}</span>
+                                        </label>
+                                    </li>
+                                {%- endif -%}
+                                
+                            {%- endunless -%}
+                        {% endfor %}
+                    </ul>
+                    
+                    {% if limit_filter %}
+                        <div class="{{ cn }}-view-all">
+                            <label
+                                class="#button @size:sm @display-style:text"
+                                for="{{ filter.label | handleize | append: '-view-all' |append: form  }}"
+                            >
+                                <span class="{{ cn }}-view-all-link-expand">{{ 'general.search.filters.show_all' | t }}</span>
+                                <span class="{{ cn }}-view-all-link-collapse">{{ 'general.search.filters.show_less' | t }}</span>    
+                            </label>  
+                        </div>
+                    {% endif %}
+
+                </collection-filter-list>
+            {% endif %}
+            {% if filter.type == 'price_range' %}
+                {% render 'collection-filter-price', filter: filter, form: form %}                            
+            {% endif %}
+        </div>
+    </details>
+</div>

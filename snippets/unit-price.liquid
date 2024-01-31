@@ -1,0 +1,19 @@
+{% if variant.unit_price_measurement != nil %}
+    {%- if settings.product_price_trailing_zeros -%}
+        {%- assign price = variant.unit_price | money -%}
+    {%- else -%}
+        {%- assign price = variant.unit_price | money_without_trailing_zeros -%}
+    {%- endif -%}
+    <div class="#unit-price">
+        <span class="visually-hidden">{{ 'products.product.price.unit_price' | t }}</span>
+        <span>{{ price }}</span>
+        <span aria-hidden="true">/</span>
+        <span class="visually-hidden">&nbsp;{{ 'accessibility.unit_price_separator' | t }}&nbsp;</span>
+        <span>
+        {%- if variant.unit_price_measurement.reference_value != 1 -%}
+            {{- variant.unit_price_measurement.reference_value -}}
+        {%- endif -%}
+        {{ variant.unit_price_measurement.reference_unit }}
+        </span>
+  </div>
+{% endif %}

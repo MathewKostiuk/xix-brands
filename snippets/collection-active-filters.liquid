@@ -1,0 +1,96 @@
+{% comment %}
+    Props: 
+        - show_label
+        - src (filters source object)
+{% endcomment %}
+
+{%- liquid
+    assign NS = 'collection-active-filters'
+    assign cn = '#' | append: NS
+    assign filter_counter = 0    
+-%}
+
+{% render 'load-css', file: NS %}
+
+{%- capture Filters -%}
+    {%- for filter in src.filters -%}
+        {%- for value in filter.active_values -%}
+            {% liquid
+                assign value_handle = value.label | handleize 
+                assign filter_handle = filter.label | handleize
+                assign item_id = filter_handle | appded: value_handle | append: section.id | append: forloop.index
+                assign filter_counter = filter_counter | plus: 1
+            %}
+            {% if filter.type == 'list' %}
+                <label class="{{ cn }}-item" for="{{ item_id }}">
+                    <input 
+                        checked
+                        class="{{ cn }}-item-trigger" 
+                        id="{{ item_id }}" type="checkbox" 
+                        value="{{ value.url_to_remove }}">
+                    <span class="{{ cn }}-item-value">
+                        {{ value.label }}
+                        {% render 'icon', name: 'x' %}
+                    </span>
+                </label>
+            {% endif %}
+        {%- endfor -%}
+        {% if filter.type == 'price_range' %}
+            {%- liquid
+                assign item_id = filter.label | handleize | append: section.id
+                if filter.min_value.value and filter.min_value.value != 0
+                    assign use_min = true
+                    assign min = filter.min_value.value
+                else
+                    assign min = 0
+                endif
+                
+                if filter.max_value.value and filter.max_value.value != filter.range_max
+                    assign use_max = true
+                    assign max = filter.max_value.value
+                else
+                    assign max = filter.range_max
+                endif
+            -%}
+            {% if use_min or use_max %}
+                {%- assign filter_counter = filter_counter | plus: 1 -%}
+                <label class="{{ cn }}-item" for="{{ item_id }}">
+                    <input 
+                        checked
+                        class="{{ cn }}-item-trigger" 
+                        id="{{ item_id }}" type="checkbox" 
+                        value="{{ filter.url_to_remove }}">
+                    <span class="{{ cn }}-item-value">
+                        {{ min | money_without_trailing_zeros }}&nbsp; &#8212; &nbsp;{{ max | money_without_trailing_zeros }}
+                        {% render 'icon', name: 'x' %}
+                    </span>
+                </label>
+            {% endif %}
+        {% endif %}
+    {%- endfor -%}    
+{%- endcapture -%}
+
+<{{ NS }} class="{{ cn }}" id="{{ NS }}-{{ section.id }}" section-id="{{ section.id }}">
+    {%- if Filters != blank -%}
+        <h5 class="{{ cn }}-title">
+            {{ 'products.facets.filtered' | t }}
+        </h5>
+        {{ Filters }}
+        {% if filter_counter > 1 %}
+            {% assign reset_filters_id = 'reset-filters' | append: section.id %}
+            <label class="{{ cn }}-clear" for="{{ reset_filters_id }}">
+                <input 
+                    checked
+                    class="{{ cn }}-item-trigger" 
+                    id="{{ reset_filters_id }}" 
+                    type="checkbox" 
+                    value="{{ clear_url }}">
+                <span class="{{ cn }}-clear-title">
+                    {{ 'products.facets.clear_all' | t }}
+                </span>
+            </label>
+        {% endif %}
+    {%- endif -%}
+</{{ NS }}>
+
+<script type="module" src="{{ NS | append: '.js' | asset_url }}"></script>

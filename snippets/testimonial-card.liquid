@@ -1,0 +1,58 @@
+{%- liquid
+    assign NS = 'testimonial-card'
+    assign cn = '#' | append: NS
+    assign no_params_product_url = product.url | split: '?' | first
+
+    unless settings.product_card_image_crop
+        assign image_fit = 'contain'
+    endunless
+-%}
+
+{% if show_stars %}
+    {%- capture Stars -%}
+        <div class="{{ cn }}-stars">
+            {% render 'star-rating', 
+                value: stars_count 
+            %}
+        </div>
+    {%- endcapture -%}
+{% endif %}
+
+{% if product != blank %}
+    {% capture Product %}
+        <div class="{{ cn }}-product">
+            <a href="{{ product.url }}" class="stretched-link" aria-label="{{ product.title }}"></a>
+            <div class="{{ cn }}-product-media">
+                {% render 'media',
+                    image: product.featured_image,
+                    image_res: 80,
+                    border_radius: 'inner'
+                %}
+            </div>
+            <p class="{{ cn }}-product-title">{{ product.title | default: onboarding_title }}</p>
+        </div>    
+    {% endcapture %}
+{% endif %}
+
+<div class="{{ cn }}">
+    {{ Stars }}
+    <div class="{{ cn }}-author">
+        {% if author_image != blank %}
+            <div class="{{ cn }}-author-image">
+                {% render 'media',
+                    image: author_image,
+                    image_res: 80,
+                    size: 'square',
+                    size_mobile: 'square'
+                %} 
+            </div>
+        {% endif %}
+        <p class="{{ cn }}-author-name">
+            {{ author_name }}
+        </p>
+    </div>
+
+    <h5 class="{{ cn }}-heading">{{ heading }}</h5>
+    <p class="{{ cn }}-text">{{ text }}</p>
+    {{ Product }}
+</div>

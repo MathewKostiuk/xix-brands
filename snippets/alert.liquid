@@ -1,0 +1,41 @@
+{%- liquid
+    comment
+        PROPS:
+            - type
+            - heading
+            - t_heading
+            - text 
+    endcomment
+
+    assign NS = 'alert'
+    assign cn = '#' | append: 'alert'
+    
+    if t_heading != blank
+        assign heading = t_heading | t
+    endif
+
+    case type
+        when 'danger'
+            assign icon = 'x'
+        when 'success'
+            assign icon = 'check'
+        when 'warning'
+            assign icon = 'exclamation'
+    endcase    
+-%}
+
+{% render 'load-css', file: NS %}
+
+<div class="{{ cn }} @type:{{ type }}">
+    <div class="{{ cn }}-icon">
+        {% render 'icon', name: icon %}
+    </div>
+    <div class="{{ cn }}-body">
+        {%- if heading != blank -%}
+            <h4 class="{{ cn }}-heading">{{ heading }}</h4>
+        {%- endif -%}
+        {%- if text != blank -%}
+            <div class="{{ cn }}-text">{{ text }}</div>
+        {%- endif -%}
+    </div>
+</div>

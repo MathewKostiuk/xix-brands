@@ -1,0 +1,15 @@
+{% liquid
+    assign NS = 'scroll-to-top-button'
+    assign cn = '#' | append: NS
+%}
+
+{% render 'load-css', file: NS %}
+
+<{{ NS }} section-id="global" observe>
+    <div data-element="trigger" class="{{ cn }}-trigger"></div>
+    <div data-element="button" class="{{ cn }}-button">
+        {% render 'icon', name: 'angle-up' %}
+    </div>
+</{{ NS }}>
+
+<script type="module" src="{{ NS | append: '.js' | asset_url }}"></script>

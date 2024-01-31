@@ -1,0 +1,35 @@
+{% comment %}
+  Props:
+    video
+    height: {String} default: 100%
+    display_desktop_only: {boolean}
+{% endcomment %}
+
+
+{%- liquid
+    assign NS = 'background-video'
+    assign cn = '#' | append: NS
+
+-%}
+
+{% render 'load-css', file: NS %}
+
+
+
+<div  class="{{ cn }}-wrapper" style="--height: {{ height }};">
+    <{{ NS }} class="{{ cn }} {% if display_desktop_only and request.design_mode %} mobile-hidden {% endif %}"
+        {% if display_desktop_only and request.design_mode == false %} desktop-only {% endif %}
+        section-id="{{ section.id }}"
+    >
+    <template data-element="template">
+        {%- if video.media_type == 'video' -%}
+            {{ video | video_tag: autoplay: true, loop: true, muted: true }}
+        {%- else -%}
+            <div data-element="player" data-plyr-provider="{{ video.type }}" data-plyr-embed-id="{{ video.id }}"></div>
+        {%- endif -%}
+    </template>
+    <div data-element="content"></div>
+    </{{ NS }}>
+</div>
+
+<script type="module" src="{{  NS | append: '.js' | asset_url }}"></script>

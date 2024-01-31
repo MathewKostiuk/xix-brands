@@ -1,0 +1,16 @@
+{%- assign cn = '#product-feature' -%}
+{% render 'load-css', file: 'product-feature' %}
+
+<div class="{{ cn }}">
+    <div class="{{ cn }}-icon">
+        {% render 'icon', name: icon, load: true %}
+    </div>
+    <div class="{{ cn }}-body">
+        {%- if heading != blank -%}
+            <h4 class="{{ cn }}-heading">{{ heading }}</h4>
+        {%- endif -%}
+        {%- if subheading != blank -%}
+            <p class="{{ cn }}-subheading">{{ subheading }}</p>
+        {%- endif -%}
+    </div>
+</div>

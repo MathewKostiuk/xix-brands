@@ -1,0 +1,38 @@
+{%- liquid
+    assign NS = 'video-popup'
+    assign cn = '#' | append: NS    
+-%}
+
+{% render 'load-css', file: NS %}
+
+<{{ NS }} class="{{ cn }}" {% if autoplay == true %}autoplay{% endif %} style="{% if icon_size != blank %}--icon-size: {{ icon_size }};{% endif %} {% if icon_color != blank %}--icon-color: {{ icon_color }};{% endif %}" section-id="{{ section.id }}">
+    {%- capture Modal_content -%}
+        <div class="{{ cn }}-modal">
+            {{ popup_content }}
+            <div class="{{ cn }}-modal-inner">
+                {% render 'video-player', video: video %}
+            </div>
+        </div>
+    {%- endcapture -%}
+    {%- render 'modal' 
+        content: Modal_content,
+        id: id,
+        width: '85%',
+        show_close: true,
+        animation: 'zoom'
+    -%}
+    <modal-open 
+        class="{{ cn }}-trigger" 
+        target="{{ id }}"
+        section-id="{{ section.id }}"
+    >
+        {% if icon != blank %}
+            <div class="{{ cn }}-icon">
+                {% render 'icon', name: icon %}
+            </div>
+        {% endif %}
+        {{ content }}
+    </modal-open>
+</{{ NS }}>
+
+<script type="module" src="{{ NS | append: '.js' | asset_url }}"></script>

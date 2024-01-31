@@ -1,0 +1,80 @@
+{% comment %}
+    - inert: boolean
+    - slides_per_view: number
+    - slides_per_view_mobile: number
+    - show_pagination: boolean (can overwrite global setting)
+    - slide_by: row | item
+    - show_navigation: boolean
+{% endcomment %}
+
+{%- liquid
+    assign NS = 'slideshow-inline-blaze'
+    assign cn = '#' | append: NS
+    
+    assign slides_per_view = slides_per_view | default: 4
+    assign slides_per_view_mobile = slides_per_view_mobile | default: 1.2
+    assign gap = gap | default: 'var(--glob-gutter)'
+    assign slide_by = slide_by | default: "row"
+    assign offset_display = offset_display | default: settings.carousel_offset_display 
+
+    if show_pagination == nil
+        assign show_pagination = settings.carousel_show_pagination
+    endif
+
+    if container == nil
+        assign container = true
+    endif
+-%}
+
+{% render 'load-css', file: NS %}
+
+<{{NS}} class="{{ cn }} @offset-display:{{ offset_display }}"
+    slides-per-view="{{ slides_per_view }}"
+    slides-per-view-mobile="{{ slides_per_view_mobile }}"
+    gap="{{ gap }}"
+    {% if slide_by == 'row' %}
+        slide-by-row
+    {% endif %}
+    section-id="{{ section.id }}"
+    {% if settings.carousel_enable_mouse_swipe %}
+        swipe-on-desktop
+    {% endif %}
+    style="--slides-per-view: {{ slides_per_view }}; --slides-per-view-mobile: {{ slides_per_view_mobile }}; --slides-gap: {{ gap }};"
+    {% if offset_display == 'none' %}
+        track-active
+    {% endif %}
+    {% if inert == true %}
+        inert
+    {% endif %}
+>
+    {% if offset_display == 'overlay' %}
+        <div class="{{ cn }}-overlay">
+            <div class="{{ cn }}-overlay-side-left"></div>
+            <div class="{{ cn }}-overlay-center"></div>
+            <div class="{{ cn }}-overlay-side-right"></div>
+        </div>        
+    {% endif %}
+
+    <div class="{{ cn }}-wrapper {% if container %}#container{% endif %}">
+        <div class="blaze-slider {{ cn }}-slider" data-element="blaze">
+            <div class="blaze-container">
+                <button type="button" class="blaze-next {{ cn }}-next" aria-label="{{ 'general.slider.next_slide' | t }}" data-element="nav">
+                    {% render 'icon', name: 'angle-right' %}
+                </button>
+                <button type="button" class="blaze-prev {{ cn }}-prev" aria-label="{{ 'general.slider.previous_slide' | t }}" data-element="nav">
+                    {% render 'icon', name: 'angle-left' %}
+                </button>
+                <div class="blaze-track-container {{ cn }}-track-container">
+                    <div class="blaze-track" data-slides-wrapper data-element="slides-wrapper">
+                        {{ slides }}
+                    </div>
+                </div>
+                {% if show_pagination %}
+                    <div class="blaze-pagination {{ cn }}-pagination {% if settings.design_center_layout %}@center{% endif %}"></div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</{{NS}}>
+
+<script type="module" src="{{ NS | append: '.js' | asset_url }}"></script>

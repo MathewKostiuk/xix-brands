@@ -1,0 +1,18 @@
+{%- liquid
+    assign NS = 'logo-card'
+    assign cn = '#' | append: NS
+-%}
+
+<div class="{{ cn }} {% if grayscale_hover %}@grayscale-hover{% endif %}" style="--height: {{ height }}px;">
+    {%- if link != blank -%}
+        <a class="stretched-link" href="{{ link }}" aria-label="{{ 'general.accessibility.any_link' | t }}"></a>
+    {%- endif -%}
+    {% render 'media',
+        image: image,
+        srcsize_desktop: image_srcsize_desktop,
+        srcsize_mobile: image_srcsize_mobile,
+        placeholder: 'logo',
+        image_fit: 'contain',
+        aspect_ratio: 'auto'
+    %}
+</div>

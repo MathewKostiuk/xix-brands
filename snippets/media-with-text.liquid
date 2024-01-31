@@ -1,0 +1,47 @@
+{%- liquid
+    comment
+        Props:
+            - media_width: number
+            - media: HTML
+            - text: HTML
+            - media_position: string: left | right
+    endcomment
+
+    assign NS = 'media-with-text'
+    assign cn = '#' | append: NS
+    
+    assign gt_media = media_width | default: 50 | append: '%'
+    assign gt_text = 'minmax(0, 1fr)'
+
+    if media_position == 'left'
+        assign grid_template = gt_media | append: ' ' | append: gt_text
+    else
+        assign grid_template = gt_text | append: ' ' | append: gt_media 
+    endif
+-%}
+
+{% render 'load-css', file: NS %}
+
+{%- capture Media -%}
+    <div class="{{ cn }}-media {% if media_position == 'right' %} mob-first-item {% endif %}">
+        {{ media }}
+    </div>
+{%- endcapture -%}
+
+{%- capture Text -%}
+    <div class="{{ cn }}-text">
+        {{ text }}
+    </div>
+{%- endcapture -%}
+
+<div class="{{ cn }} {% if image_auto_size %}@image-auto-size{% endif %} {% if media_shadow %}@media-shadow{% endif %}">
+    <div class="#grid @type:template" style="--template: {{ grid_template }}; --template-mobile: none; --gap: 0; --gap-mobile: 0;">
+        {%- if media_position == 'left' -%}
+            {{ Media }}
+            {{ Text }}
+        {%- else -%}
+            {{ Text }}
+            {{ Media }}
+        {%- endif -%}
+    </div>
+</div>

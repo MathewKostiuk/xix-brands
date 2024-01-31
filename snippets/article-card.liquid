@@ -1,0 +1,48 @@
+{%- liquid
+    assign NS = 'article-card'
+    assign cn = '#' | append: NS
+    assign onboarding_title = 'onboarding.blog_title' | t
+
+-%}
+
+<div class="{{ cn }} hover-animate {%if mobile_cards_display == 'list'%}@mobile-list-item{%endif%}">
+    {%- if article.url != blank -%}
+        <a class="stretched-link" href="{{ article.url }}">{{ article.title }}</a>
+    {%- endif -%}
+    <div class="{{ cn }}-media hover-animate-target">
+        {% render 'media',
+            image: article.image,
+            srcsize_desktop: image_srcsize_desktop,
+            srcsize_mobile: image_srcsize_mobile,
+            size: size,
+            placeholder_index: placeholder_index,
+            placeholder: 'blog-apparel'
+        %}
+        {%- if tags_display != blank and tags_display != 'none' and article.tags.size > 0 -%}
+            <ul class="{{ cn }}-tags">
+                {%- if tags_display == 'first' -%}
+                    <li class="#badge">{{ article.tags[0] }}</li>
+                {%- else -%}
+                    {%- for tag in article.tags -%}
+                        <li class="#badge">{{ tag }}</li>
+                    {%- endfor -%}    
+                {%- endif -%}
+            </ul>    
+        {%- endif -%}
+        
+    </div>
+    <div class="{{ cn }}-caption">
+        {% if show_date %}
+            <div class="{{ cn }}-info">{{ article.published_at | date: "%B %e, %Y" }}</div> 
+        {% endif %}
+        {% if show_author %}
+            <div class="{{ cn }}-info">{{ article.author }}</div> 
+        {% endif %}
+        <h3 class="{{ cn }}-title">{{ article.title | default: onboarding_title }}</h3>
+        {% if show_excerpt %}
+            <div class="{{ cn }}-excerpt {% if hide_excerpt_mobile %}mobile-hidden{% endif %}">
+                {{ article.excerpt_or_content | strip_html | truncatewords: 15 }}
+            </div>
+        {% endif %}  
+    </div>
+</div>

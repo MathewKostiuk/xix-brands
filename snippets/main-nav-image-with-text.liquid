@@ -1,0 +1,70 @@
+{%- liquid
+    # props:
+    #   item: 'image_with_text' nav block
+
+    assign NS = 'main-nav-image-with-text'
+    assign cn = '#' | append: NS 
+
+    assign position = item.settings.text_position | split: '-'
+    assign text_y = position[0]
+    assign text_x = position[1]
+    assign image_width = item.settings.image_width
+
+    unless item.settings.image_size == 'origin'
+        assign image_height = item.settings.image_size
+    endunless
+    unless item.settings.mobile_image_size == 'origin'
+        assign mobile_image_height = item.settings.mobile_image_size
+    endunless
+-%}
+
+{% render 'load-css', file: NS %}
+
+{%- capture Media -%}
+    {% render 'media',
+        image: item.settings.image,
+        image_mobile: item.settings.mobile_image,
+        height: image_height,
+        height_mobile: mobile_image_height,
+        placeholder: 'detailed-apparel'
+    %}
+{%- endcapture -%}
+
+{%- capture Text -%}
+    {%- capture Hero_text -%}
+        {% render 'hero',
+            align: text_x,
+            heading: item.settings.heading,
+            heading_scale: item.settings.heading_scale,
+            subheading: item.settings.subheading,
+            text: item.settings.text,
+            enlarge_text: item.settings.enlarge_text
+            f_button_label: item.settings.f_button_label,
+            f_button_link: item.settings.f_button_link,
+            f_button_tier: item.settings.f_button_tier,
+            s_button_label: item.settings.s_button_label,
+            s_button_link: item.settings.s_button_link,
+            s_button_tier: item.settings.s_button_tier,
+            buttons_info: item.settings.info,
+            icon: item.settings.content_icon,
+            icon_scale: item.settings.icon_scale
+        %}
+    {%- endcapture -%}
+
+    {% render 'floating-content',
+        x: text_x,
+        y: text_y,
+        content: Hero_text,
+        padded: true
+    %}
+{%- endcapture -%}
+
+<div class="{{ cn }} color-scheme-{{ item.settings.color_scheme }}">
+    {% render 'media-with-text',
+        media: Media,
+        text: Text,
+        media_width: image_width,
+        media_position: item.settings.image_position,
+        image_auto_size: image_auto_size
+    %}
+</div>

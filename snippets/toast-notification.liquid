@@ -1,0 +1,29 @@
+{%- liquid
+    assign NS = 'toast-notification'
+    assign cn = '#' | append: NS    
+-%}
+
+{% render 'load-css', file: NS, lazy: true %}
+
+<{{ NS }} class="{{ cn }}" section-id="global">
+    <div class="{{ cn }}-inner">
+        <div class="{{ cn }}-icon @type:warning">
+            {% render 'icon', name: 'exclamation' %}
+        </div>
+        <div class="{{ cn }}-icon @type:error">
+            {% render 'icon', name: 'x' %}
+        </div>
+        <div class="{{ cn }}-icon @type:success">
+            {% render 'icon', name: 'check' %}
+        </div>
+        <div class="{{ cn }}-body">
+            <h5 class="{{ cn }}-title" data-element="title"></h5>
+            <p class="{{ cn }}-msg" data-element="msg"></p>
+        </div>
+        <button class="{{ cn }}-close" title="{{ 'accessibility.close' | t }}" data-element="close">
+            {% render 'icon', name: 'x' %}
+        </button>
+    </div>
+</{{ NS }}>
+
+<script type="module" src="{{ NS | append: '.js' | asset_url }}"></script>

@@ -1,0 +1,7 @@
+{%- assign cn = '#spinner' -%}
+
+<div class="{{ cn }} @size:{{ size | default: 'md' }}" style="{% if color != blank %}--color: {{ color }};{% endif %}">
+    <div></div>
+    <div></div>
+    <div></div>
+</div>

@@ -1,0 +1,8 @@
+{% liquid
+    assign NS = 'tabs-nav-item'
+    assign cn = '#' | append: NS
+%}
+
+<label for="{{ tab_id }}" class="{{ cn }} {% if active %}!active{% endif %}" data-element="tab-nav" {{ block.shopify_attributes }}>
+    {{ heading }}
+</label>

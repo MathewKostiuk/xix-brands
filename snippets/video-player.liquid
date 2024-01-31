@@ -1,0 +1,41 @@
+{% liquid
+    # PROPS:
+    # - video
+    # - height
+    # - mobile_height
+    # - loop: Boolean
+
+    assign NS = "video-player"
+    assign cn = "#" | append: NS
+    assign accent_color = settings.color_accent
+%}
+
+{% render 'load-css', file: 'plyr' %}
+{% render 'load-css', file: 'video-player' %}
+
+<{{ NS }} 
+    class="{{ cn }}"
+    section-id="{{ section.id }}"
+    style="
+        --video-height: {{ height | default: 'auto'  }}; 
+        --video-mobile-height:{{ mobile_height | default: 'auto' }}; 
+        {% if accent_color %}--plyr-color-main:{{ accent_color }};{% endif %}
+    "
+    {% if loop == true %} loop {% endif %}
+>
+    {%- if video.media_type == 'video' -%}
+        {{ video | video_tag }}
+    {%- else -%}
+        {% liquid
+            if video.media_type == 'external_video'
+                assign video_id = video.external_id
+                assign video_type = video.host
+            elsif video.media_type == blank
+                assign video_id = video.id
+                assign video_type = video.type
+            endif
+        %}
+        <div data-element="player" data-plyr-provider="{{ video_type }}" data-plyr-embed-id="{{ video_id }}"></div>
+    {%- endif -%}
+</{{ NS }}>
+<script type="module" src="{{ 'video-player.js' | asset_url }}"></script>

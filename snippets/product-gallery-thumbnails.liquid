@@ -1,0 +1,63 @@
+{% liquid
+    comment
+        PROPS:
+        - product: liquid object
+        - initial_index: number
+        - position: left/bottom
+        - auto_scroll: boolean
+    endcomment
+    assign NS = 'product-gallery-thumbnails'
+    assign cn = '#' | append: NS 
+    if auto_scroll == true
+        assign position = 'scrollable'
+    endif
+%}
+
+{% render 'load-css', file: NS %}
+
+<div class="{{ cn }}-wrapper mobile-hidden">
+
+<{{ NS }} class="{{ cn }} @position:{{ position }}" {% if auto_scroll %}auto-scroll{% endif %} section-id="{{ section.id }}">
+    {%- for media in product.media -%}
+        {% liquid
+            assign icon = nil
+
+            if media.media_type == 'video' or media.media_type == 'external_video'
+                assign icon = 'play'
+            endif
+
+            if media.media_type == 'model'
+                assign icon = 'box'
+            endif
+        %}
+        <div class="{{ cn }}-thumbnail">
+            {%- assign slide_id = "product-image-slide-" | append: section.id | append: forloop.index0 -%}
+            <label class="{{ cn }}-thumbnail-label" for="{{ slide_id }}">
+                {% if icon != nil %}
+                    <i class="{{ cn }}-thumbnail-icon">
+                        {% render 'icon', name: icon %}
+                    </i>
+                {% endif %}
+                <input 
+                    {% if initial_index == forloop.index0 %}checked{% endif %}
+                    data-element="input" 
+                    value="{{ forloop.index0 }}" 
+                    type="radio" 
+                    name="product-thumnail-{{ section.id }}" 
+                    id="{{ slide_id }}">
+                <div class="{{ cn }}-thumbnail-image">
+                    {%- render 'media',
+                        image: media,
+                        image_fit: 'contain',
+                        size: 'square',
+                        image_res: 70
+                    -%} 
+                </div>
+            </label>
+        </div>
+    {%- endfor -%}
+</{{ NS }}>
+</div>
+
+
+<script type="module" src="{{ NS | append: '.js' | asset_url  }}"></script>

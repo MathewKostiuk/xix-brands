@@ -1,0 +1,13 @@
+{% liquid
+    assign NS = 'product-badges'
+    assign cn = '#' | append: NS
+    assign badges = product.metafields.theme.custom_badges.value
+%}
+
+{% if badges.size > 0 %}
+    <div class="{{ cn }}">
+        {%- for badge in custom_badges -%}
+            <span class="{{ cn }}-item">{{ badge | strip }}</span>
+        {%- endfor -%} 
+    </div>
+{% endif %}

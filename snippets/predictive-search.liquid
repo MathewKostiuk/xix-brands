@@ -1,0 +1,110 @@
+{%- liquid
+    assign NS = 'predictive-search'
+    assign cn = '#' | append: NS
+-%}
+
+{% render 'load-css', file: NS, lazy: true %}
+
+{%- capture Initial_view -%}
+    {%- if settings.predictive_search_initial_suggestions_list != blank -%}
+        {%- assign suggestions_list = settings.predictive_search_initial_suggestions_list -%}
+        <div class="{{ cn}}-results-type">
+            <h3 class="{{ cn}}-results-type-title">{{ settings.predictive_search_initial_suggestions_heading }}</h3>
+            <div class="{{ cn }}-results-suggestions">
+                {%- for link in suggestions_list.links -%}
+                    <a class="{{ cn }}-results-suggestion unstyled-link" href="{{ link.url }}">
+                        {% render 'icon', name: 'magnifying-glass' %} <span class="{{ cn }}-suggestion-text">{{ link.title }}</span>
+                    </a>
+                {%- endfor -%}
+            </div>
+        </div>
+    {%- endif -%}
+
+    {%- if settings.predictive_search_initial_collection_list != blank -%}
+        {%- assign suggested_collections = settings.predictive_search_initial_collection_list -%}
+        <div class="{{ cn }}-results-type">
+            {% render 'load-css', file: 'collection-card-min' %}
+            <h3 class="{{ cn }}-results-type-title">{{ settings.predictive_search_initial_collection_list_heading }}</h3>
+            <div class="#grid @type:template" style="--template: repeat(auto-fill, minmax(11rem, 1fr));  --gap: 1rem;">
+                {%- for collection in suggested_collections -%}
+                    {% render 'collection-card-min'
+                        collection: collection,
+                    %}
+                {%- endfor -%}
+            </div>
+        </div>
+    {%- endif -%}
+
+    {%- if settings.predictive_search_initial_featured_collection != blank -%}
+        {%- assign suggested_products = settings.predictive_search_initial_featured_collection.products | where: 'available' -%}
+        <div class="{{ cn }}-results-type">
+            <h3 class="{{ cn }}-results-type-title">{{ settings.predictive_search_initial_featured_collection_heading }}</h3>
+            <div class="{{ cn }}-results-items">
+                {%- for suggested_product in suggested_products limit: 5 -%}
+                    {%- if settings.predictive_search_show_custom_badges -%}
+                        {%- assign badges = suggested_product.metafields.theme.custom_badges.value -%}
+                        {% capture Badges %}
+                            {% if badges != blank and badges.size > 0 %}
+                                <div class="{{ cn }}-badges">
+                                    {% for badge in badges %}
+                                        <span class="#badge @type:custom">{{ badge | strip }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        {% endcapture %}
+                    {% endif %}
+
+                    <div class="{{ cn }}-results-item">
+                        <a class="stretched-link" href="{{ suggested_product.url }}" aria-label="{{ suggested_product.title }}"></a>
+                        <div class="{{ cn }}-results-item-media">
+                            {% render 'media',
+                                image: suggested_product.featured_image,
+                                image_res: 70,
+                                border_radius: 'inner',
+                                size: 'square'
+                            %}
+                        </div>
+                        <div class="{{ cn }}-results-item-body">
+                            {{ Badges }}
+                            <h5 class="{{ cn }}-results-item-title">{{ suggested_product.title }}</h5>
+                            <div class="{{ cn }}-results-item-price">
+                                {% render 'price', product: suggested_product, display_units: false %}
+                            </div>
+                        </div>
+                        <div class="{{ cn }}-results-item-arrow">
+                            {% render 'icon',
+                                name: 'arrow-left'
+                            %}
+                        </div>
+                    </div>
+                {%- endfor -%}
+            </div>
+        </div>
+    {%- endif -%}
+{%- endcapture -%}
+
+<{{ NS }}
+    class="{{ cn }} initial-hidden {% if settings.header_lights_off and modal_child == false %}lights-off-active{% endif %}"
+    results-limit="{{ settings.predictive_search_results_limit }}"
+    section-id="{{ section.id }}"
+>
+    <div class="{{ cn }}-input">
+        <div class="{{ cn }}-input-spinner">
+            {% render 'spinner', size: 'xs', color: text_color %}
+        </div>
+        {{ search_form }}
+    </div>
+        
+    <div class="{{ cn }}-results-wrapper">
+        <div class="{{ cn }}-results" data-element="results" hidden></div>
+        {%- if Initial_view != blank -%}
+            <div class="{{ cn }}-results" data-element="initial">
+                <div class="{{ cn }}-results-types">
+                    {{ Initial_view }}
+                </div>
+            </div>
+        {%- endif -%}
+    </div> 
+</{{ NS }}>
+
+<script type="module" src="{{ NS | append: '.js' | asset_url }}"></script> 

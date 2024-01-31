@@ -1,0 +1,105 @@
+{% liquid
+    assign NS = 'main-nav-mega'
+    assign cn = '#' | append: NS 
+
+    if image_1 != blank
+        assign images_width = image_1_width | append: '% '  
+    endif
+
+    if image_2 != blank
+        assign images_width = images_width | append: image_2_width | append: '%'
+    endif
+
+    if images_position == 'right'
+        assign grid_template = '1fr ' | append: images_width
+    else
+        assign grid_template = images_width | append: ' 1fr'
+    endif
+
+    if images_height == 'origin'
+        assign images_height = blank
+    endif
+
+    if images_content_position == 'outside'
+        assign images_overlay = blank
+    else
+        assign images_inner_caption = true
+        assign pos = images_content_position | split: '-'
+        assign image_content_y = pos[0]
+        assign image_content_x = pos[1]
+    endif
+%}
+
+{% render 'load-css', file: NS %}
+
+{% if images_height == blank %}
+    {%- capture image_1_srcsize_desktop -%}(min(100vw, {{ settings.container_width }}px) - min(3rem, 5vw))*0.{{ image_1_width }}{%- endcapture -%}
+    {%- capture image_2_srcsize_desktop -%}(min(100vw, {{ settings.container_width }}px) - min(3rem, 5vw))*0.{{ image_2_width }}{%- endcapture -%}
+{% else %}
+    {%- capture image_1_srcsize_desktop -%}max(calc((min(100vw, {{ settings.container_width }}px) - min(3rem, 5vw))*0.{{ image_1_width }}), {{ images_height }}){%- endcapture -%}
+    {%- capture image_2_srcsize_desktop -%}max(calc((min(100vw, {{ settings.container_width }}px) - min(3rem, 5vw))*0.{{ image_2_width }}), {{ images_height }}){%- endcapture -%}
+{% endif %}
+
+{% capture Images %}
+    {% if image_1 != blank %}
+        {% render 'gallery-card',
+            image: image_1,
+            image_srcsize_desktop: image_1_srcsize_desktop,
+            heading: image_1_heading,
+            subheading: image_1_subheading,
+            caption_gap: 2,
+            heading_scale: 60,
+            media_height: images_height,
+            inner_caption: images_inner_caption,
+            caption_x: image_content_x,
+            caption_y: image_content_y,
+            overlay: images_overlay,
+            link: image_1_link,
+            ignore_frame: true,
+            color_scheme: images_color_scheme
+        %}
+    {% endif %}
+    {% if image_2 != blank %}
+        {% render 'gallery-card',
+            image: image_2,
+            image_srcsize_desktop: image_2_srcsize_desktop,
+            heading: image_2_heading,
+            subheading: image_2_subheading,
+            caption_gap: 2,
+            heading_scale: 60,
+            media_height: images_height,
+            inner_caption: images_inner_caption,
+            caption_x: image_content_x,
+            caption_y: image_content_y,
+            overlay: images_overlay,
+            link: image_2_link,
+            ignore_frame: true,
+            color_scheme: images_color_scheme
+        %}
+    {% endif %}
+{% endcapture %}
+
+{% capture Menu_items %}
+    {% render 'main-nav-grid',
+        menu: menu,
+        masonry_layout: masonry_layout,
+        show_collection_thumbnails: show_collection_thumbnails,
+        show_collection_image: show_collection_image,
+        collection_image_height: collection_image_height,
+        columns: columns
+    %}
+{% endcapture %}
+
+<div class="{{ cn }}" style="
+    --{{ NS }}-menu-columns: {{ columns }};
+">
+    <div class="#grid @type:template" style="--template: {{ grid_template }}; --template-mobile: none;">
+        {% if images_position == 'right' %}
+            {{ Menu_items }}
+            {{ Images }}
+        {% else %}
+            {{ Images }}
+            {{ Menu_items }}
+        {% endif %}
+    </div>
+</div>

@@ -1,0 +1,12 @@
+{
+  "sections": {
+    "main": {
+      "type": "s_customer-register",
+      "settings": {
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

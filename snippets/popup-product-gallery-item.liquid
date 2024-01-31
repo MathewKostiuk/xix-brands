@@ -1,0 +1,146 @@
+{%- liquid
+    # Props:
+        # hero (image)
+        # product 
+        # subtitle
+
+    assign NS = 'popup-product-gallery-item'
+    assign cn = '#' | append: NS
+    assign selected_variant = product.selected_or_first_available_variant
+    assign onboarding_title = 'onboarding.product_title' | t
+
+    if show_product_custom_badges and product != blank
+        assign badges = product.metafields.theme.custom_badges.value
+    endif
+-%}
+
+{%- capture hero_image_srcsize_desktop -%}(min(100vw, {{ settings.container_width }}px) - min(3rem, 5vw)) * 0.64{%- endcapture -%}
+{%- capture hero_image_srcsize_mobile -%}90vw{%- endcapture -%}
+{%- capture product_image_srcsize_desktop -%}(min(100vw, {{ settings.container_width }}px) - min(3rem, 5vw)) * 0.17{%- endcapture -%}
+{%- capture product_image_srcsize_mobile -%}90vw * 0.64{%- endcapture -%}
+
+{% capture Badges %}
+    {% if badges != blank and badges.size > 0 %}
+        <div class="{{ cn }}-badges">
+            {% for badge in badges %}
+                <span class="#badge @type:custom">{{ badge | strip }}</span>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endcapture %}
+
+{%- if product != blank -%}
+    {%- for variant in product.variants -%}
+        {%- capture Options -%}
+            {{ Options }}
+            <option 
+                {% unless variant.available %}disabled{% endunless %} 
+                value="{{ variant.id }}"
+            >
+                {{ variant.title }} - {{ variant.price | money }} 
+                {% unless variant.available %}( {{ 'products.product.sold_out' | t }} ){% endunless %}
+            </option>
+        {%- endcapture -%}
+
+        {%- if variant.available -%}
+            {%- capture Variant_images -%}
+                {{ Variant_images }}
+                <div class="{{ cn }}-image" data-element="variant-image" data-variant="{{ variant.id }}" {% unless selected_variant.id == variant.id %}hidden{% endunless %}>
+                    {%- assign variant_image = variant.image | default: product.featured_image -%}
+                    {% render 'media',
+                        image: variant_image,
+                        link: variant.url,
+                        srcsize_desktop: product_image_srcsize_desktop,
+                        srcsize_mobile: product_image_srcsize_mobile,
+                        border_radius: 'base'
+                    %}
+                </div>
+            {%- endcapture -%}
+        {%- endif -%}
+    {%- endfor -%}    
+{%- else -%}
+    {%- capture Variant_images -%}
+        <div class="{{ cn }}-image">
+            {%- assign variant_image = variant.image | default: product.featured_image -%}
+            {% render 'media',
+                placeholder: 'product',
+                srcsize_desktop: product_image_srcsize_desktop,
+                srcsize_mobile: product_image_srcsize_mobile,
+                border_radius: 'base',
+                placeholder: 'product-apparel',
+                placeholder_index: placeholder_index,
+                size: 'square'
+            %}
+        </div>
+    {%- endcapture -%}
+{%- endif -%}
+
+
+<div class="{{ cn }}">
+    <div class="{{ cn }}-inner">
+        <div class="#grid @type:template" style="--template: 64% 1fr; --template-mobile: none; --gap: 0; --gap-mobile: 0;">
+            <div class="{{ cn }}-hero">
+                {% render 'media',
+                    image: hero,
+                    height: '100%',
+                    height_mobile: '100%',
+                    srcsize_desktop: hero_image_srcsize_desktop,
+                    srcsize_mobile: hero_image_srcsize_mobile,
+                    placeholder: 'collection-apparel',
+                    placeholder_index: placeholder_index
+                %}
+            </div>
+            <{{ NS }}
+                class="{{ cn }}-card" 
+                initial-variant="{{ selected_variant.id }}"
+                section-id="{{ section.id }}"
+            >
+                <div class="{{ cn }}-media">
+                    {{ Variant_images }}
+                </div>
+                {{ Badges }}
+                <div>
+                    <h4 class="{{ cn }}-title heading-font">{{ product.title | default: onboarding_title  }}</h4>
+                    {% if subtitle != blank %}
+                        <p class="{{ cn }}-subtitle">{{ subtitle }}</p>
+                    {% endif %}
+                </div>
+                {%- if product.has_only_default_variant or product == blank -%}
+                    <div class="{{ cn }}-price">
+                        {% render 'price', variant: selected_variant %}
+                    </div>    
+                {%- endif -%}
+                {%- unless product.has_only_default_variant -%}
+                    {%- if product != blank -%}
+                        <div class="{{ cn }}-variant-select">
+                            <select data-element="variant-selector">
+                                {{ Options }}
+                            </select>
+                            {% render 'icon', name: 'angle-down' %}
+                        </div>
+                    {%- endif -%}
+                {%- endunless -%}
+                {%- if selected_variant.available -%}
+                    <div class="{{ cn }}-add-to-cart">
+                        {%- capture Button -%}
+                            {% render 'button',
+                                t_text: 'products.product.add_to_cart',
+                                atts: 'data-element="to-cart-button"',
+                                size: 'h4',
+                                loading: true
+                            %}
+                        {%- endcapture -%}
+                        {% render 'product-to-cart', 
+                            trigger: Button, 
+                            variant: selected_variant
+                        %}
+                    </div>
+                {%- endif -%}
+                <a class="{{ cn }}-link" href="{{ selected_variant.url }}">{{ 'products.product.view_full_details' | t }}</a>
+            </{{ NS }}>
+            {%- unless  block.settings.product.has_only_default_variant -%}
+                <script type="module" src="{{ NS | append: '.js' | asset_url }}"></script>
+            {%- endunless -%}
+        </div>
+    </div>
+</div>

@@ -1,0 +1,49 @@
+{%- liquid
+    assign NS = 'hero-video-popup'
+    assign cn = '#' | append: NS
+    assign icon_name = 'play'
+    if cover_image != blank
+        assign with_image = true
+    endif
+-%}
+
+{% render 'load-css', file: NS, lazy: true %}
+
+{%- capture Cover_image -%}
+    {%- if with_image -%}
+        {%- capture Image_icon -%}
+            <div class="{{ cn }}-image-icon">
+                {% render 'icon', name: icon_name %}
+            </div>
+        {%- endcapture -%}
+        <div class="{{ cn }}-image mobile-hidden">
+            {% render 'media',
+                image: cover_image,
+                srcsize_desktop: cover_image_srcsize_desktop,
+                border_radius: 'base',
+                shadow: 2
+            %}
+            {{ Image_icon }}
+        </div>
+    {%- endif -%}
+{%- endcapture -%}
+
+{%- capture Icon -%}
+    <div class="{{ cn }}-icon {% if with_image %}desktop-hidden{% endif %}">
+        {% render 'icon', name: icon_name %}
+    </div>
+{%- endcapture -%}
+
+{%- capture Content -%}
+    {{ Cover_image }}
+    {{ Icon }}
+{%- endcapture -%}
+
+<div class="{{ cn }} {% if with_image %}@cover-image{% endif %}" style="--width: {{ width }}%; --icon-color: {{ icon_color }};">
+    {% render 'video-popup',
+        video: video,
+        id: id,
+        content: Content,
+        autoplay: autoplay
+    %}
+</div>

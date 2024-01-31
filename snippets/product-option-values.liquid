@@ -1,0 +1,118 @@
+{%- for value in product_option.values -%}
+    {% liquid
+        assign option_position = 'option' | append: product_option.position
+        assign existed_variant = matched_options_variants | where: option_position, value | first  
+        
+        assign input_id = product_option.name | handleize | append: value | escape | handleize | append: product.id | append: section.id
+        assign cn_availability = ''
+        assign sold_out = false
+        if existed_variant
+            if existed_variant.available == false
+                assign cn_availability = '!sold-out'
+                assign sold_out = true
+            endif
+            assign variant_exists = true
+        else
+            assign variant_exists = false
+            assign cn_availability = '!unavailable'
+            assign existed_variant = product.variants | where: option_position, value | first
+        endif 
+
+        assign price = blank
+        assign image = blank
+
+        if show_variant_image and existed_variant.image
+            assign image = existed_variant.image
+        endif
+
+        if price_display != 'none' and variant_exists
+            if price_display == 'diff'
+                assign price = current.price | minus: existed_variant.price   
+            endif
+            if price_display == 'abs'
+                assign price = existed_variant.price
+            endif
+        endif
+
+        assign stock_alert_message = false
+        assign stock_alert_counter = 0
+
+        if variant_exists
+            if show_stock_alert and existed_variant.inventory_quantity <= settings.stock_threshold and existed_variant.inventory_management and existed_variant.inventory_policy == 'deny'
+                assign cart_product_count =  cart | item_count_for_variant: existed_variant.id
+                if cart_product_count < existed_variant.inventory_quantity
+                    assign inventory = existed_variant.inventory_quantity
+                    assign stock_alert_message = 'products.product.stock_alert.low_stock_msg' | t: value: inventory
+                    assign stock_alert_counter = inventory
+                endif
+            endif
+        endif
+
+        assign hide_price = false
+
+        if price_display == 'diff' and price == 0
+            assign hide_price = true
+        endif
+
+        if price_display == 'diff' 
+            if price > 0
+                assign price_icon = 'minus'
+            else
+                assign price_icon = 'plus'
+            endif
+        endif
+    %}
+
+    <label class="{{ cn }}-item" for="{{ input_id }}">
+        <input 
+            id="{{ input_id }}"
+            type="radio"
+            class="{{ cn }}-item-input {% if src == 'buttons' %}visually-hidden{% endif %} {{ cn_availability }}"
+            {% unless src == 'buttons' %}hidden{% endunless %}
+            data-option-value
+            data-option-index="{{ product_option.position | minus: 1 }}"
+            name="{{ product_option.name }}"
+            data-variant-id="{{ existed_variant.id }}"
+            value="{{ value | escape }}"
+            data-variant-image-position="{{ existed_variant.featured_media.position }}"
+            {% if product_option.selected_value == value %}checked{% endif %}
+        >
+        <div class="{{ cn }}-item-body">
+            {%- if image != blank -%}
+                <div class="{{ cn }}-item-media">
+                    {% render 'media',
+                        image: image,
+                        size: 'square',
+                        image_fit: 'contain',
+                        image_res: 50,
+                        animate_lazy_loading: false
+                    %}
+                </div>
+            {%- endif -%}
+
+            <div class="{{ cn }}-item-value">
+                <div class="{{ cn }}-item-title">
+                    {{ value }}
+                    {%- if stock_alert_message -%}
+                        <p class="{{ cn }}-item-stock-alert-title">{{ stock_alert_message }}</p>
+                    {%- endif -%}
+                </div>
+                {%- if unavailable_title -%}
+                    <span class="{{ cn }}-item-unavailable">{{ 'products.product.unavailable' | t | downcase }}</span>
+                {%- endif -%}
+                {%- if out_of_stock_title -%}
+                    <span class="{{ cn }}-item-sold-out">{{ 'products.product.stock_alert.out_of_stock_msg' | t | downcase }}</span>
+                {%- endif -%}
+                {%- if price != blank and product.price_varies -%}
+                    <div class="{{ cn }}-item-price {% if hide_price %}@invisible{% endif %}">
+                        {% render 'icon', name: price_icon %}
+                        {{ price | abs | money }}
+                    </div>
+                {%- endif -%}
+            </div>
+        </div> 
+        {% if stock_alert_counter > 0 %}
+            <span class="{{ cn }}-item-stock-alert-counter">{{ stock_alert_counter }}</span>
+        {% endif %}
+    </label>
+{%- endfor -%}

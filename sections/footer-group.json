@@ -1,0 +1,47 @@
+{
+  "type": "footer",
+  "name": "Footer group",
+  "sections": {
+    "g_footer": {
+      "type": "g_footer",
+      "blocks": {
+        "936fb0c9-0d6a-4fa1-b802-dfc2a9742869": {
+          "type": "menu",
+          "settings": {
+            "heading": "SITE",
+            "menu": "footer"
+          }
+        },
+        "a3306e81-1a29-4ef6-9b74-e1d0c0c7071b": {
+          "type": "menu",
+          "settings": {
+            "heading": "Contact",
+            "menu": "contact"
+          }
+        },
+        "social_menu_nUhNrx": {
+          "type": "social_menu",
+          "settings": {
+            "heading": "Follow us"
+          }
+        }
+      },
+      "block_order": [
+        "936fb0c9-0d6a-4fa1-b802-dfc2a9742869",
+        "a3306e81-1a29-4ef6-9b74-e1d0c0c7071b",
+        "social_menu_nUhNrx"
+      ],
+      "settings": {
+        "show_country_selector": true,
+        "show_language_selector": false,
+        "social_new_tab": true,
+        "show_scroll_to_top": true,
+        "payment_enable": false,
+        "enable_follow_on_shop": false
+      }
+    }
+  },
+  "order": [
+    "g_footer"
+  ]
+}

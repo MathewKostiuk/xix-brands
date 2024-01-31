@@ -1,0 +1,37 @@
+{%- liquid
+    comment
+        Props:
+            - content: HTML
+            - stop_on_hover: boolean
+            - stacked: boolean
+            - text_scale: number
+            - icon_color: string
+            - direction: normal | reverse
+            - speed_mult: 2 | 1 | 0.5
+    endcomment
+
+    assign NS = 'moving-content'
+    assign cn = '#' | append: NS
+-%}
+
+{% render 'load-css', file: NS %}
+
+<{{ NS }}
+    class="
+        {{ cn }} 
+        {% if stop_on_hover %}@stop-on-hover{% endif %}
+        {% if stacked %}@stacked{% endif %}
+        "
+    section-id="{{ section.id }}"
+    style="
+        {% if icon_color != blank %}--{{ NS }}-icon-color: {{ icon_color }};{% endif %}
+        {% if text_scale != blank %}--{{ NS }}-font-scale: {{ text_scale | times: 0.01 }};{% endif %}
+        --{{ NS }}-animation-direction:{{ direction }};
+        --{{ NS }}-animation-speed-mult:{{ speed_mult }};
+    ">
+        <div class="{{ cn }}-items" data-element="content">
+            {{ content }}
+        </div>
+</{{ NS }}>
+
+<script type="module" src="{{ NS | append: '.js' | asset_url }}"></script>

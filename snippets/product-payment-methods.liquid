@@ -1,0 +1,12 @@
+{%- assign NS = 'product-payment-methods' -%}
+{%- assign cn = '#' | append: NS -%}
+
+{% render 'load-css', file: NS %}
+
+<div class="{{ cn }}">
+    {%- for type in shop.enabled_payment_types -%}
+        <div class="{{ cn }}-item">
+            {{ type | payment_type_svg_tag: class: 'icon icon--full-color' }}
+        </div>
+    {%- endfor -%}
+</div>

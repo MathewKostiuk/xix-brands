@@ -1,0 +1,54 @@
+{% render 'load-css', file: 'product-collapse' %}
+
+{% assign cn = '#product-collapse' %}
+{% assign type = block.type | replace: 'collapsible_tab_', '' %}
+
+{%- case type -%}
+    {%- when 'text' -%}
+        {%- capture Content -%}
+            <div class="#rte-block">
+                {{ block.settings.content }}
+            </div>
+        {%- endcapture -%}
+    {%- when 'page' -%}
+        {%- capture Content -%}
+            <div class="#rte-block">
+                {{ block.settings.page.content }}
+            </div>
+        {%- endcapture -%}
+    {%- when 'specs' -%}
+        {%- capture Content -%}
+            {% render 'product-specs', specs: block.settings.specs %}
+        {%- endcapture -%}
+    {%- when 'desc' -%}
+        {%- capture Content -%}
+            <div class="#rte-block">
+                {{ product.description }}
+            </div>
+        {%- endcapture -%}    
+    {%- when 'question' -%}
+        {%- capture Content -%}
+            {%- render 'product-question',
+                product: product
+            -%}
+        {%- endcapture -%}
+{%- endcase -%}
+
+<details class="{{ cn }}">
+    <summary class="{{ cn }}-header">
+        <h5 class="{{ cn }}-heading">
+            {% if block.settings.icon != 'none' %}
+                <div class="{{ cn }}-heading-icon">
+                    {% render 'icon', name: block.settings.icon, load: true %}
+                </div>
+            {% endif %}
+            {{ block.settings.heading }}
+        </h5>
+        <div class="{{ cn }}-indicator">
+            {% render 'icon', name: 'angle-down' %}
+        </div>
+    </summary>
+    <div class="{{ cn }}-body">
+        {{ Content }}
+    </div>
+</details>

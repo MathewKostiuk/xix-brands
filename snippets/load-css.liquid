@@ -1,0 +1,13 @@
+{%- assign filepath = file | append: '.css' | asset_url -%}
+{%- if request.design_mode -%}
+    <link href="{{ filepath }}" rel="stylesheet" type="text/css" media="all">
+{%- else -%}
+    {%- if lazy -%}
+        <link rel="stylesheet" href="{{ filepath }}" media="print" onload="loadStyle(this)">
+        <noscript>
+            <link rel="stylesheet" href="{{ filepath }}" media="screen">
+        </noscript>
+    {%- else -%}    
+        <link href="{{ filepath }}" rel="stylesheet" type="text/css" media="all" onload="loadStyle(this)">
+    {%- endif -%}
+{%- endif -%}

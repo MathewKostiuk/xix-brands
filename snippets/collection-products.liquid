@@ -1,0 +1,32 @@
+{% liquid
+    # Props:
+    # - products
+    # - columns
+    # - mobile_columns
+    # - max_products
+    # - fallback_msg
+    # - limit (optional)
+
+    assign NS = 'collection-products'
+    assign cn = '#' | append: NS
+%}
+
+{% render 'load-css', file: 'product-card' %}
+
+<{{ NS }} class="{{ cn }}" section-id="{{ section.id }}" id="collection-products-{{ section.id }}">
+    {% if products.size <= 0 %}
+        {{ fallback_msg }}
+    {% else %}
+        <div class="#grid @type:columns" style="--columns: {{ columns }}; --columns-mobile: {{ mobile_columns }};" data-element="products-container">
+            {% for product in products limit: limit %}
+                {% render 'product-card', 
+                    product: product,
+                    image_srcsize_desktop: product_image_srcsize_desktop,
+                    image_srcsize_mobile: product_image_srcsize_mobile
+                %}
+            {% endfor %}
+        </div>
+    {% endif %}
+</{{ NS }}>
+
+<script type="module" src="{{ NS | append: '.js' | asset_url }}"></script>

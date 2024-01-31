@@ -1,0 +1,20 @@
+{%- liquid
+    assign NS = 'product-description-expand'
+    assign cn = '#' | append: NS
+
+    assign checkbox_id = NS | append: section.id | append: '-checkbox'
+-%}
+
+{% render 'load-css', file: NS %}
+
+<div class="{{ cn }}">
+    <input class="{{ cn }}-checkbox" type="checkbox" name="checkbox" id="{{ checkbox_id }}" hidden />
+    <div class="{{ cn }}-content">
+        {{ description }}
+    </div>
+    <label class="{{ cn }}-link" for="{{ checkbox_id }}">
+        <span class="{{ cn }}-link-expand">{{ 'products.product.description_read_more' | t }}</span>
+        <span class="{{ cn }}-link-collapse">{{ 'products.product.description_read_less' | t }}</span>
+        {% render 'icon', name: 'angle-down' %}
+    </label>
+</div>

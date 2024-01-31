@@ -1,0 +1,31 @@
+{% comment %}
+  Props:
+    heading: {String}
+    t_heading: {String} default: general.editor.default_heading | t
+    t_text: {String} default: general.editor.default_text | t
+{% endcomment %}
+
+{%- liquid 
+    assign NS = 'editor-notification'
+    assign cn = '#' | append: NS
+
+    assign note = 'general.editor.default_heading' | t
+    if heading != blank
+        assign note = heading
+    endif
+    if t_heading != blank
+        assign note = t_heading | t
+    endif
+
+    assign text = 'general.editor.default_text' | t
+    if t_text != blank
+        assign text = t_text | t
+    endif
+-%}
+
+{% render 'load-css', file: NS %}
+
+<div class="{{ cn }}" >
+    <h4>{{ note }}</h4>
+    <p class="{{ cn }}-text">{{ text }}</p>
+</div>

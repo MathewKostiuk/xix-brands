@@ -1,0 +1,15 @@
+{% liquid
+    # Props
+    # - image
+    # - zoom_scale
+
+    assign NS = 'product-gallery-image-zoomer'
+    assign cn = '#' | append: NS
+%}
+
+<{{ NS }} class="{{ cn }} mobile-hidden" section-id="{{ section.id }}"
+    style="{% if zoom_scale %}--scale: {{ zoom_scale }};{% endif %}"
+>
+    <img class="{{ cn }}-img" src="{{ image | image_url: width: 1600 }}" alt="{{ image.alt }}" loading="lazy">
+</{{ NS }}>
+

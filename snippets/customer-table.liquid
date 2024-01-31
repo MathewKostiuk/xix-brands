@@ -1,0 +1,12 @@
+{%- liquid
+    assign NS = 'customer-table'
+    assign cn = '#' | append: NS    
+-%}
+
+{% render 'load-css', file: NS %}
+
+<div class="{{ cn }}-wrapper">
+    <table class="{{ cn }}" role="table">
+        {{ content }}
+    </table>
+</div>

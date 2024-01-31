@@ -1,0 +1,84 @@
+{%- liquid
+    assign NS = 'cart-sidebar'
+    assign cn = '#' | append: NS     
+-%}
+
+<div class="{{ cn }} shadow-3">
+    {%- for block in section.blocks -%}
+        <div class="{{ cn }}-block" {{ block.shopify_attributes }}>
+            {%- case block.type -%}
+                {%- when 'subtotal' -%}
+                    <div data-element="subtotal-block">
+                        {% render 'cart-subtotal' %}
+                    </div>
+                {%- when 'tax_note' -%}
+                    <div class="{{ cn }}-tax-note">
+                        {%- if cart.taxes_included and shop.shipping_policy.body != blank -%}
+                            {{ 'sections.cart.taxes_included_and_shipping_policy_html' | t: link: shop.shipping_policy.url }}
+                        {%- elsif cart.taxes_included -%}
+                            {{ 'sections.cart.taxes_included_but_shipping_at_checkout' | t }}
+                        {%- elsif shop.shipping_policy.body != blank -%}
+                            {{ 'sections.cart.taxes_and_shipping_policy_at_checkout_html' | t: link: shop.shipping_policy.url }}
+                        {%- else -%}
+                            {{ 'sections.cart.taxes_and_shipping_at_checkout' | t }}
+                        {%- endif -%}
+                    </div>
+                {%- when 'order_notes' -%}
+                    <details class="{{ cn }}-order-notes" {% if block.settings.default_state == 'opened' %}open{% endif %}>
+                        <summary class="{{ cn }}-order-notes-header">
+                            <span class="{{ cn }}-order-notes-header-title">
+                                {{ 'sections.cart.note' | t }}
+                            </span>
+                        </summary>
+                        <div class="{{ cn }}-order-notes-body">
+                            {%- capture Input_atts -%}
+                                name="note"
+                                type="text"
+                                form="{{ form_id }}"
+                                cols="30" 
+                                rows="6"
+                            {%- endcapture -%}
+                            {%- render 'form-field',
+                                id: 'CartOrderNote',
+                                as: 'textarea',
+                                input_atts: Input_atts
+                            -%}
+                        </div>
+                    </details>
+                {%- when 'checkout' -%}
+                    <div class="{{ cn }}-checkout">
+                        {% render 'button',
+                            t_text: 'sections.cart.checkout',
+                            size: 'h3',
+                            shadow: true,
+                            block: true,
+                            name: 'checkout',
+                            type: 'submit',
+                            form: form_id,
+                            no_arrow: true
+                        %}
+
+                        {% if additional_checkout_buttons and block.settings.show_additional_checkout_buttons %}
+                            <div class="additional-checkout-buttons">
+                                {{ content_for_additional_checkout_buttons }}
+                            </div>
+                        {% endif %}
+
+                        {%- if block.settings.show_payment_methods -%}
+                            <div class="{{ cn }}-checkout-payment-methods">
+                                {%- for type in shop.enabled_payment_types -%}
+                                    {{ type | payment_type_svg_tag }}
+                                {%- endfor -%}
+                            </div>
+                        {%- endif -%}
+                    </div>
+                {%- when 'free_shipping' -%}
+                    <div data-element="free-shipping-block" data-dynamic="free-shipping">
+                        {% render 'load-css', file: 'free-shipping-progress-bar' %}
+                        {% render 'free-shipping-progress-bar' %}
+                        <script type="module" src="{{ 'free-shipping-progress-bar.js' | asset_url }}"></script>
+                    </div>
+            {%- endcase -%}
+        </div>    
+    {%- endfor -%}
+</div>

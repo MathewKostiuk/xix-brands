@@ -1,0 +1,71 @@
+{
+  "sections": {
+    "header": {
+      "type": "s_page-header",
+      "disabled": true,
+      "settings": {
+        "color_scheme": "",
+        "image_size": "250px",
+        "mobile_image_size": "250px",
+        "bg_image_overlay": 30,
+        "text_position": "inside",
+        "custom_text": ""
+      }
+    },
+    "main": {
+      "type": "s_page",
+      "settings": {
+        "content_width": 80,
+        "font_scale": 100
+      }
+    },
+    "d_custom_liquid_WFJfEY": {
+      "type": "d_custom-liquid",
+      "settings": {
+        "heading": "XIX-Brands Customizer",
+        "subheading": "",
+        "section_layout": "narrow",
+        "liquid_content": "<p>Exciting News! XIX-Brands is launching a product customizer. It will now be easier than ever to choose a product, customize it and have it made to your liking. Stay tuned for a seamless, unique experience in creating your perfect apparel or accessories. <\/p>\n\n<p>Looking to design products in the meantime or place a large order? <\/p>  \n<p><a href=\"https:\/\/xix-brands.com\/pages\/contact-us-general-enquiries\">Please get in touch with sales here.<\/a><\/p>",
+        "font_scale": 100,
+        "text_align": "center",
+        "section_button_label": "",
+        "section_button_url": ""
+      }
+    },
+    "d_hero_image_xEhmdR": {
+      "type": "d_hero-image",
+      "settings": {
+        "color_scheme": "",
+        "section_layout": "container",
+        "image": "shopify:\/\/shop_images\/XIX-Brands-Logo_Horizontal.png",
+        "image_size": "origin",
+        "mobile_image_size": "origin",
+        "overlay": 0,
+        "use_box": false,
+        "text_position": "center-center",
+        "mobile_offset": false
+      }
+    },
+    "d_custom_html_JP7i6D": {
+      "type": "d_custom-html",
+      "disabled": true,
+      "settings": {
+        "heading": "",
+        "subheading": "",
+        "section_layout": "default",
+        "html": "<meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Create Your Own Kit<\/title>\n    <style>\n        body {\n            text-align: center;\n        }\n\n        h1 {\n            margin-top: 20px;\n        }\n\n        .step-container {\n            display: flex;\n            justify-content: center;\n            margin-top: 20px;\n        }\n\n        .step {\n            width: 30%;\n            text-align: center;\nmargin: 0 10px 0 10px\n\n        }\n\n        img {\n            max-width: 100%;\n            height: auto;\n        }\n\n        p {\n            font-size: 14px;\n        }\n    <\/style>\n\n\n    <h1>3 Easy Steps To Creating Your Own Kit<\/h1>\n\n    <div class=\"step-container\">\n        <div class=\"step\">\n            <img src=\"https:\/\/cdn.shopify.com\/s\/files\/1\/2559\/6730\/files\/Step_1_-_Choose_Your_Apparel.png?v=1706134182\" alt=\"Step 1 Image\">\n            <p><strong>Step 1:<\/strong> Choose Your Apparel.<\/p>\n        <\/div>\n\n        <div class=\"step\">\n            <img src=\"https:\/\/cdn.shopify.com\/s\/files\/1\/2559\/6730\/files\/Step_2_-_Customize_Your_Apparel.png?v=1706132227\" alt=\"Step 2 Image\">\n            <p><strong>Step 2:<\/strong> Customize It.<\/p>\n        <\/div>\n\n        <div class=\"step\">\n            <img src=\"https:\/\/cdn.shopify.com\/s\/files\/1\/2559\/6730\/files\/Step_3_-_Checkout_And_Ship_To_Your_Door.png?v=1706130129\" alt=\"Step 3 Image\">\n            <p><strong>Step 3:<\/strong> Checkout and Ship To Your Door.<\/p>\n        <\/div>\n    <\/div>",
+        "font_scale": 100,
+        "text_align": "center",
+        "section_button_label": "",
+        "section_button_url": ""
+      }
+    }
+  },
+  "order": [
+    "header",
+    "main",
+    "d_custom_liquid_WFJfEY",
+    "d_hero_image_xEhmdR",
+    "d_custom_html_JP7i6D"
+  ]
+}

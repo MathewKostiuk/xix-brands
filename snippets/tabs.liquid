@@ -1,0 +1,23 @@
+{% liquid
+    assign NS = 'tabs'
+    assign NAV_NS = NS | append: '-nav'
+    assign cn = '#' | append: NS
+%}
+{% render 'load-css', file: NS %}
+
+{% capture Tabs_nav %}
+    <{{ NAV_NS }} section-id="{{ section.id }}">
+        <div class="{{ cn }}-nav-items">
+            {{ nav_items }}
+        </div>
+    </{{ NAV_NS }}>
+{% endcapture %}
+
+<div class="{{ cn }}">
+    <div class="#container">
+        {{ Tabs_nav }}
+    </div>
+    {{ panes }}
+</div>
+
+<script type="module" src="{{ NAV_NS | append: '.js' | asset_url }}"></script>

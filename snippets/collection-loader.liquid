@@ -1,0 +1,12 @@
+{%- liquid
+    assign NS = 'collection-loader'
+    assign cn = '#' | append: NS
+-%}
+
+{% render 'load-css', file: NS %}
+
+<{{ NS }} class="{{ cn }}" section-id="{{ section.id }}" hidden>
+    {% render 'spinner' %}
+</{{ NS }}>
+
+<script type="module" src="{{ NS | append: '.js' | asset_url }}"></script>

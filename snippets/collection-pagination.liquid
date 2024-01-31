@@ -1,0 +1,134 @@
+{%- liquid
+    assign NS = 'collection-pagination'
+    assign cn = '#' | append: 'pagination'
+    assign item_prefix = NS | append: section.id
+    # TODO: handle noscript
+-%}
+
+{% render 'load-css', file: 'pagination' %}
+
+<{{ NS }} section-id="{{ section.id }}" id="collection-pagination-{{ section.id }}">
+    <div class="mobile-hidden">
+        {%- if paginate.parts.size > 0 -%}
+            <nav class="{{ cn }}" role="navigation" aria-label="{{ 'general.pagination.label' | t }}">
+                <div class="{{ cn }}-inner">
+
+                {%- if paginate.previous -%}
+                    {% assign item_id = item_prefix | append: 'prev' %}
+                    <div class="{{ cn }}-item">
+                        <label class="{{ cn }}-trigger" for="{{ item_id }}" page-url="{{ paginate.previous.url }}">
+                            <input class="visually-hidden" type="checkbox" value="{{ paginate.previous.url }}" id="{{ item_id }}">
+                            {% render 'icon', name: 'angle-left' %}
+                            {% comment %}
+                                <a class="{{ cn }}-link" href="{{ paginate.previous.url }}{{ anchor }}">
+                                </a>
+                            {% endcomment %}
+                        </label>
+                    </div>
+                {%- endif -%}
+
+                {% for part in paginate.parts %}
+                    <div class="{{ cn }}-item">
+                        {% assign item_id = item_prefix | append: part.title %}
+                        {%- if part.is_link -%}
+                            <label class="{{ cn }}-trigger" for="{{ item_id }}" page-url="{{ part.url }}">
+                                <input class="visually-hidden" type="checkbox" value="{{ part.url }}" id="{{ item_id }}">
+                                {{ part.title }}
+                            </label>
+                            {% comment %}
+                                <collection-nav-item section-id="{{ section.id }}" page-url="{{ part.url }}{{ anchor }}">
+                                    <a class="{{ cn }}-link" href="{{ part.url }}">{{ part.title }}</a>
+                                </collection-nav-item>
+                            {% endcomment %}
+                        {%- elsif part.title == paginate.current_page -%}
+                            <span class="{{ cn }}-current">{{ part.title }}</span>
+                        {%- else -%}
+                            <span class="{{ cn }}-dots">{{ part.title }}</span>
+                        {%- endif -%}
+                    </div>
+                {% endfor %}
+
+                {%- if paginate.next -%}
+                    {% assign item_id = item_prefix | append: 'next' %}
+                    <div class="{{ cn }}-item">
+                        <label class="{{ cn }}-trigger" for="{{ item_id }}" page-url="{{ paginate.next.url }}">
+                            <input class="visually-hidden" type="checkbox" value="{{ paginate.next.url }}" id="{{ item_id }}">
+                            {% render 'icon', name: 'angle-right' %}
+                            {% comment %}
+                                <a class="{{ cn }}-link" href="{{ paginate.previous.url }}{{ anchor }}">
+                                </a>
+                            {% endcomment %}
+                        </label>
+                    </div>
+                {%- endif -%}
+                </div>
+            </nav>
+        {%- endif -%}
+    </div>
+
+
+
+{%- capture Button_prev -%}
+    {%- render 'icon', name: 'angle-left' -%}
+    <span class="visually-hidden">{{ 'general.pagination.previous' | t }}</span>
+{%- endcapture -%}
+
+{%- capture Button_next -%}
+    <span class="visually-hidden">{{ 'general.pagination.next' | t }}</span>
+    {%- render 'icon', name: 'angle-right' -%}
+{%- endcapture -%}
+
+<div class="desktop-hidden">
+    {%- if paginate.parts.size > 0 -%}
+        <nav class="{{ cn }}-mobile" role="navigation" aria-label="{{ 'general.pagination.label' | t }}">
+            <div class="{{ cn }}-inner">
+
+            {%- if paginate.previous -%}
+                {% assign item_id = item_prefix | append: 'prev-mobile' %}
+                <div class="{{ cn }}-item">
+                    <label class="{{ cn }}-trigger" for="{{ item_id }}" page-url="{{ paginate.previous.url }}">
+                        <input hidden type="checkbox" value="{{ paginate.previous.url }}" id="{{ item_id }}">
+                        {% render 'icon', name: 'angle-left' %}
+                        {% comment %}
+                            <a class="{{ cn }}-link" href="{{ paginate.previous.url }}{{ anchor }}">
+                            </a>
+                        {% endcomment %}
+                    </label>
+                </div>            
+            {%- else -%}
+                {% # TODO: better handle empty space %}
+                <div></div>
+            {%- endif -%}
+
+            {% for part in paginate.parts %}
+                {%- if part.title == paginate.current_page-%}
+                    <div class="{{ cn }}-item-mobile">
+                        <span class="{{ cn }}-current-mobile">{{ part.title }} {{ 'general.slider.of' | t }} {{ paginate.pages }}</span>
+                    </div>
+                {%- endif -%}
+            {% endfor %}
+
+            {%- if paginate.next -%}
+                {% assign item_id = item_prefix | append: 'next-mobile' %}
+                <div class="{{ cn }}-item">
+                    <label class="{{ cn }}-trigger" for="{{ item_id }}" page-url="{{ paginate.next.url }}">
+                        <input hidden type="checkbox" value="{{ paginate.next.url }}" id="{{ item_id }}">
+                        {% render 'icon', name: 'angle-right' %}
+                        {% comment %}
+                            <a class="{{ cn }}-link" href="{{ paginate.previous.url }}{{ anchor }}">
+                            </a>
+                        {% endcomment %}
+                    </label>
+                </div>
+            {%- else -%}
+                {% # TODO: better handle empty space %}
+                <div></div>
+            {%- endif -%}
+            </div>
+        </nav>
+    {%- endif -%}
+</div>
+
+</{{ NS }}>
+
+<script type="module" src="{{ NS | append: '.js' | asset_url }}"></script>

@@ -1,0 +1,82 @@
+{
+  "sections": {
+    "header": {
+      "type": "s_page-header",
+      "disabled": true,
+      "settings": {
+        "color_scheme": "",
+        "image_size": "250px",
+        "mobile_image_size": "250px",
+        "bg_image_overlay": 30,
+        "text_position": "inside",
+        "custom_text": ""
+      }
+    },
+    "main": {
+      "type": "s_page",
+      "settings": {
+        "content_width": 80,
+        "font_scale": 100
+      }
+    },
+    "d_hero_image_6XMHQY": {
+      "type": "d_hero-image",
+      "blocks": {
+        "subheading_yitWQ7": {
+          "type": "subheading",
+          "settings": {
+            "subheading": "Subheading"
+          }
+        },
+        "heading_abrP4q": {
+          "type": "heading",
+          "settings": {
+            "heading": "Hero Image Heading",
+            "heading_scale": 120
+          }
+        },
+        "text_RxVALy": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Give customers details about the hero image or content on the template.<\/p>",
+            "enlarge_text": false
+          }
+        },
+        "buttons_3D9PqL": {
+          "type": "buttons",
+          "settings": {
+            "mobile_hidden": false,
+            "info": "",
+            "f_button_label": "Shop Now",
+            "f_button_link": "",
+            "f_button_tier": "primary",
+            "s_button_label": "",
+            "s_button_link": "",
+            "s_button_tier": "secondary"
+          }
+        }
+      },
+      "block_order": [
+        "subheading_yitWQ7",
+        "heading_abrP4q",
+        "text_RxVALy",
+        "buttons_3D9PqL"
+      ],
+      "settings": {
+        "color_scheme": "",
+        "section_layout": "full",
+        "image_size": "origin",
+        "mobile_image_size": "origin",
+        "overlay": 0,
+        "use_box": false,
+        "text_position": "center-center",
+        "mobile_offset": false
+      }
+    }
+  },
+  "order": [
+    "header",
+    "main",
+    "d_hero_image_6XMHQY"
+  ]
+}

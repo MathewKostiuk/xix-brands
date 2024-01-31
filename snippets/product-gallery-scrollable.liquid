@@ -1,0 +1,16 @@
+{% liquid
+    comment
+        PROPS:
+        - slides: liquid node,
+        - initial_index: Number
+    endcomment
+
+    assign NS = 'product-gallery-scrollable'
+    assign cn = '#' | append: NS 
+%}
+
+<{{ NS }} class="{{ cn }} mobile-hidden" section-id={{ section.id }}>
+    {{ slides }}
+</{{ NS }}>
+
+<script type="module" src="{{ NS | append: '.js' | asset_url  }}"></script>

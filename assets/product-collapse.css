@@ -1,0 +1,57 @@
+.\#product-collapse {
+  border-bottom: 1px solid var(--color-g-border);
+  border-top: 1px solid var(--color-g-border);
+}
+.\#product-collapse > summary {
+  cursor: pointer;
+  list-style: none;
+}
+.\#product-collapse > summary::marker, .\#product-collapse > summary::-webkit-details-marker {
+  display: none;
+}
+.\#product-collapse-header {
+  display: flex;
+  align-items: center;
+  padding-block: var(--glob-size-4);
+  justify-content: space-between;
+}
+.\#product-collapse-heading {
+  display: flex;
+  align-items: center;
+  gap: var(--glob-size-5);
+  font-family: var(--glob-subheading-family);
+  font-size: var(--glob-subheading-size);
+  font-weight: var(--glob-subheading-weight);
+  text-transform: var(--glob-subheading-transform);
+  letter-spacing: var(--glob-subheading-letter-spacing, normal);
+  opacity: var(--glob-subheading-opacity);
+}
+.\#product-collapse-heading-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.\#product-collapse-heading-icon .\#icon {
+  --size: 1.3rem;
+  opacity: 0.8;
+}
+.\#product-collapse-indicator {
+  transition: var(--transition-base);
+}
+.\#product-collapse-indicator .\#icon {
+  --size: 1.3rem;
+  opacity: 0.6;
+}
+.\#product-collapse[open] .\#product-collapse-body {
+  opacity: 1;
+  transform: translateY(0);
+}
+.\#product-collapse[open] .\#product-collapse-indicator {
+  transform: rotate(180deg);
+}
+.\#product-collapse-body {
+  padding-bottom: var(--glob-size-5);
+  transition: var(--transition-base);
+  opacity: 0;
+  transform: translateY(-10px);
+}

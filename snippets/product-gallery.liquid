@@ -1,0 +1,267 @@
+{% liquid
+    # PROPS:
+    #    - image_expand: Boolean,
+    #    - enable_image_zoom: Boolean,
+    #    - gallery_type: 'slideshow' | 'slideshow_thumbs_bottom' | 'scrollable' | 'scrollable_without_thumbs'
+    #    - autoplay_video: Boolean
+    #    - image_srcsize_desktop: String
+    #    - image_srcsize_mobile: String
+    #    - show_wishlist_button: Boolean
+
+    assign NS = 'product-gallery'
+    assign cn = '#' | append: NS
+
+    assign initial_index = 0
+    if gallery_type == 'slideshow' and product.selected_or_first_available_variant.featured_media.position != blank
+        assign initial_index = product.selected_or_first_available_variant.featured_media.position | minus: 1
+    endif
+
+    assign expand_modal_id = 'gallery-expand' | append: section.id
+    assign has_3d_model = product.media | where: "media_type", "model" | first
+
+    assign thumbs_position = 'left'
+    if gallery_position == 'right'
+        assign thumbs_position = 'right'
+    endif
+    if gallery_type == 'slideshow_thumbs_bottom'
+        assign thumbs_position = 'bottom'
+    endif
+
+    if thumbs_position == 'left' or thumbs_position == 'right' 
+        assign thumbs_auto_scroll = true
+    endif
+%}
+
+{% render 'load-css', file: NS %}
+{% if enable_image_zoom %}
+    {% render 'load-css', file: 'product-gallery-image-zoomer' %}
+{% endif %}
+{% if has_3d_model %}
+    <script>
+        window.addEventListener('load',() => {
+            document.querySelectorAll('model-viewer[data-ar-button]').forEach(mv => {
+                if(!mv.canActivateAR) {
+                    mv.remove();
+                }
+            })
+        })
+    </script>
+{% endif %}
+{%- if has_3d_model and image_expand == false -%}
+    {% render 'load-css', file: 'model-viewer-ui', lazy: true %}
+{%- endif -%}
+
+{% capture Slides %}
+    {% for media in product.media %}
+        {% case media.media_type %}
+            {% when 'image' %}
+                <div class="{{ cn }}-media" data-index="{{ forloop.index0 }}" data-element="media">
+                    {% capture Image_content %}
+                        {% if enable_image_zoom %}
+                            {% render 'product-gallery-image-zoomer',
+                                image: media
+                            %}
+                        {% endif %}
+
+                        {% if forloop.first %}
+                            {% assign image_loading = 'eager' %}
+                        {% else %}
+                            {% assign image_loading = 'lazy' %}
+                        {% endif %}
+
+                        {% render 'media',
+                            image: media.preview_image,
+                            height: '100%',
+                            image_fit: 'contain',
+                            srcsize_desktop: image_srcsize_desktop,
+                            srcsize_mobile: image_srcsize_mobile,
+                            image_loading: image_loading
+                        %}
+                    {% endcapture %}
+                    {% if image_expand %}
+                        <modal-open class="{{ cn }}-media-expand" target="{{ expand_modal_id }}" section-id="{{ section.id }}">
+                            {{ Image_content }}
+                        </modal-open>
+                    {% else %}
+                        {{ Image_content }}
+                    {% endif %}
+                </div>
+            {% when 'model' %}
+                <div class="{{ cn }}-media" data-index="{{ forloop.index0 }}" data-element="media">
+                    {%- if image_expand -%}
+                        <modal-open class="{{ cn }}-media-expand" target="{{ expand_modal_id }}" section-id="{{ section.id }}">
+                            <i class="{{ cn }}-media-icon">
+                                {% render 'icon', name: 'box' %}
+                            </i>
+                            {% render 'media',
+                                image: media.preview_image,
+                                height: '100%',
+                                image_fit: 'contain',
+                                srcsize_desktop: image_srcsize_desktop,
+                                srcsize_mobile: image_srcsize_mobile
+                            %}
+                        </modal-open>
+                    {%- else -%}
+                        <div class="{{ cn }}-media-model-wrapper">
+                            {{ media | model_viewer_tag: ar-modes: "webxr scene-viewer quick-look", ar: 'true', camera-controls: 'true' }}
+                        </div>
+                   
+                    {%- endif -%}
+                    <model-viewer data-ar-button class="{{ cn }}-model-ar-button-wrapper desktop-hidden" data-shopify-feature="1.12" ar reveal="manual" {% for src in media.sources %}
+                        {% if src.format == 'glb' %}
+                            src="{{ src.url }}"
+                        {% endif %}
+                        {% if src.format == 'usdz' %}
+                            ios-src="{{ src.url }}"
+                        {% endif %}
+                    {% endfor %}>
+                        <button class="{{ cn }}-model-ar-button" slot="ar-button">
+                            {% render 'icon', name: 'box' %}
+                            {{ 'products.product.xr_button' | t }}
+                        </button>
+                    </model-viewer>
+                </div>
+                
+            {% when 'video', 'external_video' %}
+                {%- assign has_video = true -%}
+                {%- if image_expand -%}
+                    <div class="{{ cn }}-media" data-index="{{ forloop.index0 }}" data-element="media">
+                        <modal-open class="{{ cn }}-media-expand" target="{{ expand_modal_id }}" section-id="{{ section.id }}">
+                            <i class="{{ cn }}-media-icon">
+                                {% render 'icon', name: 'play' %}
+                            </i>
+                            {%- render 'media',
+                                image: media.preview_image,
+                                height: '100%',
+                                image_fit: 'contain',
+                                srcsize_desktop: image_srcsize_desktop,
+                                srcsize_mobile: image_srcsize_mobile
+                            -%}
+                        </modal-open>
+                    </div>
+                {%- else -%}
+                    <product-gallery-video {% if autoplay_video %}autoplay{% endif %} class="{{ cn }}-media" data-index="{{ forloop.index0 }}" data-element="media" section-id="{{ section.id }}">
+                        {%- render 'video-player', video: media, height: '100%', loop: true -%}
+                    </product-gallery-video>
+                {%- endif -%}
+        {% endcase %}
+    {% endfor %}
+{% endcapture %}
+
+{%- unless gallery_type == 'scrollable_without_thumbs' -%}
+    {%- capture Thumbnails -%}
+        {% render 'product-gallery-thumbnails',
+            product: product,
+            initial_index: initial_index,
+            position: thumbs_position,
+            auto_scroll: thumbs_auto_scroll
+        %}
+    {%- endcapture -%}
+{%- endunless -%}
+
+{%- capture Gallery_expand -%}
+    {% if image_expand %}
+        {% render 'product-gallery-expand',
+            modal_id: expand_modal_id,
+            initial_index: initial_index,
+            product: product,
+            autoplay_video: autoplay_video
+        %} 
+    {% endif %}
+{%- endcapture -%}
+
+{% if request.design_mode %}
+    <slider-resize-handler section-id="{{ section.id }}">
+        {{ Gallery_expand }}
+    </slider-resize-handler>
+{% else %}
+    {{ Gallery_expand }}
+{% endif %}
+
+{% capture Gallery %}
+    {% case gallery_type %}
+        {% when 'slideshow', 'slideshow_thumbs_bottom' %}
+            {% render 'product-gallery-slider',
+                slides: Slides,
+                initial_index: initial_index
+            %}
+        {% when 'scrollable', 'scrollable_without_thumbs' %}
+            {% render 'product-gallery-scrollable', 
+                slides: Slides,
+                initial_index: initial_index
+            %}
+            {% render 'product-gallery-slider',
+                slides: Slides,
+                initial_index: initial_index,
+                mobile: true
+            %}
+    {% endcase %}
+{% endcapture %}
+
+<div class="{{ cn }} @gallery-type:{{ gallery_type }} @thumbs-position:{{ thumbs_position }}">
+    {% if gallery_type != 'slideshow_thumbs_bottom' and thumbs_position == 'left' %}
+        {{ Thumbnails }}
+    {% endif %}
+    <div class="{{ cn }}-stage">
+        {%- comment -%}
+        {% if show_wishlist_button %}
+            <div class="{{ cn }}-wishlist">
+                {% render 'wishlist-toggle', product_url: product.url, sync: true %}
+            </div>
+        {% endif %}
+        {%- endcomment -%}
+        {% if request.design_mode %}
+            <slider-resize-handler section-id="{{ section.id }}">
+                {{ Gallery }}
+            </slider-resize-handler>
+        {% else %}
+            {{ Gallery }}
+        {% endif %}
+        
+        {% if image_expand %}
+            <div class="{{ cn }}-stage-title mobile-hidden">
+                {% render 'icon', name: 'maximize' %}
+                {{ 'products.product.media.expanded_view_label' | t }}
+            </div>
+            <modal-open class="{{ cn }}-stage-mobile-extend desktop-hidden" target="{{ expand_modal_id }}" section-id="{{ section.id }}">
+                {% render 'icon', name: 'maximize' %}
+            </modal-open>
+        {% endif %}
+    </div>
+    {%- if gallery_type == 'slideshow_thumbs_bottom' or thumbs_position == 'right' -%}
+        {{ Thumbnails }}
+    {%- endif -%}
+</div>
+
+{% if enable_image_zoom %}
+    <script type="module" src="{{ 'product-gallery-image-zoomer.js' | asset_url  }}"></script>
+{% endif %}
+
+{%- if has_video -%}
+    <script type="module" src="{{ 'product-gallery-video.js' | asset_url }}"></script>
+{%- endif -%}
+
+
+
+{% if request.design_mode %}
+    <script type="module">
+        const { Core } = Global;
+        const { debounce } = Global.Utils;
+        customElements.define('slider-resize-handler', class extends Core {
+            elements = {
+                slider: 'slideshow-blaze'
+            }
+            render() {
+                this._setCurrent();
+                this.$('slider').slider.onSlide(this._setCurrent.bind(this));
+                window.addEventListener('resize', debounce(() => {
+                    this.$('slider').slideTo(this.currentSlide);
+                }, 300))
+            }
+
+            _setCurrent(pageIndex) {
+                this.currentSlide = pageIndex || this.$('slider').getAttribute('initial-index');
+            }
+        });
+    </script>
+{% endif %}

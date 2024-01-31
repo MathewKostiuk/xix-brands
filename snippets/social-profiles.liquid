@@ -1,0 +1,105 @@
+{%- liquid
+    assign NS = 'social-profiles'
+    assign cn = '#' | append: NS
+    if new_tab
+        assign new_tab_attr = 'target="_blank" rel="noopener noreferrer"'
+    endif
+    unless lazyload == false
+        assign lazyload = true
+    endunless
+-%}
+
+{% render 'load-css', file: NS %}
+
+<nav class="{{ cn }}" role="list">
+    {% if settings.social_facebook_link != blank %}        
+        <a class="{{ cn }}-item" href="{{ settings.social_facebook_link }}" {{ new_tab_attr }} aria-describedby="a11y-external-message">
+            <span class="{{ cn }}-item-icon">
+                {% render 'icon', name: 'facebook' %}
+            </span>
+            <span class="{{ cn }}-item-title {% unless show_titles %}visually-hidden{% endunless %}">
+                {{ 'general.social.links.facebook' | t }}
+            </span>
+        </a>
+    {% endif %}
+    {% if settings.social_twitter_link != blank %}        
+        <a class="{{ cn }}-item" href="{{ settings.social_twitter_link }}" {{ new_tab_attr }} aria-describedby="a11y-external-message">
+            <span class="{{ cn }}-item-icon">
+                {% render 'icon', name: 'x-twitter' %}
+            </span>
+            <span class="{{ cn }}-item-title {% unless show_titles %}visually-hidden{% endunless %}">
+                {{ 'general.social.links.twitter' | t }}
+            </span>
+        </a>
+    {% endif %}
+    {% if settings.social_pinterest_link != blank %}        
+        <a class="{{ cn }}-item" href="{{ settings.social_pinterest_link }}" {{ new_tab_attr }} aria-describedby="a11y-external-message">
+            <span class="{{ cn }}-item-icon">
+                {% render 'icon', name: 'pinterest' %}
+            </span>
+            <span class="{{ cn }}-item-title {% unless show_titles %}visually-hidden{% endunless %}">
+                {{ 'general.social.links.pinterest' | t }}
+            </span>
+        </a>
+    {% endif %}
+    {% if settings.social_instagram_link != blank %}        
+        <a class="{{ cn }}-item" href="{{ settings.social_instagram_link }}" {{ new_tab_attr }} aria-describedby="a11y-external-message">
+            <span class="{{ cn }}-item-icon">
+                {% render 'icon', name: 'instagram' %}
+            </span>
+            <span class="{{ cn }}-item-title {% unless show_titles %}visually-hidden{% endunless %}">
+                {{ 'general.social.links.instagram' | t }}
+            </span>
+        </a>
+    {% endif %}
+    {% if settings.social_tiktok_link != blank %}        
+        <a class="{{ cn }}-item" href="{{ settings.social_tiktok_link }}" {{ new_tab_attr }} aria-describedby="a11y-external-message">
+            <span class="{{ cn }}-item-icon">
+                {% render 'icon', name: 'tiktok' %}
+            </span>
+            <span class="{{ cn }}-item-title {% unless show_titles %}visually-hidden{% endunless %}">
+                {{ 'general.social.links.tiktok' | t }}
+            </span>
+        </a>
+    {% endif %}
+    {% if settings.social_tumblr_link != blank %}        
+        <a class="{{ cn }}-item" href="{{ settings.social_tumblr_link }}" {{ new_tab_attr }} aria-describedby="a11y-external-message">
+            <span class="{{ cn }}-item-icon">
+                {% render 'icon', name: 'tumblr' %}
+            </span>
+            <span class="{{ cn }}-item-title {% unless show_titles %}visually-hidden{% endunless %}">
+                {{ 'general.social.links.tumblr' | t }}
+            </span>
+        </a>
+    {% endif %}
+    {% if settings.social_snapchat_link != blank %}        
+        <a class="{{ cn }}-item" href="{{ settings.social_snapchat_link }}" {{ new_tab_attr }} aria-describedby="a11y-external-message">
+            <span class="{{ cn }}-item-icon">
+                {% render 'icon', name: 'snapchat' %}
+            </span>
+            <span class="{{ cn }}-item-title {% unless show_titles %}visually-hidden{% endunless %}">
+                {{ 'general.social.links.snapchat' | t }}
+            </span>
+        </a>
+    {% endif %}
+    {% if settings.social_youtube_link != blank %}        
+        <a class="{{ cn }}-item" href="{{ settings.social_youtube_link }}" {{ new_tab_attr }} aria-describedby="a11y-external-message">
+            <span class="{{ cn }}-item-icon">
+                {% render 'icon', name: 'youtube' %}
+            </span>
+            <span class="{{ cn }}-item-title {% unless show_titles %}visually-hidden{% endunless %}">
+                {{ 'general.social.links.youtube' | t }}
+            </span>
+        </a>
+    {% endif %}
+    {% if settings.social_vimeo_link != blank %}        
+        <a class="{{ cn }}-item" href="{{ settings.social_vimeo_link }}" {{ new_tab_attr }} aria-describedby="a11y-external-message">
+            <span class="{{ cn }}-item-icon">
+                {% render 'icon', name: 'vimeo' %}
+            </span>
+            <span class="{{ cn }}-item-title {% unless show_titles %}visually-hidden{% endunless %}">
+                {{ 'general.social.links.vimeo' | t }}
+            </span>
+        </a>
+    {% endif %}
+</nav>

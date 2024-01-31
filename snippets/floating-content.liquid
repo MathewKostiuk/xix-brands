@@ -1,0 +1,24 @@
+{%- assign cn = '#floating-content' -%}
+
+{%- capture Inner -%}
+    <div class="
+            {{ cn }}
+            {% if x %}@x:{{ x }}{% endif %}
+            {% if y %}@y:{{ y }}{% endif %}
+            {% if padded %}@padded{% endif %}
+            {% if mobile_bottom == true %}@mobile-bottom{% endif %}
+            {% if container == true %}@container{% endif %}
+        ">
+        {{ content }}
+    </div>
+{%- endcapture -%}
+
+<div class="{{ cn }}-wrapper {% if absolute %}@absolute{% endif %} {% if mobile_offset %}@mobile-offset{% endif %}">
+    {% if container == true %}
+        <div class="#container">
+            {{ Inner }}
+        </div>
+    {% else %}
+        {{ Inner }}
+    {% endif %}
+</div>

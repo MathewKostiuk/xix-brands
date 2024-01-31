@@ -1,0 +1,68 @@
+{%- liquid
+    assign NS = 'collection-card'
+    assign cn = '#' | append: NS
+
+    if image == blank
+        if settings.collection_card_image_src == "product" 
+            assign image = collection.products[0].featured_image
+        elsif settings.collection_card_image_src == "collection"
+            assign image = collection.featured_image
+        endif
+    endif
+
+    assign hover_animate_target = "hover-animate-target"
+
+    assign title = collection.title
+    if custom_title != blank
+        assign title = custom_title
+    endif
+    
+    assign onboard_title = 'sections.collection_template.title' | t
+    
+    assign position = settings.collection_card_text_position
+    unless settings.collection_card_text_position == 'outside'
+        assign use_text_bg = true
+        assign inner_caption = true
+
+        assign position = settings.collection_card_text_position | split: '-'
+        assign caption_y = position[0]
+        assign caption_x = position[1]
+    endunless
+-%}
+
+<div class="{{ cn }} hover-animate {{ block_animate }} {{ inner_caption }}">
+    {% if collection.url != blank %}
+        <a href="{{ collection.url }}" class="stretched-link" aria-label="{{ collection.title }}"></a>
+    {% endif %}
+    <div class="{{ cn }}-image {{ media_animate }}">
+        {% render 'media',
+            image: image,
+            size: settings.collection_card_image_size,
+            border_radius: 'inner',
+            placeholder: 'collection-apparel',
+            overlay: settings.collection_card_image_overlay,
+            placeholder_index: placeholder_index,
+            srcsize_desktop: image_srcsize_desktop,
+            srcsize_mobile: image_srcsize_mobile,
+            image_res: image_res 
+        %}
+    </div>
+    {%- capture Caption -%}
+        <div class="{{ cn }}-caption {% if position == 'outside' %}@outside{%- endif -%}">
+            <h4 class="{{ cn }}-title {% if settings.collection_card_text_protection %}@text-bg{% endif %}">
+                {{ title | default: onboard_title  }}
+            </h4>
+        </div>
+    {%- endcapture -%}
+
+    {%- if inner_caption -%}
+        {% render 'floating-content',
+            x: caption_x,
+            y: caption_y,
+            absolute: true,
+            content: Caption
+        %}
+    {%- else -%}
+        {{ Caption }}
+    {%- endif -%}
+</div>

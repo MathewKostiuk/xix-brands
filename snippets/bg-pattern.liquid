@@ -1,0 +1,45 @@
+{% comment  %}
+    Props
+        pattern: string
+        pattern_scale: number
+        content: HTML
+        content_bg_color: color
+        animation: string
+{% endcomment %}
+
+{%- liquid
+    assign NS = 'bg-pattern'
+    assign cn = '#' | append: NS 
+
+    assign pattern_data = pattern | split: "_"
+    assign pattern_name = pattern_data[0]
+    assign pattern_base = pattern_data[1]
+    assign pattern_url = pattern_name | append: '.svg' | asset_url
+    assign pattern_size = pattern_scale | default: 100 | times: 0.01 | times: pattern_base
+
+    assign animation_speed =  pattern_size | divided_by: 25 | round: 2
+
+    if content_gradient_bg_color != blank
+        assign bg_color = content_gradient_bg_color
+    else
+        assign bg_color = content_bg_color
+    endif
+-%}
+
+{% render 'load-css', file: NS %}
+
+<div class="{{ cn }} {% unless animation == blank and animation == 'none' %}@animation:{{ animation }}{% endunless %}" 
+    style="
+        {% if bg_color != blank %}--{{ NS }}-color: {{ bg_color }};{% endif %}
+        {% if pattern_opacity != blank %}--{{ NS }}-opacity: {{ pattern_opacity | times: 0.01 }};{% endif %}
+        --{{ NS }}-src: url({{ pattern_url }});
+        --{{ NS }}-size: {{ pattern_size }}px;
+        --{{ NS }}-animation-speed: {{ animation_speed }}s;
+    ">
+    <div class="{{ cn }}-figure"></div>
+    {%- if content != blank -%}
+        <div class="{{ cn }}-content">
+            {{ content }}
+        </div>
+    {%- endif -%}
+</div>

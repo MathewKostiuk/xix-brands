@@ -1,0 +1,123 @@
+{% comment %}
+    Props:
+        cart_line_item
+        product
+        variant
+        price
+        max_qty
+        add_to_cart: boolean
+{% endcomment %}
+
+{%- liquid
+    assign NS = 'product-card-min'
+    assign cn = '#' | append: NS
+    assign variant = variant | default: product.first_available_variant
+    assign price = price | default: variant.price
+
+    if variant.featured_image
+        assign product_image = variant.featured_image
+    else
+        assign product_image = product.featured_image
+    endif 
+
+    unless link == false
+        assign link = variant.url
+    endunless
+-%}
+
+<div class="{{ cn }}">
+    {{ before }}
+    <div class="{{ cn }}-image">
+        {% render 'media' 
+            image: product_image,
+            border_radius: 'inner',
+            link: link,
+            image_res: 100
+        %}
+    </div>
+    <div class="{{ cn }}-info">
+        <div class="{{ cn }}-body">
+            <div class="{{ cn }}-heading">
+                <h5 class="{{ cn }}-title">
+                    {% if link %}
+                        <a class="unstyled-link" href="{{ variant.url }}">{{ product.title }}</a>
+                    {% else %}
+                        {{ product.title }}
+                    {% endif %}
+                </h5>
+                {{ after_heading }}
+            </div>
+            {%- if cart_line_item and cart_line_item.product.has_only_default_variant == false or cart_line_item.properties.size != 0 -%}
+                <dl class="{{ cn }}-info-options">
+                    {%- unless cart_line_item.product.has_only_default_variant -%}
+                        {%- for option in cart_line_item.options_with_values -%}
+                            <div class="{{ cn }}-info-option">
+                                <dt class="{{ cn }}-info-option-name">{{ option.name }}:</dt>
+                                <dd class="{{ cn }}-info-option-value">{{ option.value }}</dd>
+                            </div>
+                        {%- endfor -%}
+                    {%- endunless -%}
+                    {%- for property in cart_line_item.properties -%}
+                        {%- assign property_first_char = property.first | slice: 0  -%}
+                        {%- if property.last != blank and property_first_char != '_' -%}
+                            <div class="{{ cn }}-info-option">
+                                <dt class="{{ cn }}-info-option-name">{{ property.first }}:</dt>
+                                <dd class="{{ cn }}-info-option-value">
+                                    {%- if property.last contains '/uploads/'  -%}
+                                        <a class="unstyled-link" target="_blank" href="{{ property.last }}">
+                                            {{ property.last | split: '/' | last }}
+                                        </a>
+                                    {%- else  -%}
+                                        {{ property.last }}
+                                    {%- endif -%}
+                                </dd>
+                            </div>
+                        {%- endif -%}
+                    {%- endfor -%}
+                </dl>
+            {%- else -%}
+                {%- unless product.has_only_default_variant -%}
+                    <p class="{{ cn }}-variant">{{ variant.title }}</p>
+                {%- endunless -%}
+            {%- endif -%}
+            {%- if track_qty and max_qty == false -%}
+                {%- if cart_line_item and cart_line_item.variant.inventory_quantity <= settings.stock_threshold -%}
+                    {%- assign stock_alert_message = 'products.product.stock_alert.low_stock_msg' | t: value: cart_line_item.variant.inventory_quantity -%}
+                    <p class="{{ cn }}-info-stock-alert">{{ stock_alert_message }}</p>
+                {%- endif -%}
+            {%- endif -%}
+            {{ body }}
+        </div>
+        <div class="{{ cn }}-footer">
+            <div class="{{ cn }}-price-wrapper">
+                <div class="{{ cn }}-price">{{ price | money }}</div>
+                {% render 'unit-price', variant: variant %}
+            </div>
+            {% if add_to_cart %}
+                {%- capture Button_text -%}
+                    <span class="{{ cn }}-add-to-cart-text">
+                        {%- render 'icon', name: 'plus' -%}
+                        <span>{{ 'products.product.express_add_to_cart' | t }}</span>
+                    </span>
+                {%- endcapture -%}
+                {%- capture Button -%}
+                    {% render 'button',
+                        text: Button_text,
+                        loading: true,
+                        spinner_size: 'xs',
+                        no_arrow: true,
+                        atts: 'data-element="to-cart-button"',
+                        size: 'sm'
+                    %}
+                {%- endcapture -%}
+                {% render 'product-to-cart',
+                    trigger: Button,
+                    variant: variant
+                %}
+            {% else %}
+                {{ actions }}
+            {% endif %}
+        </div>
+    </div>
+    {{ after }}
+</div>

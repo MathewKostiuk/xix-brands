@@ -1,0 +1,21 @@
+{% liquid
+    comment
+        PROPS:
+        - slides: liquid node,
+        - initial_index: Number
+    endcomment
+
+    assign NS = 'product-gallery-slider'
+    assign cn = '#' | append: NS 
+%}
+
+<{{ NS }} class="{{ cn }} {% if mobile == true %}desktop-hidden{% endif %}" section-id={{ section.id }}>
+    {% render 'slideshow-blaze',
+        slides: slides,
+        initial_index: initial_index,
+        swipe_on_desktop: false,
+        show_pagination: true
+    %}
+</{{ NS }}>
+
+<script type="module" src="{{ NS | append: '.js' | asset_url  }}"></script>

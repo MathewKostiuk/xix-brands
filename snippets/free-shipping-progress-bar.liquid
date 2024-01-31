@@ -1,0 +1,30 @@
+{%- liquid 
+    assign NS = 'free-shipping-progress-bar'
+    assign cn = '#' | append: NS
+    assign cart_total_price = cart.total_price | plus: 0
+-%}
+
+
+
+{% if cart.total_price > 0 %}
+    <{{ NS }} hide-on-complete class="{{ cn }}" cart-amount="{{ cart.total_price }}" free-shipping-amount="{{ settings.free_shipping_min_amount | times: 100 }}">
+        <div class="{{ cn }}-header">
+            {%- if free_shipping -%}
+                <div class="{{ cn }}-icon @success">
+                    {% render 'icon', name: 'check' %}
+                </div> 
+            {%- else -%}
+                <div class="{{ cn }}-icon">
+                    {% render 'icon', name: 'truck-delivery', load: true %}
+                </div> 
+            {%- endif -%}
+            <h5 class="{{ cn }}-heading">
+                <span hidden data-element="msg-eligible">{{ 'sections.cart.free_shipping_aligible' | t }}</span>
+                <span hidden data-element="msg-shortage">{{ 'sections.cart.free_shipping_shortage_html' | t: amount: '' }}</span>
+            </h5>
+        </div>
+        <div data-element="progress" class="{{ cn }}-progress">
+            <div class="{{ cn }}-progress-inner"></div>
+        </div>
+    </{{ NS }}>
+{% endif %}

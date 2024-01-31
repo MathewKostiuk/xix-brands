@@ -1,0 +1,29 @@
+.\#collection-sidebar {
+  padding-inline: 3px;
+}
+.\#collection-sidebar:not(.\@drawer) {
+  --sticky-offset: var(--header-height, 0px);
+  height: calc(100vh - var(--header-height) - 2rem);
+  overflow-y: auto;
+}
+@media (min-width: 992px) {
+  .\#collection-sidebar:not(.\@drawer) {
+    position: sticky;
+    top: calc(2rem + var(--sticky-offset));
+  }
+}
+.\#collection-sidebar.\@show-bg {
+  padding: var(--glob-size-4);
+  border-radius: var(--glob-border-radius-base);
+  background: var(--color-g-bg);
+}
+.\#collection-sidebar-filters {
+  position: relative;
+}
+.\#collection-sidebar-filters-close-button {
+  position: sticky;
+  bottom: 0;
+  display: block;
+  padding-block: var(--glob-size-4);
+  background-color: var(--color-g-fg);
+}

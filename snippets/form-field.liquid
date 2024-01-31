@@ -1,0 +1,52 @@
+{%- liquid
+    assign NS = 'form-field'
+    assign cn = '#' | append: NS
+    if t_label != blank
+        assign label = t_label | t
+    endif
+-%}
+
+<div class="{{ cn }}">
+    {%- if label != blank and as != 'checkbox' and as != 'radio' -%}
+        <label class="{{ cn }}-label" for="{{ id }}">{{ label }}</label>
+    {%- endif -%}
+    {%- if as == 'input' -%}
+        <input class="{{ cn }}-input" id="{{ id }}" {{ input_atts }}>
+    {%- endif -%}
+    {%- if as == 'textarea' -%}
+        <textarea class="{{ cn }}-input" id="{{ id }}" {{ input_atts }}>{% if default_value %}{{ default_value }}{% endif %}</textarea>
+    {%- endif -%}
+    {%- if as == 'select' -%}
+        <select class="{{ cn }}-input" id="{{ id }}" {{ input_atts }}>
+            {{ options }}
+        </select>
+    {%- endif -%}
+    {%- if as == 'checkbox' -%}
+        <div class="{{ cn }}-checkbox">
+            <label class="{{ cn }}-checkbox-label" for="{{ id }}">
+                <input class="{{ cn }}-checkbox-input" id="{{ id }}" {{ input_atts }} hidden>
+                <div class="{{ cn }}-checkbox-figure">
+                    {% render 'icon', name: 'check' %}
+                </div>
+                {{ label }}
+            </label>
+        </div>
+    {%- endif -%}
+    {%- if as == 'radio' -%}  
+        <div class="{{ cn }}-radio-block">
+            <p class="{{ cn }}-label">{{ label }}</p>
+            <div class="{{ cn }}-radio-list">
+                {%- for option in options -%}
+                    {%- assign radio_id = option | handleize | append: id  -%}
+                    <label class="{{ cn }}-radio-list-item" for="{{ radio_id }}">
+                        <input class="{{ cn }}-radio-list-item-input" type="radio" id="{{ radio_id }}" {{ input_atts }} value="{{ option }}" {% if forloop.first %}checked{% endif %} hidden>
+                        <div class="{{ cn }}-radio-list-item-figure">
+                            <div class="{{ cn }}-radio-list-item-figure-inner"></div>
+                        </div>
+                        {{ option }}
+                    </label>
+                {%- endfor -%}
+            </div>
+        </div>
+    {%- endif -%}
+</div>

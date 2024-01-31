@@ -1,0 +1,150 @@
+{% comment %}
+    Renders a list of product's price (regular, sale)
+
+    Accepts:
+    - product: {Object} Product Liquid object (optional)
+    - variant: {Boolean} Renders selected or first variant price instead of overall product pricing (optional)
+    - show_titles: {Boolean}
+    - display_compare: {Boolean}
+    - show_save_price: {Boolean}
+    - display_units: {Boolean} default: true
+
+    Usage:
+    {% render 'price', product: product %}
+{% endcomment %}
+{%- assign cn = '#price' -%}
+
+{%- capture Price_range -%}
+  <span class="{{ cn }}-value-range">&#8212;</span>
+{%- endcapture -%}
+{%- capture Price_from -%}
+  <span class="{{ cn }}-value-from">{{ settings.product_price_variable_min_prefix }}</span>
+{%- endcapture -%}
+
+{% liquid
+  
+  assign target = variant | default: product
+
+  if target == product
+    assign unit_target = product.selected_or_first_available_variant
+  else
+    assign unit_target = target
+  endif
+  
+  if target.selected_selling_plan_allocation
+    assign target = target.selected_selling_plan_allocation
+  endif
+
+  assign compare_price = false
+  assign save_price = false
+  assign highlight_price = highlight_price | default: true
+  assign placeholder_price = 1999
+  assign show_zeros = settings.product_price_trailing_zeros
+  assign show_free_price_string = settings.product_price_zero_use_string
+  
+  unless display_units == false
+    assign display_units = true
+  endunless
+
+  unless display_compare == false
+    assign display_compare = true
+  endunless
+
+  assign price_variable_display = settings.product_price_variable_display
+
+  if display_compare and target.compare_at_price and target.price_varies != true and target.compare_at_price > target.price
+    assign compare_price = target.compare_at_price
+  endif
+
+  unless target.price
+    assign price = placeholder_price | money
+  else
+    if target.price_varies == true
+      if show_zeros
+        assign min_price = target.price_min | money
+        assign max_price = target.price_max | money
+      else
+        assign min_price = target.price_min | money_without_trailing_zeros
+        assign max_price = target.price_max | money_without_trailing_zeros
+      endif
+      if price_variable_display == 'range'
+        assign price = min_price | append: Price_range | append: max_price
+      endif
+      if price_variable_display == 'min'
+        assign price = Price_from | append: min_price
+        assign price = 'products.product.price.from_price_html' | t: price: min_price
+      endif
+    else
+      assign price = target.price
+      if show_zeros
+        assign price = price | money
+      else
+        assign price = price | money_without_trailing_zeros
+      endif
+      if show_free_price_string and target.price == 0
+        assign price = 'products.product.price.free_price' | t
+      endif
+    endif
+  endunless
+
+  if compare_price and show_save_price
+    assign save_price = compare_price | minus: target.price
+    assign save_pct = target.price | times: 100 | divided_by: compare_price
+    assign save_pct = 100 | minus: save_pct
+    if show_zeros
+      assign save_price = save_price | money
+    else
+      assign save_price = save_price | money_without_trailing_zeros
+    endif
+  endif
+
+  if compare_price
+    if show_zeros
+      assign compare_price = compare_price | money
+    else
+      assign compare_price = compare_price | money_without_trailing_zeros
+    endif
+  endif
+%}
+
+
+<dl class="{{ cn }}">
+  <div class="{{ cn }}-item @regular {% if target.compare_at_price > target.price %}@on-sale{% endif %} {% if target.price_varies == true %}@variable{% endif %}">
+    <dt class="{{ cn }}-item-heading {% unless show_titles %}visually-hidden{% endunless %}">
+      {%- if compare_price -%}
+        {{ 'products.product.price.sale_price' | t }}
+      {%- else -%}
+        {{ 'sections.cart.headings.price' | t }}
+      {%- endif -%}
+    </dt>
+    <dd class="{{ cn }}-item-value">
+      <span class="{{ cn }}-value">{{ price }}</span>
+    </dd>
+  </div>
+  {%- if compare_price -%}
+    <div class="{{ cn }}-item @compare">
+      <dt class="{{ cn }}-item-heading {% unless show_titles %}visually-hidden{% endunless %}">
+        {{ 'products.product.price.regular_price' | t }}
+      </dt>
+      <dd class="{{ cn }}-item-value">
+        <span class="{{ cn }}-value">{{ compare_price }}</span>
+      </dd>
+    </div>
+  {%- endif -%}
+  {%- if save_price -%}
+    <div class="{{ cn }}-item @save">
+      <dt class="{{ cn }}-item-heading {% unless show_titles %}visually-hidden{% endunless %}">
+        {{ 'products.product.price.save_price' | t }}
+      </dt>
+      <dd class="{{ cn }}-item-value">
+        {% comment %}
+          <span class="{{ cn }}-value">{% unless show_titles %}-{% endunless %}{{ save_price }}</span>
+        {% endcomment %}
+        <span class="{{ cn }}-pct">{{ save_pct }}%</span>
+      </dd>
+    </div>
+  {%- endif -%}
+  {% if display_units %}
+      {% render 'unit-price', variant: unit_target %}
+  {% endif %}
+</dl>

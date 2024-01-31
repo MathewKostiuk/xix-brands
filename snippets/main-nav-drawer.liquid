@@ -1,0 +1,171 @@
+{%- liquid
+    comment
+        Props:
+            - menu
+            - prefix 
+    endcomment
+    assign NS = 'main-nav-drawer'
+    assign cn = '#' | append: NS
+    assign prefix = prefix | default: 'navDrawer'
+    assign lvl1 = ''    
+-%}
+
+{% render 'load-css', file: NS %}
+
+{%- capture lvl1 -%}
+    <span class="{{ cn }}-nav-link @dir:backward" data-element="to-lvl" data-to-lvl="0">
+        {% render 'icon', name: 'angle-left' %}
+        {{ title }}
+    </span>
+{%- endcapture -%}
+
+<{{ NS }} class="{{ cn }}" section-id="{{ section.id }}">
+    <div class="{{ cn }}-stage" data-stage data-lvl="0">
+        <div class="{{ cn }}-lvl">
+            <div class="{{ cn }}-base">
+                <div class="{{ cn }}-nav-header">
+                    <h5 class="{{ cn }}-nav-title">{{ title }}</h5>
+                </div>
+                {%- for link in menu.links -%}
+                    {%- if link.levels > 0 -%}
+                        {%- assign lvl1_id = prefix | append: '-lvl1-' | append: forloop.index -%}
+                        <label class="{{ cn }}-nav-link @dir:forward" for="{{ lvl1_id }}" data-element="to-lvl" data-to-lvl="1">
+                            <span class="{{ cn }}-nav-item">
+                                {%- if thumbnails == true and link.type == 'collection_link' -%}
+                                    {%- assign collection_thumbnail = link.object.products[0].featured_image -%}
+                                    {%- if collection_thumbnail != blank -%}
+                                        {% render 'media',
+                                            image: collection_thumbnail,
+                                            image_res: 70,
+                                            size: 'square',
+                                            border_radius: 'inner'
+                                        %}
+                                    {%- endif -%}
+                                {%- endif -%}
+                                {{ link.title }}
+                            </span>
+                            {% render 'icon', name: 'angle-right' %}
+                        </label>
+                        {%- capture lvl1 -%}
+                            {{ lvl1 }}
+                            <input class="{{ cn }}-nav-check" type="radio" id="{{ lvl1_id }}" name="{{ prefix }}-lvl1">
+                            <div class="{{ cn }}-nav">
+                                <div class="{{ cn }}-nav-header">
+                                    <a class="stretched-link" href="{{ link.url }}" aria-label="{{ link.title }}"></a>
+                                    <h5 class="{{ cn }}-nav-title">{{ link.title }}</h5>
+                                    <span class="{{ cn }}-nav-subtitle">{{ 'sections.featured_collection.view_all' | t }}</span>
+                                </div>
+                                    {%- for lvl1_link in link.links -%}
+                                    {%- if lvl1_link.levels > 0 -%}
+                                        {%- assign lvl2_id = prefix | append: '-lvl2-' | append: forloop.index | append: forloop.parentloop.index -%}
+                                        <label class="{{ cn }}-nav-link @dir:forward" for="{{ lvl2_id }}" data-element="to-lvl" data-to-lvl="2">
+                                            <span class="{{ cn }}-nav-item">
+                                                {%- if thumbnails == true and lvl1_link.type == 'collection_link' -%}
+                                                    {%- assign collection_thumbnail = lvl1_link.object.products[0].featured_image -%}
+                                                    {%- if collection_thumbnail != blank -%}
+                                                        {% render 'media',
+                                                            image: collection_thumbnail,
+                                                            image_res: 70,
+                                                            size: 'square',
+                                                            border_radius: 'inner'
+                                                        %}
+                                                    {%-endif-%}
+                                                {%- endif -%}
+                                                {{ lvl1_link.title }}
+                                            </span>
+                                            {% render 'icon', name: 'angle-right' %}
+                                        </label>
+                                        {%- capture lvl2 -%}
+                                            {{ lvl2 }}
+                                            <input class="{{ cn }}-nav-check" type="radio" id="{{ lvl2_id }}" name="{{ prefix }}-lvl2">
+                                            <div class="{{ cn }}-nav">
+                                                <a class="{{ cn }}-nav-link @dir:backward" href="#" data-element="to-lvl" data-to-lvl="1">
+                                                    {% render 'icon', name: 'angle-left' %}
+                                                    {{ link.title }}
+                                                </a>
+                                                <div class="{{ cn }}-nav-header">
+                                                    <a class="stretched-link" href="{{ lvl1_link.url }}" aria-label="{{ lvl1_link.title }}"></a>
+                                                    <h5 class="{{ cn }}-nav-title">{{ lvl1_link.title }}</h5>
+                                                    <span class="{{ cn }}-nav-subtitle">{{ 'sections.featured_collection.view_all' | t }}</span>
+                                                </div>
+                                                {%- for lvl2_link in lvl1_link.links -%}
+                                                    {%- if thumbnails == true and lvl2_link.type == 'collection_link' -%}
+                                                        {%- assign collection_thumbnail = lvl2_link.object.products[0].featured_image -%}
+                                                        <div class="{{ cn }}-nav-link">
+                                                            <div class="{{ cn }}-nav-item">
+                                                                <a class="stretched-link" href="{{ lvl2_link.url }}" aria-label="{{ lvl2_link.title }}"></a>
+                                                                {%- if collection_thumbnail != blank -%}
+                                                                    {% render 'media',
+                                                                        image: collection_thumbnail,
+                                                                        image_res: 70,
+                                                                        size: 'square',
+                                                                        border_radius: 'inner'
+                                                                    %}
+                                                                {%- endif -%}
+                                                                <span>{{ lvl2_link.title }}</span>
+                                                            </div>
+                                                        </div>
+                                                    {%- else -%}
+                                                        <a class="{{ cn }}-nav-link" href="{{ lvl2_link.url }}">{{ lvl2_link.title }}</a>
+                                                    {%- endif -%}
+                                                {%- endfor -%}
+                                            </div>
+                                        {%- endcapture -%}
+                                    {%- else -%}
+                                        {%- if thumbnails and lvl1_link.type == 'collection_link' -%}
+                                            {%- assign collection_thumbnail = lvl1_link.object.products[0].featured_image -%}
+                                                <div class="{{ cn }}-nav-link">
+                                                    <div class="{{ cn }}-nav-item">
+                                                        <a class="stretched-link" href="{{ lvl1_link.url }}" aria-label="{{ lvl1_link.title }}"></a>
+                                                        {%- if collection_thumbnail != blank -%}
+                                                            {% render 'media',
+                                                                image: collection_thumbnail,
+                                                                image_res: 70,
+                                                                size: 'square',
+                                                                border_radius: 'inner'
+                                                            %}
+                                                        {%- endif -%}
+                                                        <span>{{ lvl1_link.title }}</span>
+                                                    </div>
+                                                </div>
+                                        {%- else -%}
+                                            <a class="{{ cn }}-nav-link" href="{{ lvl1_link.url }}">{{ lvl1_link.title }}</a>
+                                        {%- endif -%}
+                                    {%- endif -%}
+                                {%- endfor -%}
+                            </div>
+                        {%- endcapture -%}
+                    {%- else -%}
+                        {%- if thumbnails == true and link.type == 'collection_link' -%}
+                            {%- assign collection_thumbnail = link.object.products[0].featured_image -%}
+                                <div class="{{ cn }}-nav-link">
+                                    <div class="{{ cn }}-nav-item">
+                                        <a class="stretched-link" href="{{ link.url }}" aria-label="{{ link.title }}"></a>
+                                        {%- if collection_thumbnail != blank -%}
+                                            {% render 'media',
+                                                image: collection_thumbnail,
+                                                image_res: 70,
+                                                size: 'square',
+                                                border_radius: 'inner'
+                                            %}
+                                        {%- endif -%}
+                                        <span>{{ link.title }}</span>
+                                    </div>
+                                </div>
+                        {%- else -%}
+                            <a class="{{ cn }}-nav-link" href="{{ link.url }}">{{ link.title }}</a>
+                        {%- endif -%}
+                    {%- endif -%}
+                {%- endfor -%}
+            </div>
+        </div>
+        <div class="{{ cn }}-lvl">
+            {{ lvl1 }}
+        </div>
+        <div class="{{ cn }}-lvl">
+            {{ lvl2 }}
+        </div>
+    </div>
+</{{ NS }}>
+
+<script type="module" src="{{ NS | append: '.js' | asset_url }}"></script>

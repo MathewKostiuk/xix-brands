@@ -1,0 +1,327 @@
+{%- liquid
+    assign cn = '#media'
+
+    assign image_loading = image_loading | default: 'lazy'
+    unless animate_lazy_loading == false or image_loading != 'lazy'
+        assign animate_lazy_loading = true
+    endunless
+    assign image_fit = image_fit | default: 'cover'
+    assign size_mobile = size_mobile | default: size
+
+    if size != blank
+        case size
+            when 'auto'
+                assign height = '100%'
+            when 'full'
+                assign height = '100vh'
+            when 'xl'
+                assign height = '85vh'
+            when 'lg'
+                assign height = '70vh'
+            when 'md'
+                assign height = '55vh'
+            when 'sm'
+                assign height = '40vh'
+            when 'xs'
+                assign height = '25vh'
+            when 'square'
+                assign aspect_ratio = '1x1'
+            when 'circle'
+                assign aspect_ratio = '1x1'
+                assign rounded = true
+            when 'landscape'
+                assign aspect_ratio = '3x2'
+            when 'portrait'
+                assign aspect_ratio = '4x5'
+            when 'widescreen'
+                assign aspect_ratio = '16x9'
+            when 'ultrawide'
+                assign aspect_ratio = '21x9'
+            when 'origin'
+                assign aspect_ratio = 'origin'
+            else
+                assign aspect_ratio = size
+        endcase
+    endif
+
+    case size_mobile
+        when 'full'
+            assign height_mobile = '100vh'
+        when 'xl'
+            assign height_mobile = '85vh'
+        when 'lg'
+            assign height_mobile = '70vh'
+        when 'md'
+            assign height_mobile = '55vh'
+        when 'sm'
+            assign height_mobile = '40vh'
+        when 'xs'
+            assign height_mobile = '25vh'
+        when 'square'
+            assign aspect_ratio_mobile = '1x1'
+        when 'circle'
+            assign aspect_ratio = '1x1'
+            assign rounded = true
+        when 'landscape'
+            assign aspect_ratio_mobile = '3x2'
+        when 'portrait'
+            assign aspect_ratio_mobile = '4x5'
+        else
+            assign aspect_ratio_mobile = size_mobile
+    endcase
+
+    if aspect_ratio != blank and aspect_ratio != 'origin'
+        assign ar_split = aspect_ratio | split: 'x'
+        assign ar_height = ar_split[1]
+        assign ar_width =  ar_split[0] | times: 1.0
+    endif
+
+    if aspect_ratio_mobile == blank
+        assign aspect_ratio_mobile = aspect_ratio
+    endif
+
+    if aspect_ratio_mobile != blank and aspect_ratio_mobile != 'origin'
+        assign ar_split = aspect_ratio_mobile | split: 'x'
+        assign ar_mobile_height = ar_split[1]
+        assign ar_mobile_width =  ar_split[0] | times: 1.0
+    endif
+
+    if overlay != blank and overlay > 0
+        assign overlay = overlay | times: 0.01        
+    else
+        assign overlay = false
+    endif
+
+    if image == blank and image != false
+        assign use_placeholder = true
+    endif
+
+    if use_placeholder
+        assign placeholder = placeholder | default: 'image'
+        unless placeholder == 'image' or placeholder == 'logo'
+            assign placeholder_index = placeholder_index | default: 1
+        endunless
+        if placeholder_index and placeholder_index != blank
+            assign placeholder = placeholder | append: '-' | append: placeholder_index
+        endif
+    endif
+-%}
+<div class="
+    {{ cn }} 
+    {% if rounded == true %}@rounded{% endif %}
+    {% if border_radius and rounded != true %}@border-radius:{{ border_radius }}{% endif %}
+    {% if shadow %}shadow-{{ shadow }}{% endif %}
+    {% if icon_hover_animation == true %}@icon-hover-opacity{% endif %}
+    {% if animate_lazy_loading %}@animate-loading{% endif %}
+" style="--image-fit: {{ image_fit }};">
+    {%- if link != blank -%}
+        <a class="stretched-link" href="{{ link }}" aria-label="{{ 'general.accessibility.any_link' | t }}"></a>
+    {%- endif -%}
+    {% if image != blank %}
+        <img 
+            class="{{ cn }}-image {% if image_mobile != blank %}mobile-hidden{% endif %}"
+            alt="{{ image.alt | escape }}"
+            width="{{ image.width }}"
+            height="{{ image.height }}"
+            loading="{{ image_loading }}"
+            style="
+                --image-position: {{ image.presentation.focal_point }}; 
+                --image-ar-height: {{ ar_height | default: image.height }}; 
+                --image-ar-width: {{ ar_width | default: image.width }};
+                {% if height != blank %}--image-height: {{ height }};{%endif%}
+                --image-mobile-ar-height: {{ ar_mobile_height | default: image.height }};
+                --image-mobile-ar-width: {{ ar_mobile_width | default: image.width  }};
+                {% if height_mobile != blank %}--image-mobile-height: {{ height_mobile }};{% endif %}
+            "
+            {% if animate_lazy_loading %}onload="lazyImageOnLoad(this)"{% endif %}
+            {% if image_res != blank %}
+                {% assign x1 = image_res | append: 'x' %}
+                {% assign x2 = image_res | times: 2 | append: 'x' %}
+                {% assign x3 = image_res | times: 3 | append: 'x' %}
+                src="{{ image | img_url: x1 }}"
+                srcset="{{ image | img_url: x1 }}, {{ image | img_url: x2 }} 2x, {{ image | img_url: x3 }} 3x"
+            {% else %}    
+                src="{{ image | img_url: 'master' }}"
+                srcset="{%- if image.width >= 165 -%}{{ image | img_url: '165x' }} 165w,{%- endif -%}
+                    {%- if image.width >= 360 -%}{{ image | img_url: '360x' }} 360w,{%- endif -%}
+                    {%- if image.width >= 533 -%}{{ image | img_url: '533x' }} 533w,{%- endif -%}
+                    {%- if image.width >= 720 -%}{{ image | img_url: '720x' }} 720w,{%- endif -%}
+                    {%- if image.width >= 940 -%}{{ image | img_url: '940x' }} 940w,{%- endif -%}
+                    {%- if image.width >= 1066 -%}{{ image | img_url: '1066x' }} 1066w,{%- endif -%}
+                    {%- if image.width >= 1200 -%}{{ image | img_url: '1200x' }} 1200w,{%- endif -%}
+                    {%- if image.width >= 1400 -%}{{ image | img_url: '1400x' }} 1400w,{%- endif -%}
+                    {%- if image.width >= 1600 -%}{{ image | img_url: '1600x' }} 1600w,{%- endif -%}
+                    {%- if image.width >= 1800 -%}{{ image | img_url: '1800x' }} 1800w,{%- endif -%}
+                    {{ image | img_url: 'master' }} {{ image.width }}w"
+                {% if srcsize_desktop != blank or srcsize_mobile != blank %}
+                    sizes="{% if srcsize_desktop != blank %}(min-width: 992px) calc({{ srcsize_desktop }}),{% endif %}{% if srcsize_mobile != blank %}(max-width: 991px) calc({{ srcsize_mobile }}), {% endif %} 100vw"
+                {% endif %}
+            {% endif %}
+        />
+        {% endif %}
+        {% if image_mobile != blank %}
+        <img 
+            class="{{ cn }}-image desktop-hidden"
+            alt="{{ image_mobile.alt | escape }}"
+            width="{{ image_mobile.width }}"
+            height="{{ image_mobile.height }}"
+            loading="{{ image_loading }}"
+            style="
+                --image-mobile-ar-height: {{ ar_mobile_height | default: image_mobile.height }};
+                --image-mobile-ar-width: {{ ar_mobile_width | default: image_mobile.width }};
+                 {% if height_mobile != blank %}--image-mobile-height: {{ height_mobile }};{% endif %}
+            "
+            {% if animate_lazy_loading %}onload="lazyImageOnLoad(this)"{% endif %}
+            {% if image_res != blank %}
+                {% assign x1 = image_res | append: 'x' %}
+                {% assign x2 = image_res | times: 2 | append: 'x' %}
+                {% assign x3 = image_res | times: 3 | append: 'x' %}
+                src="{{ image_mobile | img_url: x1 }}"
+                srcset="{{ image_mobile | img_url: x1 }}, {{ image_mobile | img_url: x2 }} 2x, {{ image_mobile | img_url: x3 }} 3x"
+            {% else %}
+                src="{{ image_mobile | img_url: 'master' }}"
+                srcset="{%- if image_mobile.width >= 165 -%}{{ image_mobile | img_url: '165x' }} 165w,{%- endif -%}
+                    {%- if image_mobile.width >= 360 -%}{{ image_mobile | img_url: '360x' }} 360w,{%- endif -%}
+                    {%- if image_mobile.width >= 533 -%}{{ image_mobile | img_url: '533x' }} 533w,{%- endif -%}
+                    {%- if image_mobile.width >= 720 -%}{{ image_mobile | img_url: '720x' }} 720w,{%- endif -%}
+                    {%- if image_mobile.width >= 940 -%}{{ image_mobile | img_url: '940x' }} 940w,{%- endif -%}
+                    {%- if image_mobile.width >= 1066 -%}{{ image_mobile | img_url: '1066x' }} 1066w,{%- endif -%}
+                    {%- if image_mobile.width >= 1200 -%}{{ image_mobile | img_url: '1200x' }} 1200w,{%- endif -%}
+                    {%- if image_mobile.width >= 1400 -%}{{ image_mobile | img_url: '1400x' }} 1400w,{%- endif -%}
+                    {%- if image_mobile.width >= 1600 -%}{{ image_mobile | img_url: '1600x' }} 1600w,{%- endif -%}
+                    {%- if image_mobile.width >= 1800 -%}{{ image_mobile | img_url: '1800x' }} 1800w,{%- endif -%}
+                    {{ image_mobile | img_url: 'master' }} {{ image_mobile.width }}w"
+                {% if srcsize_desktop != blank or srcsize_mobile != blank %}
+                    sizes="{% if srcsize_desktop != blank %}(min-width: 992px) calc({{ srcsize_desktop }}),{% endif %}{% if srcsize_mobile != blank %}(max-width: 991px) calc({{ srcsize_mobile }}), {% endif %} 100vw"
+                {% endif %}
+            {% endif %}
+        />
+    {% endif %}
+    {% if use_placeholder %}
+        <div class="{{ cn }}-placeholder {% if image_mobile != blank %}mobile-hidden{% endif %}" style="
+            --image-ar-height: {{ ar_height | default: 9 }}; 
+            --image-ar-width: {{ ar_width | default: 21 }};
+            {% if height != blank %}--image-height: {{ height }};{%endif%}
+            --image-mobile-ar-height: {{ ar_mobile_height | default: 5 }};
+            --image-mobile-ar-width: {{ ar_mobile_width | default: 4 }};
+            {% if height_mobile != blank %}--image-mobile-height: {{ height_mobile }};{% endif %}
+        ">
+            {{ placeholder | placeholder_svg_tag }}
+        </div>
+    {% else %}
+        {%- if animate_lazy_loading -%}
+            <div class="{{ cn }}-image-loading-placeholder"></div>
+        {%- endif -%}
+    {% endif %}
+    {% if overlay > 0 %}
+        <div class="{{ cn }}-overlay" style="--value: {{ overlay }}; {% if mobile_overlay != blank %}--mobile-value: {{ mobile_overlay }};{% endif %}"></div>
+    {% endif %}
+    {%- if icon != blank -%}
+        <div class="{{ cn }}-icon" {% if icon_color != blank %}style="--icon-color: {{ icon_color }};"{% endif %}>
+            {% render 'icon', name: icon, size: icon_size %}
+        </div>
+    {%- endif -%}
+    {{ content }}
+</div>
+{% comment %}
+<div class="
+        {{ cn }} 
+        @type:{{ type }} 
+        @type-mobile:{{ type_mobile }}
+        {% if image_mobile != blank %}@mobile-image{% endif %}
+        {% if rounded == true %}@rounded{% endif %}
+        {% if border_radius and rounded != true %}@border-radius:{{ border_radius }}{% endif %}
+        {% if shadow %}shadow-{{ shadow }}{% endif %}
+        {% if icon_hover_animation == true %}@icon-hover-opacity{% endif %}
+    "
+    style="
+        --image-fit: {{ image_fit }};
+        {{ type_style }}; 
+        {{ type_style_mobile }};
+        {% if overlay %}{% endif %}
+    "
+>
+    {%- if link != blank -%}
+        <a class="{{ cn }}-link" href="{{ link }}"></a>
+    {%- endif -%}
+
+    {% if image != blank %}
+        <div class="{{ cn }}-image-wrapper">
+            <img
+                class="{{ cn }}-image {% if image_fit == 'cover' %}@cover{% endif %} {% if animate_lazy_loading %}@animate-loading{% endif %}"
+                alt="{{ image.alt | escape }}"
+                width="{{ image.width }}"
+                height="{{ image.height }}"
+                loading="{{ image_loading }}"
+                style="--image-position: {{ image.presentation.focal_point }}; --image-ar-height: {{ ar_height | default: image.height }}; --image-ar-width: {{ ar_width | default: image.width }};"
+                {% if image_loading == 'lazy' and animate_lazy_loading %}onload="lazyImageOnLoad(this)"{% endif %}
+                {% if image_res != blank %}
+                    {% assign x1 = image_res | append: 'x' %}
+                    {% assign x2 = image_res | times: 2 | append: 'x' %}
+                    {% assign x3 = image_res | times: 3 | append: 'x' %}
+                    src="{{ image | img_url: x1 }}"
+                    srcset="{{ image | img_url: x1 }}, {{ image | img_url: x2 }} 2x, {{ image | img_url: x3 }} 3x"
+                {% else %}    
+                    src="{{ image | img_url: 'master' }}"
+                    srcset="{%- if image.width >= 165 -%}{{ image | img_url: '165x' }} 165w,{%- endif -%}
+                        {%- if image.width >= 360 -%}{{ image | img_url: '360x' }} 360w,{%- endif -%}
+                        {%- if image.width >= 533 -%}{{ image | img_url: '533x' }} 533w,{%- endif -%}
+                        {%- if image.width >= 720 -%}{{ image | img_url: '720x' }} 720w,{%- endif -%}
+                        {%- if image.width >= 940 -%}{{ image | img_url: '940x' }} 940w,{%- endif -%}
+                        {%- if image.width >= 1066 -%}{{ image | img_url: '1066x' }} 1066w,{%- endif -%}
+                        {%- if image.width >= 1200 -%}{{ image | img_url: '1200x' }} 1200w,{%- endif -%}
+                        {%- if image.width >= 1400 -%}{{ image | img_url: '1400x' }} 1400w,{%- endif -%}
+                        {%- if image.width >= 1600 -%}{{ image | img_url: '1600x' }} 1600w,{%- endif -%}
+                        {%- if image.width >= 1800 -%}{{ image | img_url: '1800x' }} 1800w,{%- endif -%}
+                        {{ image | img_url: 'master' }} {{ image.width }}w"
+                    {% if srcsize_desktop != blank or srcsize_mobile != blank %}
+                        sizes="{% if srcsize_desktop != blank %}(min-width: 992px) calc({{ srcsize_desktop }}),{% endif %}{% if srcsize_mobile != blank %}(max-width: 991px) calc({{ srcsize_mobile }}), {% endif %} 100vw"
+                    {% endif %}
+                {% endif %}
+                
+            >
+            {% if image_mobile != blank %}
+                <img
+                    class="{{ cn }}-image-mobile"
+                    src="{{ image_mobile | img_url: 'master' }}"
+                    srcset="{%- if image_mobile.width >= 165 -%}{{ image_mobile | img_url: '165x' }} 165w,{%- endif -%}
+                        {%- if image_mobile.width >= 360 -%}{{ image_mobile | img_url: '360x' }} 360w,{%- endif -%}
+                        {%- if image_mobile.width >= 533 -%}{{ image_mobile | img_url: '533x' }} 533w,{%- endif -%}
+                        {%- if image_mobile.width >= 720 -%}{{ image_mobile | img_url: '720x' }} 720w,{%- endif -%}
+                        {%- if image_mobile.width >= 940 -%}{{ image_mobile | img_url: '940x' }} 940w,{%- endif -%}
+                        {%- if image_mobile.width >= 1066 -%}{{ image_mobile | img_url: '1066x' }} 1066w,{%- endif -%}
+                        {%- if image_mobile.width >= 1200 -%}{{ image_mobile | img_url: '1200x' }} 1200w,{%- endif -%}
+                        {%- if image_mobile.width >= 1400 -%}{{ image_mobile | img_url: '1400x' }} 1400w,{%- endif -%}
+                        {{ image_mobile | img_url: 'master' }} {{ image_mobile.width }}w"
+                    alt="{{ image_mobile.alt | escape }}"
+                    width="{{ image_mobile.width }}"
+                    height="{{ image_mobile.height }}"
+                    loading="{{ image_loading }}"
+                    style="--image-position: {{ image_mobile.presentation.focal_point }};"
+                    {% if srcsize_mobile != blank %}
+                        sizes="(max-width: 991px) calc({{ srcsize_mobile }}), 100vw"
+                    {% endif %}
+                    {% if image_loading == 'lazy' and animate_lazy_loading %}onload="lazyImageOnLoad(this)"{% endif %}
+                >
+            {% endif %}
+            {%- if animate_lazy_loading -%}
+                <div class="{{ cn }}-image-loading"></div>
+            {%- endif -%}
+        </div>
+    {% endif %}
+    {% if overlay > 0 %}
+        <div class="{{ cn }}-overlay" style="--value: {{ overlay }}"></div>
+    {% endif %}
+    {% if use_placeholder %}
+        <div class="{{ cn }}-placeholder">
+            {{ placeholder | placeholder_svg_tag }}
+        </div>
+    {% endif %}
+    {%- if icon != blank -%}
+        <div class="{{ cn }}-icon" {% if icon_color != blank %}style="--icon-color: {{ icon_color }};"{% endif %}>
+            {% render 'icon', name: icon, size: icon_size %}
+        </div>
+    {%- endif -%}
+    {{ content }}
+</div>
+{% endcomment %}

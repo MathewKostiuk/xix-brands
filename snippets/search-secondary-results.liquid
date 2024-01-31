@@ -1,0 +1,22 @@
+{%- liquid
+    assign NS = 'search-secondary-results'
+    assign cn = '#' | append: NS
+-%}
+
+<{{ NS }}
+    class="{{ cn }}"
+    query="{{ routes.search_url }}?type={{ type }}&q={{ search.terms }}"
+    section-id="{{ section.id }}"
+    target="{{ target }}"
+>
+    <template data-element="template">
+        <h3 class="{{ cn }}-heading">{%- if type == 'page' -%}Pages{%- else -%}Blog Posts{%- endif -%}</h3>
+        <div class="{{ cn }}-body">
+            <div class="#grid @type:columns" style="--columns: 4; --columns-mobile: 1; --gap: 1rem;" data-element="content">
+            
+            </div>    
+        </div>       
+    </template>
+</{{ NS }}>
+
+<script type="module" src="{{ NS | append: '.js' | asset_url }}"></script>

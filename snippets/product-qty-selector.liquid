@@ -1,0 +1,80 @@
+{%- liquid
+    assign NS = 'product-qty-selector'
+    assign cn = '#' | append: NS
+    assign input_id = section.id | append: NS
+
+    if variant.inventory_quantity > 10 or variant.inventory_policy == 'continue' or variant.inventory_management == nil
+        assign append_limit = true
+    endif
+-%}
+
+{% render 'load-css', file: NS %}
+
+{%- capture Content -%}
+    {%- if variant.available -%}
+        {%- if variant.inventory_policy == 'continue' or variant.inventory_management == nil -%}
+            {%- assign limit = 10 -%}
+        {%- else -%}
+            {%- assign limit = variant.inventory_quantity | at_most: 10 -%}
+        {%- endif -%}
+        {%- capture QtyInput -%}
+            <div>
+                <product-qty-input class="{{ cn }}-controls" section-id="{{ section.id }}">
+                    <div class="{{ cn }}-controls-item">
+                        <button class="{{ cn }}-controls-button" disabled data-element="button-minus">{% render 'icon', name: 'minus' %}</button>
+                    </div>
+                    <div class="{{ cn }}-controls-item">
+                        <input
+                            data-element="input"
+                            class="{{ cn }}-controls-input"
+                            type="number"
+                            name="quantity" 
+                            id="{{ input_id }}" 
+                            form="{{ product_form_id }}"
+                            value="1"
+                            min="1"
+                            {% if variant.inventory_management and variant.inventory_policy == 'deny' %}
+                                max="{{ variant.inventory_quantity }}" 
+                            {% endif %} 
+                            step="1"
+                            aria-label="{{ 'products.product.quantity.input_label' | t: product: product.title | escape }}"
+                        >
+                    </div>
+                    <div class="{{ cn }}-controls-item">
+                        <button class="{{ cn }}-controls-button" data-element="button-plus">{% render 'icon', name: 'plus' %}</button>
+                    </div>
+                </product-qty-input>
+            </div>
+        {%- endcapture -%}
+        <div class="{{ cn }}">
+            <label class="{{ cn }}-label" for="{{ input_id }}">{{ 'products.product.quantity.label' | t }}</label>
+            {%- if type == 'input' -%}
+                {{ QtyInput }}
+            {%- elsif type == 'dropdown' -%}
+                <{{ NS }} section-id="{{ section.id }}">
+                    <template data-element="input-template">{{ QtyInput }}</template>
+                    <div class="{{ cn }}-inner" data-element="selector-wrapper">
+                        <select class="{{ cn }}-select" name="quantity" id="{{ input_id }}" form="{{ product_form_id }}">
+                            {%- for i in (1..limit) -%}
+                                <option value="{{ i }}">
+                                    {{ i }}{%- if append_limit and forloop.last %}+{% endif -%}
+                                </option>
+                            {%- endfor -%}
+                        </select>
+                        {% render 'icon', name: 'angle-down' %}
+                    </div>
+                </{{ NS }}>
+            {%- endif -%}
+        </div>
+    {%- endif -%}
+{%- endcapture -%}
+
+<product-variant-listener section-id="{{ section.id }}" id="{{ NS }}-{{ id }}" emptyable>
+    {{ Content }}
+</product-variant-listener>
+
+<script type="module" src="{{ 'product-qty-input.js' | asset_url }}"></script>
+
+{%- if type == 'dropdown' -%}
+    <script type="module" src="{{ NS | append: '.js' | asset_url }}"></script>
+{%- endif -%}

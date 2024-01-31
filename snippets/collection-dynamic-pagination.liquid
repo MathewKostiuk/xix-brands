@@ -1,0 +1,39 @@
+{% liquid
+    # Props
+    # - type: scroll | button
+    # - paginate
+    assign NS = 'collection-dynamic-pagination'
+    assign cn = '#' | append: NS 
+%}
+
+{% render 'load-css', file: NS %}
+
+<{{ NS }} class="{{ cn }}" 
+    id="{{ NS }}-{{ section.id }}"
+    section-id="{{ section.id }}" 
+    current-page="{{ paginate.current_page }}" 
+    total-pages="{{ paginate.pages }}"
+    form-id="{{ form_id }}"
+    type="{{ type }}"
+>
+    <input form="{{ form_id }}" disabled data-element="input" type="hidden" name="page" value="{{ paginate.current_page }}">
+    {% if type == 'scroll' %}
+        <div class="{{ cn }}-spinner">
+            {% render 'spinner', size: 'xs' %}
+            <h5 class="{{ cn }}-spinner-title">Loading products...</h5>
+        </div>
+    {% endif %}
+    {% if type == 'button' %}
+        <div class="{{ cn }}-button-wrapper">
+            {% render 'button',
+                text: 'Show more products',
+                loading: true,
+                element: 'load-button',
+                spinner_size: 'xs',
+                no_arrow: true
+            %}
+        </div>
+    {% endif %}
+</{{ NS }}>
+
+<script type="module" src="{{ NS | append: '.js' | asset_url }}"></script>

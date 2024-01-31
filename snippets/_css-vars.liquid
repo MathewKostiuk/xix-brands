@@ -1,0 +1,369 @@
+{%- liquid
+    assign body_font_bold = settings.type_body_font | font_modify: 'weight', 'bold'
+    assign body_font_italic = settings.type_body_font | font_modify: 'style', 'italic'
+    assign body_font_bold_italic = body_font_bold | font_modify: 'style', 'italic'
+    assign sizes = 20
+    assign step = 4
+    case settings.design_spacing
+      when 'sm'
+        assign spacer_mult = 0.8
+        assign gutter_spacing = 5
+      when 'md'
+        assign spacer_mult = 1
+        assign gutter_spacing = 6
+      when 'lg'
+        assign spacer_mult = 1.2
+        assign gutter_spacing = 7
+    endcase
+
+    case settings.design_border_radius
+      when 'rounded'
+        assign br_base = 1.125 
+        assign br_inner = 0.7
+        assign br_sm = 0.25
+      when 'curved'
+        assign br_base = 0.4
+        assign br_inner = 0.3
+        assign br_sm = 0.1
+      else
+        assign br_base = 0
+        assign br_inner = 0
+        assign br_sm = 0
+    endcase
+%}
+
+{% style %}
+    {{ settings.type_body_font | font_face: font_display: 'swap' }}
+    {{ body_font_bold | font_face: font_display: 'swap' }}
+    {{ body_font_italic | font_face: font_display: 'swap' }}
+    {{ body_font_bold_italic | font_face: font_display: 'swap' }}
+    {{ settings.type_heading_font | font_face: font_display: 'swap' }}
+
+    {% for schema in settings.color_schemes %}
+        {%- assign ns = 'color-scheme' -%}
+        .{{ ns }}-{{ schema.id }} {
+          {% unless  schema.settings.shadows.alpha == 0.0 or schema.settings.shadows == blank %}
+          {%- assign shadow_rgb = schema.settings.shadows.rgb | split: ' ' | join:  ',' -%}
+          --{{ ns }}-box-shadow-drop: 0 5px 20px rgba({{ shadow_rgb }}, 0.4);
+          {%- case settings.design_box_shadow -%}
+          {% when 'three_d' %}
+            --{{ ns }}-box-shadow: 
+            rgba({{ shadow_rgb }}, 0.3) 0px 2px 4px, 
+            rgba({{ shadow_rgb }}, 0.15) 0px 7px 13px -3px, 
+            rgba({{ shadow_rgb }}, 0.2) 0px -3px 0px inset;
+          --{{ ns }}-box-shadow-sm: 
+            rgba({{ shadow_rgb }}, 0.2) 0px 1px 2px, 
+            rgba({{ shadow_rgb }}, 0.1) 0px 5px 7px -1px, 
+            rgba({{ shadow_rgb }}, 0.2) 0px -2px 0px inset;
+          --{{ ns }}-box-shadow-lift: 
+            rgba({{ shadow_rgb }}, 0.3) 0px 2px 4px, 
+            rgba({{ shadow_rgb }}, 0.45) 0px 7px 20px, 
+            rgba({{ shadow_rgb }}, 0.2) 0px -3px 0px inset;
+          {% when 'minimal' %}
+          --{{ ns }}-box-shadow: 
+            rgba({{ shadow_rgb }}, 0.1) 0px 1px 3px 0px, 
+            rgba({{ shadow_rgb }}, 0.06) 0px 1px 2px 0px;
+          --{{ ns }}-box-shadow-sm: 
+            rgba({{ shadow_rgb }}, 0.07) 0px 1px 2px 0px, 
+            rgba({{ shadow_rgb }}, 0.03) 0px 0px 1px 0px;
+          --{{ ns }}-box-shadow-lift: 
+            rgba({{ shadow_rgb }}, 0.2) 0px 2px 7px 0px, 
+            rgba({{ shadow_rgb }}, 0.1) 0px 4px 4px 0px;
+          {% when 'strong' %}
+            --{{ ns }}-box-shadow: 
+            rgba({{ shadow_rgb }}, 0.09) 0px 2px 1px, 
+            rgba({{ shadow_rgb }}, 0.09) 0px 4px 2px, 
+            rgba({{ shadow_rgb }}, 0.09) 0px 8px 4px, 
+            rgba({{ shadow_rgb }}, 0.09) 0px 16px 8px, 
+            rgba({{ shadow_rgb }}, 0.09) 0px 32px 16px;
+          --{{ ns }}-box-shadow-sm: 
+            rgba({{ shadow_rgb }}, 0.09) 0px 2px 1px, 
+            rgba({{ shadow_rgb }}, 0.09) 0px 8px 4px,  
+            rgba({{ shadow_rgb }}, 0.09) 0px 20px 12px;
+          --{{ ns }}-box-shadow-lift: 
+            rgba({{ shadow_rgb }}, 0.09) 0px 2px 1px, 
+            rgba({{ shadow_rgb }}, 0.09) 0px 4px 2px, 
+            rgba({{ shadow_rgb }}, 0.09) 0px 8px 4px, 
+            rgba({{ shadow_rgb }}, 0.09) 0px 16px 8px,
+            rgba({{ shadow_rgb }}, 0.4) 0px 0px 40px,
+            rgba({{ shadow_rgb }}, 0.09) 0px 40px 20px;
+          {% when 'solid' %}
+          --{{ ns }}-box-shadow: rgba({{ shadow_rgb }}, 0.8) 0px 0px 0px 1.2px;
+          --{{ ns }}-box-shadow-sm: rgba({{ shadow_rgb }}, 0.6) 0px 0px 0px 1px;
+          --{{ ns }}-box-shadow-lift: rgba({{ shadow_rgb }}, 0.8) 0px 0px 0px 1.2px;
+          {% when 'loose' %}
+          --{{ ns }}-box-shadow: rgba({{ shadow_rgb }}, 0.2) 0px 18px 50px -10px;
+          --{{ ns }}-box-shadow-sm: rgba({{ shadow_rgb }}, 0.2) 0px 1px 30px -15px;
+          --{{ ns }}-box-shadow-lift: rgba({{ shadow_rgb }}, 0.4) 0px 20px 60px 0;
+        {% endcase %}
+          {% else %}
+          --{{ ns }}-box-shadow: none;
+          --{{ ns }}-box-shadow-sm: none;
+          --{{ ns }}-box-shadow-lift: none;
+        {% endunless %}
+          {%- case settings.design_accent_text_style -%}
+            {%- when 'highlight' -%}
+              {%- assign highlight_alpha = schema.settings.text_highlight | color_modify: 'alpha', 0.5 -%}
+              {%- capture highlight_color -%}linear-gradient(90deg, transparent 0, {{ highlight_alpha }} 15%, {{ highlight_alpha }} 85%, transparent 100%){%- endcapture -%}
+            {%- when 'gradient' -%}
+                {%- assign highlight_hue = schema.settings.text_highlight | color_extract: 'hue' -%}
+                {%- assign start_h = highlight_hue | minus: 20 -%}
+                {%- if start_h < 0 -%}
+                  {%- assign start_h = 360 | plus: start_h -%}
+                {%- endif -%}
+                {%- assign end_h = highlight_hue | plus: 20 -%}
+                {%- if end_h > 360 -%}
+                  {%- assign end_h = end_h | minus: 360  -%}
+                {%- endif -%}
+                {%- assign start_color = schema.settings.text_highlight | color_modify: 'hue', start_h -%}
+                {%- assign end_color = schema.settings.text_highlight | color_modify: 'hue', end_h -%}
+                {%- capture highlight_color -%}linear-gradient(115deg, {% if star_h < end_h %}{{ start_color }}, {{ end_color }}{% else %}{{ end_color }}, {{ start_color }}{% endif %}){%- endcapture -%}
+            {%- else -%}
+              {%- assign highlight_color = schema.settings.text_highlight -%}
+          {% endcase %}
+          --{{ ns }}-highlight: {{ highlight_color }};
+          --{{ ns }}-pattern: {{ schema.settings.pattern }};
+        {%- case settings.button_primary_style -%}
+        {%- when 'gradient' -%}
+          {%- assign button_hue = schema.settings.primary_button | color_extract: 'hue' -%}
+          {%- assign start_h = button_hue | minus: 20 -%}
+          {%- if start_h < 0 -%}
+            {%- assign start_h = 360 | plus: start_h -%}
+          {%- endif -%}
+          {%- assign end_h = button_hue | plus: 20 -%}
+          {%- if end_h > 360 -%}
+            {%- assign end_h = end_h | minus: 360  -%}
+          {% endif %}
+          {%- assign start_color = schema.settings.primary_button | color_modify: 'hue', start_h -%}
+          {%- assign end_color = schema.settings.primary_button | color_modify: 'hue', end_h -%}
+          {%- capture primary_button_bg -%}linear-gradient(115deg, {% if star_h < end_h %}{{ start_color }}, {{ end_color }}{% else %}{{ end_color }}, {{ start_color }}{% endif %}){%- endcapture -%}
+          --{{ ns }}-primary-button-bg: {{ primary_button_bg }};
+        {%- else -%}
+          --{{ ns }}-primary-button-bg: {{ schema.settings.primary_button }};
+        {% endcase %}
+          --{{ ns }}-primary-button-bg-hover: {{ schema.settings.primary_button | color_darken: 10 }};
+          --{{ ns }}-primary-button-text: {{ schema.settings.on_primary_button }};
+          --{{ ns }}-primary-button-border: {{ schema.settings.primary_button_border }};
+          --{{ ns }}-secondary-button-bg: {{ schema.settings.secondary_button }};
+          --{{ ns }}-secondary-button-bg-hover: {{ schema.settings.secondary_button | color_darken: 10 }};
+          --{{ ns }}-secondary-button-text: {{ schema.settings.on_secondary_button }};
+          --{{ ns }}-secondary-button-border: {{ schema.settings.secondary_button_border }};
+          --{{ ns }}-icon: {{ schema.settings.icons }};
+          --{{ ns }}-links: {{ schema.settings.links }};
+        {%- if schema.id != settings.color_scheme.id -%}
+          --{{ ns }}-text: {{ schema.settings.text }};
+          --{{ ns }}-bg: {{ schema.settings.background }};
+          --{{ ns }}-border: {{ schema.settings.background | color_darken: 20 }};
+          {%- if schema.settings.background_gradient != blank -%}
+            --{{ ns }}-bg-gradient: {{ schema.settings.background_gradient }};
+          {%- endif -%}
+        {% endif %}
+        }
+    {% endfor %}
+
+    :root {
+      {%- for i in (1..sizes) -%}
+          {%- assign size_value =  i | times: step | times: spacer_mult -%}
+        --glob-size-{{ i }}: min({{ size_value }}px, {{ size_value | times: 0.2 }}vmin);
+      {% endfor %}
+    --glob-frame-size: var(--glob-size-2);
+    --glob-gutter: var(--glob-size-{{ gutter_spacing }});
+
+    --glob-heading-size: {{ settings.type_heading_size }}px;
+    --glob-heading-letter-spacing: {{ settings.type_heading_letter_spacing | times: 0.002 }}em;
+    --glob-heading-family: {{ settings.type_heading_font.family }}, {{ settings.type_heading_font.fallback_families }};
+    --glob-heading-style: {{ settings.type_heading_font.style }};
+    --glob-heading-weight: {{ settings.type_heading_font.weight }};
+    --glob-heading-transform: {% if settings.type_heading_uppercase %}uppercase{% else %}none{% endif %};
+
+    --glob-body-family: {{ settings.type_body_font.family }}, {{ settings.type_body_font.fallback_families }};
+    --glob-body-line-height: {{ settings.type_body_line_height }};
+    --glob-body-size: {{ settings.type_body_size }}px;
+    --glob-body-weight: {{ settings.type_body_font.weight }};
+    --glob-body-bold-weight: {{ body_font_bold.weight }};
+
+    --glob-icon-stroke-width: {{ settings.type_icon_stroke_width | append: 'px'  }};
+    {% if settings.design_border_radius == 'sharp' %}
+      --glob-icon-linecap: square;
+      --glob-icon-linejoin: acrs;
+    {% else %}
+      --glob-icon-linecap: round;
+      --glob-icon-linejoin: round;
+    {%- endif -%}
+
+    {%- assign main_colors = settings.color_scheme -%}
+    {%- assign main_colors = main_colors.settings -%}
+    {%- assign main_text_color = main_colors.text -%}
+    {%- assign main_bg_color = main_colors.background -%}
+    {%- assign main_fg_color = main_bg_color | color_lighten: 10 -%}
+
+    --color-g-text: {{ main_text_color }};
+    --color-g-text-alpha-80: {{ main_text_color | color_modify: 'alpha', 0.80  }};
+    --color-g-text-alpha-70: {{ main_text_color | color_modify: 'alpha', 0.70  }};
+    --color-g-text-alpha-50: {{ main_text_color | color_modify: 'alpha', 0.50  }};
+    --color-g-text-alpha-60: {{ main_text_color | color_modify: 'alpha', 0.60  }};
+    --color-g-text-alpha-40: {{ main_text_color | color_modify: 'alpha', 0.40  }};
+    --color-g-text-alpha-30: {{ main_text_color | color_modify: 'alpha', 0.30  }};
+    --color-g-text-alpha-20: {{ main_text_color | color_modify: 'alpha', 0.20  }};
+    --color-g-text-alpha-10: {{ main_text_color | color_modify: 'alpha', 0.10  }};
+
+    {%- if main_colors.background_gradient != blank -%}
+    --color-g-bg-gradient: {{ main_colors.background_gradient }};
+    {%- endif -%}
+    --color-g-bg: {{ main_bg_color }};
+    --color-g-border: {{ main_bg_color | color_darken: 15 }};
+    --color-g-bg-d5: {{ main_bg_color | color_darken: 5 }};
+    --color-g-bg-d15: {{ main_bg_color | color_darken: 10 }};
+    --color-g-bg-alpha-0: {{ main_bg_color | color_modify: 'alpha', 0  }};
+    --color-g-bg-alpha-70: {{ main_bg_color | color_modify: 'alpha', 0.70  }};
+    --color-g-bg-border: {{ main_bg_color | color_darken: 20 }};
+
+    --color-g-fg: {{ main_fg_color }};
+    --color-g-fg-alpha-70: {{ main_fg_color | color_modify: 'alpha', 0.70 }};
+    --color-g-fg-alpha-50: {{ main_fg_color | color_modify: 'alpha', 0.50 }};
+    --color-g-fg-d5: {{ main_fg_color | color_darken: 5 }};
+    --color-g-fg-d10: {{ main_fg_color | color_darken: 10 }};
+    --color-g-fg-d20: {{ main_fg_color | color_darken: 20 }};
+
+    --color-g-accent: {{ settings.color_accent }};
+    --color-g-accent-a20: {{ settings.color_accent | color_modify: 'alpha', 0.20 }};
+    --color-g-accent-a10: {{ settings.color_accent | color_modify: 'alpha', 0.10 }};
+    {%- comment -%}
+    {%- assign accent_b = settings.color_accent | brightness_difference: '#ffffff' -%}
+    --color-g-accent-front: {% if accent_b > 125 %}#ffffff{% else %}#2d2d2d{% endif %}; 
+    {% endcomment %}
+    --color-g-accent-front: #ffffff; 
+
+    --color-g-sale: {{ settings.color_sale_price }};
+    --color-g-warning: #FD7E14;
+    --color-g-success: #198754;
+    --color-g-danger: #DC3545;
+    --color-g-star-rating: {{ settings.color_star_rating }};
+    --color-g-cart-counter-bg: {{ settings.color_cart_counter }};
+    {%- assign cart_counter_b = settings.color_cart_counter | brightness_difference: '#ffffff' -%}
+    --color-g-cart-counter-text: {% if cart_counter_b > 125 %}#ffffff{% else %}#2d2d2d{% endif %};
+    --color-g-wishlist: #f25268;
+
+    --color-g-highlight: {{ main_colors.text_highlight }};
+
+    --color-g-button-buy-it-now-text: {{ settings.color_button_buy_in_now_text }};
+    --color-g-button-buy-it-now-bg: {{ settings.color_button_buy_in_now_bg }};
+    --color-g-button-buy-it-now-bg-hover: {{ settings.color_button_buy_in_now_bg | color_darken: 5 }};
+
+    --color-g-product-badge-sale: {{ settings.color_product_badge_sale }};
+    {%- assign sale_badge_d = settings.color_product_badge_sale | brightness_difference: '#ffffff' -%}
+    --color-g-product-badge-sale-text: {% if sale_badge_d > 125 %}#ffffff{% else %}#2d2d2d{% endif %};
+
+    --color-g-product-badge-sold-out: {{ settings.color_product_badge_sold_out }};
+    {%- assign sold_out_badge_d = settings.color_product_badge_sold_out | brightness_difference: '#ffffff' -%}
+    --color-g-product-badge-sold-out-text: {% if sold_out_badge_d > 125 %}#ffffff{% else %}#2d2d2d{% endif %};
+
+    --color-g-product-custom-badge-text: {{ settings.color_product_custom_badges_text }};
+    --color-g-product-custom-badge-bg: {{ settings.color_product_custom_badges_bg_gradient | default: settings.color_product_custom_badges_bg }};
+
+    --color-g-header-bg: {{ settings.color_header_bg }};
+    {%- if settings.color_header_gradient_bg != blank -%}
+      --color-g-header-gradient-bg: {{ settings.color_header_gradient_bg }};
+    {% endif %}
+    --color-g-header-text: {{ settings.color_header_text }};
+    --color-g-header-border: {{ settings.color_header_text | color_mix: settings.color_header_bg, 20 | color_modify: 'alpha', 0.5 }};
+
+    --color-g-nav-dropdown-bg: {{ settings.color_nav_drop_bg }};
+    --color-g-nav-dropdown-text: {{ settings.color_nav_drop_text }};
+    --color-g-nav-dropdown-border: {{ settings.color_nav_drop_text | color_modify: 'alpha', 0.20 }};
+
+    --color-g-footer-heading: {{ settings.color_footer_heading }};
+    --color-g-footer-bg: {{ settings.color_footer_bg }};
+    {%- if settings.color_footer_gradient_bg != blank -%}
+      --color-g-footer-gradient-bg: {{ settings.color_footer_gradient_bg }};
+    {% endif %}
+    --color-g-footer-text: {{ settings.color_footer_text }};
+
+    --glob-border-radius-base: {{ br_base }}rem;
+    --glob-border-radius-inner: {{ br_inner }}rem;
+    --glob-border-radius-sm: {{ br_sm }}rem;
+    --glob-border-radius-pill: 9999rem;
+    --glob-border-radius-circle: 50%;
+
+    --transition-base: 0.3s;
+    --box-shadow-large: rgb(50 50 93 / 25%) 0px 50px 100px -20px, rgb(0 0 0 / 30%) 0px 30px 60px -30px;
+    --container-width: {{ settings.container_width }}px;
+
+    --glob-product-badge-text-size: {{ settings.type_badges_scale | times: 0.01 }}rem;
+    --glob-product-badge-text-transform: {% if settings.type_badges_uppercase %}uppercase{% else %}none{% endif %};
+    {%- assign badge_weight = 'body' -%}
+    {%- if settings.type_badges_bold -%}
+      {%- assign badge_weight = 'body-bold' -%}
+    {%- endif -%}
+    --glob-product-badge-weight: var(--glob-{{ badge_weight }}-weight);
+
+    {% render 'font-style-props',
+      name: 'header',
+      src: settings.type_header_font,
+      uppercase: settings.type_header_uppercase,
+      scale: settings.type_header_scale
+    %}
+
+    {% render 'font-style-props',
+      name: 'subheading',
+      src: settings.type_subheading_font,
+      uppercase: settings.type_subheading_uppercase,
+      scale: settings.type_subheading_scale,
+      letter_spacing: settings.type_subheading_letter_spacing
+    %}
+    --glob-subheading-opacity: {{ settings.type_subheading_opacity | times: 0.01 }};
+
+    {% render 'font-style-props',
+      name: 'button',
+      src: settings.type_button_font,
+      uppercase: settings.type_button_uppercase,
+      scale: settings.type_button_scale,
+      letter_spacing: settings.type_button_letter_spacing
+    %}
+    
+    {% render 'font-style-props',
+      name: 'product-card-title',
+      src: settings.type_product_card_title_font,
+      uppercase: settings.type_product_card_title_uppercase,
+      scale: settings.type_product_card_title_scale
+    %}
+    --glob-product-card-price-weight: {% if settings.type_product_card_price_bold %}var(--glob-body-bold-weight){% else %}normal{% endif %};
+    {% render 'font-style-props',
+      name: 'collection-card-title',
+      src: settings.type_collection_card_title_font,
+      uppercase: settings.type_collection_card_title_uppercase,
+      scale: settings.type_collection_card_title_scale
+    %}
+
+    {% render 'font-style-props',
+      name: 'article-card-title',
+      src: settings.type_article_card_title_font,
+      uppercase: settings.type_article_card_title_uppercase,
+      scale: settings.type_article_card_title_scale
+    %}
+
+  {%- if settings.design_bg_pattern_show -%}
+    {%- assign parts = settings.design_bg_pattern | split: '_' -%}
+    {%- assign src = parts | first -%}
+    {%- assign size = parts | last -%}
+    --glob-bg-pattern: url({{ src | append: '.svg' | asset_url }});
+    --glob-bg-pattern-scale: {{ settings.design_bg_pattern_scale | times: 0.01 }};
+    --glob-bg-pattern-opacity: {{ settings.design_bg_pattern_opacity | times: 0.01 }};
+    --glob-bg-pattern-invert: {% if settings.design_bg_pattern_shade == 'light' %}1{% else %}0{% endif %};
+    --glob-bg-pattern-size: {{ size }};
+  {%- endif -%}
+  {% paginate shop.metaobjects['theme_color_swatches'].values by 150 %}
+    {%- for swatch in shop.metaobjects['theme_color_swatches'].values -%}
+      {%- if swatch.label != blank -%}
+        {%- assign swatch_label_handle = swatch.label | handleize -%}
+        {%- if swatch.color != blank -%} 
+          --glob-swatch-color-{{ swatch_label_handle }}: {{ swatch.color }};
+        {% endif %} 
+        {%- if swatch.image != blank -%}
+          --glob-swatch-image-{{ swatch_label_handle }}: url({{ swatch.image | img_url: '50x' }});
+        {%- endif -%} 
+      {%- endif -%} 
+    {%- endfor -%}
+  {% endpaginate %}
+}
+{% endstyle %}

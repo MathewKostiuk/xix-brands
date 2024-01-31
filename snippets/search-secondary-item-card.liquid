@@ -1,0 +1,35 @@
+{%- liquid
+    assign NS = 'search-secondary-item-card'
+    assign cn = '#' | append: NS    
+-%}
+
+
+{%- capture Media -%}
+    {%- if type == 'article' and item.image != blank -%}
+        <div class="{{ cn }}-media">
+            {% render 'media',
+                image: item.image,
+                aspect_ratio: '1x1',
+                border_radius: 'inner'
+            %}
+        </div>
+    {%- endif -%}
+{%- endcapture -%}
+
+{%- capture Body -%}
+    <div class="{{ cn }}-body">
+        <a class="stretched-link" href="{{ item.url }}" aria-label="{{ item.title }}"></a>
+        {%- if type == 'article' -%}
+            <div class="{{ cn }}-meta">by {{ item.author }}</div>
+        {%- endif -%}
+        <h5 class="{{ cn }}-title">{{ item.title }}</h5>
+        {%- if type == 'page' and item.content != blank -%}
+            <div class="{{ cn }}-excerpt">{{ item.content | strip_html | escape | truncate: 70 }}</div>
+        {%- endif -%}
+    </div>
+{%- endcapture -%}
+
+<div class="{{ cn }}">
+    {{ Media }}
+    {{ Body }}
+</div>

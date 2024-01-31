@@ -1,0 +1,62 @@
+{% liquid
+    assign NS = 'star-rating'
+    assign cn = '#' | append: NS
+
+    # Props
+    # - value: number
+    # - count: number
+    # - show_count_brackets
+
+    assign rating_value = value | strip | plus: 0
+    assign rating_floor = rating_value | floor
+    assign rating_remainder = rating_value | minus: rating_floor
+    assign icon_src = '#svg-icon-rating-star'
+%}
+
+{% capture Icon_link %}
+    <use href="{{ icon_src }}"></use>
+{% endcapture %}
+
+{%- if rating_value > 0 -%}
+    <div class="{{ cn }} {% if show_count_brackets %}@count-brackets{% endif %}">
+        <div class="{{ cn }}-stars">
+            {%- for i in (1..5) -%}
+                {%- if rating_value >= 1 -%}
+                    <svg class="{{ cn }}-item @state:full">
+                        {{ Icon_link }}
+                    </svg>
+                {%- elsif rating_value <= 0 -%}
+                    <svg class="{{ cn }}-item @state:empty">
+                        {{ Icon_link }}
+                    </svg>
+                {%- else -%}
+                    <div class="{{ cn }}-item @state:half">
+                        <svg class="{{ cn }}-item-base">
+                            {{ Icon_link }}
+                        </svg>
+                        {% liquid
+                            assign rest = 5 | minus: forloop.index
+                            assign clip = rating_value | minus: rest | abs | times: 100
+                        %}
+                        <svg class="{{ cn }}-item-stage" style="--{{ NS }}-half-clip: {{ clip }}%;">
+                            {{ Icon_link }}
+                        </svg>
+                    </div>
+                {%- endif -%}
+                {%- assign rating_value = rating_value | minus: 1 -%}                
+            {%- endfor -%}
+        </div>
+        {% if count != blank %}
+            <div class="{{ cn }}-counter">
+                <span class="{{ cn }}-counter-value">{{ count }}</span>
+                {% if show_count_title %}
+                    {% if count == 1 %}
+                        {{ 'products.product.review_count.one' | t }}
+                    {% else %}
+                        {{ 'products.product.review_count.other' | t }}
+                    {% endif %}
+                {% endif %}
+            </div>
+        {% endif %} 
+    </div>
+{%- endif -%}

@@ -1,0 +1,77 @@
+{% liquid
+    # PROPS:
+    # - modal_id
+    # - slides
+    # - initial_index
+    # - autoplay_video
+    assign NS = 'product-gallery-expand'
+    assign NS_z = NS | append: '-zoom' 
+    assign cn = '#' | append: NS
+    assign cn_z = '#' | append: NS_z
+
+    assign has_3d_model = product.media | where: "media_type", "model" | first
+%}
+
+{% render 'load-css', file: NS %}
+{%- if has_3d_model -%}
+    {% render 'load-css', file: 'model-viewer-ui', lazy: true %}
+    <script>
+        window.addEventListener('load',() => {
+            document.querySelectorAll('model-viewer[data-ar-button]').forEach(mv => {
+                if(!mv.canActivateAR) {
+                    mv.remove();
+                }
+            })
+        })
+    </script>
+{%- endif -%}
+
+
+{% capture Slides %}
+        {% for media in product.media %}
+            <div class="{{ cn }}-item">
+                <div class="{{ cn }}-item-inner">
+                    {%- case media.media_type -%}
+                        {%- when 'image' -%}
+                            <{{ NS_z }} class="{{ cn_z }}" section-id={{ section.id }}>
+                                <img class="{{ cn_z }}-img" src="{{ media | image_url: width: 1600 }}" alt="{{ image.alt }}" loading="lazy">
+                            </{{ NS_z }}>
+
+                        {%- when 'model' -%}
+                            <div class="{{ cn }}-model-wrapper">
+                                {{ media | model_viewer_tag: ar-modes: "webxr scene-viewer quick-look", ar: 'true', camera-controls: 'true' }}                        
+                            </div>
+                        {%- when 'video', 'external_video' -%}
+                            {%- capture Video_player -%}
+                                {%- render 'video-player', video: media, height: '100%', loop: true -%}
+                            {%- endcapture -%}
+                            <product-gallery-video {% if autoplay_video %}autoplay{% endif %} class="{{ cn }}-video-wrapper" expand section-id="{{ section.id }}" data-index="{{ forloop.index0 }}">
+                                {{ Video_player }}
+                            </product-gallery-video>
+                    {%- endcase -%}
+                </div>
+            </div>
+        {% endfor %}
+{% endcapture %}
+
+{% capture Gallery %}
+    {%- render 'slideshow-blaze',
+        slides: Slides,
+        id: modal_id,
+        show_navigation: true,
+        initial_index: initial_index,
+        swipe_on_desktop: false,
+        loop: false
+    -%} 
+{% endcapture %}
+
+<{{ NS }} class="{{ cn }}" section-id="{{ section.id }}">
+    {%- render 'modal',
+        content: Gallery,
+        id: modal_id,
+        height: '100%',
+        width: '100%'
+    -%}
+</{{ NS }}>
+
+<script type="module" src="{{ NS | append: '.js' | asset_url  }}"></script>

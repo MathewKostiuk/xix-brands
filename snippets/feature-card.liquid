@@ -1,0 +1,51 @@
+{%- liquid
+    assign NS = "feature-card"
+    assign cn = '#' | append: NS 
+
+    assign use_icon_color = true
+    if icon_color == blank or icon_color == 'rgba(0,0,0,0)'
+        assign use_icon_color = false
+    endif
+
+    unless crop_image
+        assign image_fit = 'contain'
+    endunless
+ -%}
+
+<div 
+    class="{{ cn }} {% if text_align == 'center' %}@center{% endif %} {% if round_media %}@round-media{% endif %}"
+    style="
+        --{{ NS }}-media-size: {{ media_size }}px;
+        --{{ NS }}-heading-scale: {{ heading_scale | times: 0.01 }};
+    "
+>
+    {%- if link != blank -%}
+        <a class="stretched-link" href="{{ link }}" aria-label="{{ 'general.accessibility.any_link' | t }}"></a>
+    {%- endif -%}
+    {% unless icon == 'none' or image != blank %}
+        <div class="{{ cn }}-icon">
+            {% render 'icon',
+                name: icon,
+                load: true
+            %}
+        </div>   
+    {% endunless %}
+    {% unless image == blank %}
+        <div class="{{ cn }}-image">
+            {% render 'media',
+                image: image,
+                image_res: media_size,
+                size: 'square',
+                image_fit: image_fit
+            %}
+        </div>
+    {% endunless %}
+    <div class="{{ cn }}-body">
+        {% if heading != blank %}
+            <h3 class="{{ cn }}-heading heading-font">{{ heading }}</h3>
+        {% endif %}
+        {% if text != blank %}
+            <p class="{{ cn }}-text">{{ text }}</p>
+        {% endif %}
+    </div>
+</div>

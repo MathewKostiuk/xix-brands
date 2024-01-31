@@ -1,0 +1,6 @@
+{%- liquid
+    if t_text != blank
+        assign text = t_text | t
+    endif
+-%}
+<span class="#accent-text @style:{{ settings.design_accent_text_style }}">{{ text }}</span>

@@ -1,0 +1,29 @@
+{% comment %}
+    Props:
+        - product: product
+        - scale: number
+        - use_sale_price_color: boolean
+{% endcomment %}
+
+{% liquid
+    assign NS = 'product-countdown'
+    assign cn = '#' | append: NS
+%}
+
+{% capture Counter %}
+    {% render 'countdown-timer',
+        date: product.metafields.theme.countdown.value,
+        us_date_format: false,
+        show_time_fraction: false,
+        show_on_expire: false,
+        digits_scale: scale
+    %}
+{% endcapture %}
+
+{% if Counter != blank %}
+    {% render 'load-css', file: NS %}
+    <div class="{{ cn }} {% if use_sale_price_color %}@sale-color{% endif %}">
+        {{ Counter }}
+    </div>
+{% endif %}
+

@@ -1,0 +1,182 @@
+{% liquid
+    # Props:
+    # - menu: link_list
+    # - collections: collection_list
+    # - columns: number
+    # - masonry_layout: boolean
+    # - show_collection_thumbnails: boolean
+    # - show_collection_image: boolean
+    # - collection_image_height: number
+    # - show_price: boolean
+    # - show_item_count: boolean
+    # - collection_image_position: string above|below
+    # - subcollections: boolean
+    # - subcollections_image_src: boolean
+    # - show_view_all: boolean
+    assign NS = 'main-nav-grid'
+    assign cn = '#' | append: NS
+
+    assign featured_image_height = collection_image_height | append: 'px'
+%}
+
+{% render 'load-css', file: NS %}
+
+{%- capture nav_card_image_srcsize_desktop -%}(min(100vw, {{ settings.container_width }}px) - min(3rem, 5vw))/{{ columns }}{%- endcapture -%}
+
+<div 
+    class="{{ cn }} {% if collection_list != blank or subcollections == true %}@spaced{% endif %} @layout:{% if masonry_layout %}masonry{% else %}columns{% endif %}"
+    style="
+        {% if columns != blank %}--{{ NS }}-columns: {{ columns }};{% endif %}
+    "
+>
+    {% if collection_list != blank %}
+        {% for nav_collection in collection_list %}
+            <div class="{{ cn }}-column">
+                {% capture Featured_image %}
+                    {% if show_collection_image and nav_collection.image != blank %}
+                        {% capture featured_image_srcsize_desktop %}max(calc((min(100vw, {{ settings.container_width }}px) - min(3rem, 5vw))/{{ columns }}), {{ featured_image_height }}){% endcapture %}
+                        <div class="{{ cn }}-featured-image">
+                            {% render 'media',
+                                image: nav_collection.image,
+                                srcsize_desktop: featured_image_srcsize_desktop,
+                                height: featured_image_height,
+                                link: nav_collection.url
+                            %}
+                        </div>
+                    {% endif %}
+                {% endcapture %}
+                {% if collection_image_position == 'above' %}
+                    {{ Featured_image }}
+                {% endif %}
+                <h5 class="{{ cn }}-title">
+                    <a href="{{ nav_collection.url }}">{{ nav_collection.title }}</a>
+                </h5>
+                {% if collection_image_position == 'below' %}
+                    {{ Featured_image }}
+                {% endif %}
+                <ul class="{{ cn }}-menu">
+                    {% for nav_collection_product in nav_collection.products limit: products_limit %}
+                        <li>
+                            {% render 'main-nav-card',
+                                src: nav_collection_product,
+                                type: 'product',
+                                show_price: show_price,
+                                image_srcsize_desktop: nav_card_image_srcsize_desktop
+                            %}
+                        </li>
+                    {% endfor %}
+                    {%- if show_view_all -%}
+                        <li class="{{ cn }}-view-all">
+                            {%- render 'button',
+                                t_text: 'sections.featured_collection.view_all',
+                                tag: 'a',
+                                tier: 'link',
+                                link: nav_collection.url
+                            -%}
+                        </li>
+                    {%- endif -%}
+                </ul>
+            </div>
+        {% endfor %}
+    {% elsif subcollections == true %}
+        {% for menu_link in menu.links %}
+            <div class="{{ cn }}-column">
+                {% assign menu_link_collection = menu_link.object %}
+                {% capture Featured_image %}
+                    {% if show_collection_image and menu_link_collection.image != blank %}
+                        {% capture featured_image_srcsize_desktop %}max(calc((min(100vw, {{ settings.container_width }}px) - min(3rem, 5vw))/{{ columns }}), {{ featured_image_height }}){% endcapture %}
+                        <div class="{{ cn }}-featured-image">
+                            {% render 'media',
+                                image: menu_link_collection.image,
+                                srcsize_desktop: featured_image_srcsize_desktop,
+                                height: featured_image_height,
+                                link: menu_link.url
+                            %}
+                        </div>
+                    {% endif %}
+                {% endcapture %}
+                {% if collection_image_position == 'above' %}
+                    {{ Featured_image }}
+                {% endif %}
+                <h5 class="{{ cn }}-title">
+                    <a href="{{ menu_link.url }}">{{ menu_link.title }}</a>
+                </h5>
+                {% if collection_image_position == 'below' %}
+                    {{ Featured_image }}
+                {% endif %}
+                <ul class="{{ cn }}-menu">
+                    {% for sub_link in menu_link.links %}
+                        <li>
+                            {% render 'main-nav-card',
+                                src: sub_link.object,
+                                type: 'collection',
+                                image_src: subcollections_image_src,
+                                show_price: show_price,
+                                show_item_count: show_item_count,
+                                image_srcsize_desktop: nav_card_image_srcsize_desktop
+                            %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endfor %}
+    {% else %}
+        {% for menu_link in menu.links %}
+            <div class="{{ cn }}-column">
+                {% liquid
+                    assign thumbnail = nil
+                    assign featured_image = nil
+                    if menu_link.type == 'collection_link' 
+                        assign menu_collection = menu_link.object 
+                        if show_collection_thumbnails 
+                            assign meta_thumbnail = menu_collection.metafields.theme.thumbnail
+                            if meta_thumbnail.type == 'file_reference' and meta_thumbnail.value != blank
+                                assign thumbnail =  meta_thumbnail.value
+                            else
+                                assign first_product = menu_collection.products[0] 
+                                assign thumbnail = first_product.featured_image 
+                            endif
+                        endif 
+                        if show_collection_image
+                            assign featured_image = menu_collection.image
+                        endif
+                    endif 
+                %}
+
+                {% if thumbnail %}
+                    <div class="{{ cn }}-thumbnail">
+                        {% render 'media',
+                            image: thumbnail,
+                            size: 'square',
+                            image_res: 50,
+                            link: menu_link.url
+                        %}
+                    </div>
+                {% endif %} 
+                {% if featured_image %}
+                    {% capture featured_image_srcsize_desktop %}max(calc((min(100vw, {{ settings.container_width }}px) - min(3rem, 5vw))/{{ columns }}), {{ featured_image_height }}){% endcapture %}
+                    <div class="{{ cn }}-featured-image">
+                        {% render 'media',
+                            image: featured_image,
+                            srcsize_desktop: featured_image_srcsize_desktop,
+                            height: featured_image_height,
+                            link: menu_link.url
+                        %}
+                    </div>
+                {% endif %}
+                <h5 class="{{ cn }}-title">
+                    <a href="{{ menu_link.url }}">{{ menu_link.title }}</a>
+                </h5>
+                {% if menu_link.levels > 0 %}
+                    <ul class="{{ cn }}-menu">
+                        {% for sub_link in menu_link.links %}
+                            <li>
+                                <a class="{{ cn }}-menu-link" href="{{ sub_link.url }}">{{ sub_link.title }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+        {% endfor %}
+    {% endif %}
+</div>

@@ -1,0 +1,75 @@
+<style>
+    .editor-show {
+        display: block !important;
+    }
+</style>
+
+<script type="module">
+    // import { publishEvent, debounce } from "{{ 'utils.js' | asset_url }}";
+
+    window.Editor = class Editor {
+        constructor(sectionId) {
+            this.sectionId = sectionId;
+        }
+        render() {
+            if (typeof this.init === 'function') {
+                this.init(); 
+            }
+            this._handleEvents();
+        }
+        _handleEvents() {
+            Object.entries(this.events).map(([target, event]) => { //NOTE: need better naming
+                Object.entries(event).map(([eventName, callback]) => {
+                    this._setListener(target, eventName, callback)
+                })
+            })
+        }
+        _setListener(target, eventName, callback) {
+            document.addEventListener(`shopify:${target}:${eventName}`, (e) => {
+                if (e.detail.sectionId === this.sectionId) {
+                    callback.call(this, e);
+                }
+            })
+        }
+        // closeModal() {
+        //     publishEvent('modal:close')
+        // }
+        // openModal(data) {
+        //     this.cleanModalCache();
+        //     setTimeout(() => publishEvent('modal:open', data), 500);
+        // }
+        // cleanModalCache() {
+        //     document.querySelector('modal-popup').cache = {};
+        // }
+        // toggleLightsOut(state) {
+        //     publishEvent('lights-out', state);
+        // }
+
+        get sectionSettings() {
+            return this._getSettings(this.settingsSelector)
+        }
+        get blocksCount() {
+            return this._getSettings(this.blocksCountSelector)
+        }
+
+        _getSettings(selector) {
+            try {
+                if (!selector) throw new Error(`No settings selector for ${this.sectionId}`);
+                const $settings = document.querySelector(selector);
+                if (!$settings) throw new Error(`Settings element ${selector} for ${this.sectionId} not found`);
+                return JSON.parse($settings.innerText)
+            } catch (e) {
+                console.error(e.message);
+            }
+        }
+    }
+
+    // const restartSlideshowsOnResize = () => {
+    //     const inlineSlideshows = document.querySelectorAll('slideshow-inline');
+    //     if (!inlineSlideshows.length) return;
+    //     window.addEventListener('resize', debounce(() => {
+           
+    //     }, 100))
+    // }
+    // restartSlideshowsOnResize();
+</script>

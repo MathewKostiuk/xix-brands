@@ -1,0 +1,133 @@
+{%- comment -%}
+    Props:
+        hero_outer_gap
+        caption_gap
+        image
+        overlay
+        image_height
+        inner_caption
+        subheading
+        heading
+        text
+        caption_x
+        caption_y
+        caption_size
+        caption_box
+        auto_color
+        stretched_card: Boolean
+        image_loading: 'lazy' | 'eager'
+{%- endcomment -%}
+
+{%- liquid
+    assign NS = 'gallery-card'
+    assign cn = '#' | append: NS
+
+    if full_height
+        assign media_height = '100%'
+        assign media_type = 'height'
+    endif
+
+
+    if media_height != blank and mobile_media_height == blank
+        assign mobile_media_height = media_height
+    endif
+
+    if inner_caption
+        assign auto_color = true
+        assign caption_position = 'inner'
+        assign hero_outer_gap = false
+    else
+        assign auto_colors = false
+        assign caption_position = 'outer'
+        if frame == true
+            assign hero_outer_gap = true
+        endif
+    endif
+
+    unless stacked
+        assign animate_target = 'hover-animate-target'
+    endunless
+-%}
+
+
+{% capture Caption %}
+    <div class="{{ cn }}-caption">
+        {% render 'hero',
+            subheading: subheading,
+            heading: heading,
+            heading_scale: heading_scale,
+            heading_tag: 'h4',
+            enlarge_text: enlarge_text,
+            text: text,
+            text_color: text_color,
+            align: caption_x,
+            box: caption_box,
+            auto_colors: auto_color,
+            outer_gap: hero_outer_gap,
+            gap: caption_gap,
+            f_button_label: button_label,
+            f_button_tier: button_tier,
+            f_button_custom_color: button_color,
+            f_button_link: link
+        %}
+    </div>
+{% endcapture %}
+
+
+{%- if inner_caption -%}
+    {% capture InnerCaption %}
+        {% render 'floating-content',
+            x: caption_x,
+            y: caption_y,
+            absolute: true,
+            content: Caption
+        %}
+    {% endcapture %}    
+    {% assign block_animate = animate_target %}
+{% else %}
+    {% assign media_animate = animate_target %}
+{%- endif -%}
+
+
+
+
+<div class="
+    {{ cn }} 
+    {% if ignore_frame %}@ignore-frame{% endif %} 
+    {% if stacked %}@stacked{% endif %} 
+    {% if full_height %}@full-height{% endif %}
+    {% if stretched_card %}@stretched-card{% endif %}
+    @caption:{{ caption_position }} 
+    hover-animate 
+    {{ block_animate }}
+    {% if color_scheme != blank %}color-scheme-{{ color_scheme.id }}{% endif %}
+">
+    {% if link != blank %}
+        <a class="stretched-link" href="{{ link }}" aria-label="{{ 'general.accessibility.any_link' | t }}"></a>
+    {% endif %}
+    <div class="{{ cn }}-media {{ media_animate }}">
+        {% if caption_box == true %}
+            {% assign overlay = 0 %}
+        {% endif %}
+        {% render 'media',
+            image: image,
+            srcsize_desktop: image_srcsize_desktop,
+            srcsize_mobile: image_srcsize_mobile,
+            image_mobile: mobile_image,
+            overlay: overlay,
+            type: media_type,
+            size: image_size,
+            size_mobile: mobile_image_size,
+            height: media_height,
+            height_mobile: mobile_media_height,
+            placeholder: 'detailed-apparel',
+            content: bg_video,
+            image_loading: image_loading
+        %}
+    </div>
+    {%- if inner_caption -%}
+        {{ InnerCaption }}
+    {%- else -%}
+        {{ Caption }}
+    {%- endif -%}
+</div>

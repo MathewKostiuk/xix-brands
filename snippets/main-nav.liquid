@@ -1,0 +1,589 @@
+{% liquid
+    assign NS = 'main-nav'
+    assign cn = '#' | append: NS
+
+    # Props:
+    # items - nav item blocks
+    # align
+    # manual_alignment - Boolean
+%}
+
+{% render 'load-css', file: NS %}
+
+{% assign click_to_open = settings.dropdowns_open_by_click %}
+{%- if click_to_open -%}
+    {% assign nav_selector_attr = 'data-element="nav-item"' %}
+    <script type="module" src="{{ NS | append: '.js' | asset_url }}"></script>
+{%- endif -%}
+
+{%- if settings.dropdowns_show_carets -%}
+    {%- capture Dropdown_link_caret -%}
+        {% render 'icon', name: 'angle-down' %}
+    {%- endcapture -%}
+{%- endif -%}
+
+{% capture Dropdown_nav_item_class %}
+    {% if settings.header_lights_off and click_to_open == false %}lights-off-hover{% endif %} 
+        {% if click_to_open %}
+            @click-open
+        {% if settings.header_lights_off %}lights-off-active{% endif %}
+    {% endif %}
+{% endcapture %}
+
+<{{ NS }} section-id="{{ section.id }}">
+    <nav class="{{ cn }}">
+        {% for item in items %}
+            {% case item.type %}
+                {% when "subcollections_grid" %}
+                    {% liquid
+                        assign show_price = false
+                        assign show_item_count = false
+                        case item.settings.subcollection_info
+                            when 'price'
+                                assign show_price = true
+                            when 'count'
+                                assign show_item_count = true
+                        endcase
+                    %}
+                    {%- if item.settings.title != blank -%}
+                        <div {{ nav_selector_attr }} class="{{ cn }}-item @mega {% if manual_alignment %}@position:{{ item.settings.position }}{% endif %} {{ Dropdown_nav_item_class }}" {{ item.shopify_attributes }}>
+                            <a class="{{ cn }}-link" href="{{ item.settings.title_link | default: '#' }}">
+                                {%- if item.settings.icon != 'none' -%}
+                                    {% render 'icon', name: item.settings.icon, load: true %}
+                                {%- endif -%}
+                                {{ item.settings.title }}
+                                {{ Dropdown_link_caret }}
+                            </a> 
+                            <div class="{{ cn }}-dropdown">
+                                <div class="#container">
+                                    <div class="{{ cn }}-dropdown-inner">
+                                        {% render 'main-nav-grid',
+                                            menu: item.settings.menu,
+                                            subcollections: true,
+                                            subcollections_image_src: item.settings.subcollection_image_src,
+                                            columns: item.settings.columns,
+                                            collection_image_height: item.settings.collection_image_height,
+                                            show_collection_image: item.settings.show_collection_image,
+                                            show_price: show_price,
+                                            show_item_count: show_item_count,
+                                            collection_image_position: item.settings.collection_image_position
+                                        %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {%- endif -%}
+                {% when "product_lists" %}
+                    {%- if item.settings.title != blank -%}
+                        <div {{ nav_selector_attr }} class="{{ cn }}-item @mega {% if manual_alignment %}@position:{{ item.settings.position }}{% endif %} {{ Dropdown_nav_item_class }}" {{ item.shopify_attributes }}>
+                            <a class="{{ cn }}-link" href="{{ item.settings.title_link | default: '#' }}">
+                                {%- if item.settings.icon != 'none' -%}
+                                    {% render 'icon', name: item.settings.icon, load: true %}
+                                {%- endif -%}
+                                {{ item.settings.title }}
+                                {{ Dropdown_link_caret }}
+                            </a> 
+                            <div class="{{ cn }}-dropdown">
+                                <div class="#container">
+                                    <div class="{{ cn }}-dropdown-inner">
+                                        {% render 'main-nav-grid',
+                                            collection_list: item.settings.collections,
+                                            products_limit: item.settings.products_limit
+                                            columns: item.settings.columns,
+                                            collection_image_height: item.settings.collection_image_height,
+                                            show_collection_image: item.settings.show_collection_image,
+                                            show_price: item.settings.show_product_price,
+                                            collection_image_position: item.settings.collection_image_position,
+                                            show_view_all: item.settings.show_view_all
+                                        %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {%- endif -%}
+                {% when "featured_collection" %}
+                    {%- if item.settings.title != blank -%}
+                        {% assign collection = item.settings.collection %}
+                        {% assign columns = item.settings.columns | at_least: 3 %}
+                        {% assign products_limit = columns | times: item.settings.rows %}
+
+                        {%- capture image_srcsize_desktop -%}(min(100vw, {{ settings.container_width }}px) - min(3rem, 5vw))/{{ columns }}{%- endcapture -%}
+
+                        <div {{ nav_selector_attr }} class="{{ cn }}-item @mega {% if manual_alignment %}@position:{{ item.settings.position }}{% endif %} {{ Dropdown_nav_item_class }}" {{ item.shopify_attributes }}>
+                            <a class="{{ cn }}-link" href="{{ collection.url | default: '#' }}">
+                                {%- if item.settings.icon != 'none' -%}
+                                    {% render 'icon', name: item.settings.icon, load: true %}
+                                {%- endif -%}
+                                {{ item.settings.title }}
+                                {{ Dropdown_link_caret }}
+                            </a> 
+                            <div class="{{ cn }}-dropdown">
+                                <div class="#container">
+                                    <div class="{{ cn }}-dropdown-inner">
+                                        {% capture Products %}
+                                            <div class="#grid @type:columns" style="--columns: {{ columns }};">
+                                                {% for nav_product in collection.products limit: products_limit %}
+                                                    {% render 'main-nav-card',
+                                                        src: nav_product,
+                                                        type: 'product',
+                                                        show_price: item.settings.show_product_price,
+                                                        image_position: item.settings.image_position,
+                                                        image_srcsize_desktop: image_srcsize_desktop
+                                                    %}
+                                                {% endfor %}
+                                            </div>
+                                            {% if item.settings.show_view_all %}
+                                                <div class="{{ cn }}-dropdown-view-all">
+                                                    {%- render 'button',
+                                                        t_text: 'sections.featured_collection.view_all',
+                                                        tag: 'a',
+                                                        tier: 'link',
+                                                        link: collection.url
+                                                    -%}
+                                                </div>
+                                            {% endif %}
+                                        {% endcapture %}
+
+                                        {% if item.settings.show_collection_image %}
+                                            {% liquid
+                                                assign image = item.settings.custom_collection_image | default: collection.featured_image
+                                                assign gt_media = item.settings.collection_image_width | append: '%'
+                                                assign gt_text = '1fr'
+                                                
+                                                if item.settings.collection_image_position == 'right'
+                                                    assign grid_template = gt_text | append: ' ' | append: gt_media 
+                                                else
+                                                    assign grid_template = gt_media | append: ' ' | append: gt_text
+                                                endif
+                                            %}
+                                            {% capture Collection_image %}
+                                                <div class="{{ cn }}-dropdown-image">
+                                                    <div class="{{ cn }}-dropdown-image-fit {% if item.settings.crop_image %}@fit-image{% endif %%}">
+                                                        {% unless item.settings.crop_image %}
+                                                            {% assign image_fit = 'contain' %}
+                                                        {% endunless %}
+                                                        {% render 'media'
+                                                            image: image,
+                                                            placeholder: 'hero-apparel',
+                                                            height: '100%',
+                                                            image_fit: image_fit
+                                                        %}
+                                                    </div>
+                                                    <a class="stretched-link" href="{{ collection.url }}" aria-label="{{ collection.title }}"></a>
+                                                </div>
+                                            {% endcapture %}
+                                            <div class="#grid @type:template" style="--template: {{ grid_template }}; --template-mobile: none;">
+                                                {%- if item.settings.collection_image_position == 'right' -%}
+                                                    <div>
+                                                        {{ Products }}
+                                                    </div>
+                                                    {{ Collection_image }}
+                                                {%- else -%}
+                                                    {{ Collection_image }}
+                                                    <div>
+                                                        {{ Products }}
+                                                    </div>
+                                                {%- endif -%}
+                                            </div>
+                                        {% else %}
+                                            {{ Products }}
+                                        {% endif %}
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {%- endif -%}
+                {% when "featured_blog" %}
+                    {%- capture image_srcsize_desktop -%}(min(100vw, {{ settings.container_width }}px) - min(3rem, 5vw))/{{ item.settings.columns }}{%- endcapture -%}
+
+                    {%- assign cards_limit = item.settings.columns | times: item.settings.rows -%}
+                    {%- if item.settings.title != blank -%}
+                        <div {{ nav_selector_attr }} class="{{ cn }}-item @mega {% if manual_alignment %}@position:{{ item.settings.position }}{% endif %} {{ Dropdown_nav_item_class }}" {{ item.shopify_attributes }}>
+                            <a class="{{ cn }}-link" href="{{ item.settings.blog.url | default: '#' }}">
+                                {%- if item.settings.icon != 'none' -%}
+                                    {% render 'icon', name: item.settings.icon, load: true %}
+                                {%- endif -%}
+                                {{ item.settings.title }}
+                                {{ Dropdown_link_caret }}
+                            </a> 
+                            <div class="{{ cn }}-dropdown">
+                                <div class="#container">
+                                    <div class="{{ cn }}-dropdown-inner">
+                                        <div class="#grid @type:columns" style="--columns: {{ item.settings.columns | at_least: 3  }};">
+                                            {% for article in item.settings.blog.articles limit: cards_limit %}
+                                                {% render 'main-nav-card',
+                                                    src: article,
+                                                    type: 'article',
+                                                    article_info: item.settings.article_info,
+                                                    image_position: item.settings.image_position,
+                                                    image_srcsize_desktop: image_srcsize_desktop
+                                                %}
+                                            {% endfor %}
+                                        </div>
+                                        {%- if item.settings.show_view_all -%}
+                                            <div class="{{ cn }}-dropdown-view-all">
+                                                {%- render 'button',
+                                                    t_text: 'sections.featured_collection.view_all',
+                                                    tag: 'a',
+                                                    tier: 'link',
+                                                    link: item.settings.blog.url
+                                                -%}
+                                            </div>
+                                        {%- endif -%}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {%- endif -%}
+                {% when "collections_list" %}
+                    {% liquid
+                        assign columns = item.settings.columns | at_least: 3
+
+                        assign show_price = false
+                        assign show_item_count = false
+                        case item.settings.collection_info
+                            when 'price'
+                                assign show_price = true
+                            when 'count'
+                                assign show_item_count = true
+                        endcase
+                    %}
+
+                    {%- capture image_srcsize_desktop -%}(min(100vw, {{ settings.container_width }}px) - min(3rem, 5vw))/{{ columns }}{%- endcapture -%}
+
+                    {%- if item.settings.title != blank -%}
+                        <div {{ nav_selector_attr }} class="{{ cn }}-item @mega {% if manual_alignment %}@position:{{ item.settings.position }}{% endif %} {{ Dropdown_nav_item_class }}" {{ item.shopify_attributes }}>
+                            <a class="{{ cn }}-link" href="{{ item.settings.title_link | default: '#' }}">
+                                {%- if item.settings.icon != 'none' -%}
+                                    {% render 'icon', name: item.settings.icon, load: true %}
+                                {%- endif -%}
+                                {{ item.settings.title }}
+                                {{ Dropdown_link_caret }}
+                            </a> 
+                            <div class="{{ cn }}-dropdown">
+                                <div class="#container">
+                                    <div class="{{ cn }}-dropdown-inner">
+                                        <div class="#grid @type:columns" style="--columns: {{ columns }};">
+                                            {% for nav_collection in item.settings.collections %}
+                                                {% render 'main-nav-card',
+                                                    src: nav_collection,
+                                                    type: 'collection',
+                                                    image_src: item.settings.collection_image_src,
+                                                    show_price: show_price,
+                                                    show_item_count: show_item_count, 
+                                                    image_position: item.settings.image_position,
+                                                    image_srcsize_desktop: image_srcsize_desktop
+                                                %}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {%- endif -%}
+                {% when "link" %}
+                    {%- if item.settings.title != blank -%}
+                        <div class="{{ cn }}-item {% if manual_alignment %}@position:{{ item.settings.position }}{% endif %}" {{ item.shopify_attributes }}>
+                            <a class="{{ cn }}-link" href="{{ item.settings.title_link | default: '#' }}">
+                                {%- if item.settings.icon != 'none' -%}
+                                    {% render 'icon', name: item.settings.icon, load: true %}
+                                {%- endif -%}
+                                {{ item.settings.title }}
+                            </a> 
+                        </div>
+                    {%- endif -%}
+
+                {% when "menu" %}
+                    {%- if request.design_mode -%}
+                        <div {{ item.shopify_attributes }} hidden></div>
+                    {%- endif -%}
+                    {% for link in item.settings.menu.links %}
+                        {% if link.levels > 0 %}
+                            {% assign sub_nav = link.links %}
+                        {% else %}
+                            {% assign sub_nav = false %}
+                        {% endif %}
+                        <div {% if sub_nav %}{{ nav_selector_attr }}{% endif %} class="{{ cn }}-item {% if manual_alignment %}@position:{{ item.settings.position }}{% endif %} {% if sub_nav %}{{ Dropdown_nav_item_class }}{% endif %}">
+                            <a class="{{ cn }}-link" href="{{ link.url }}">
+                                {{ link.title }}
+                                {%- if link.levels > 0 -%}
+                                    {{ Dropdown_link_caret }}
+                                {%- endif -%}
+                            </a>           
+                            {% if sub_nav %}
+                                <div class="{{ cn }}-dropdown">
+                                    {% for sub_link in sub_nav %}
+                                        {% if sub_link.levels > 0 %}
+                                            {% assign sub2_nav = sub_link.links %}
+                                        {% else %}
+                                            {% assign sub2_nav = false %}
+                                        {% endif %}
+                                        <div class="{{ cn }}-item">
+                                            <a class="{{ cn }}-sub-link" href="{{ sub_link.url }}">{{ sub_link.title }}</a>
+                                            {% if sub2_nav %}
+                                                <div class="{{ cn }}-dropdown">
+                                                    {% for sub2_link in sub2_nav %}
+                                                        <div class="{{ cn }}-item">
+                                                            <a class="{{ cn }}-sub-link" href="{{ sub2_link.url }}">{{ sub2_link.title }}</a>
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                {% when "catalog" %}
+                    <div {{ nav_selector_attr }} class="{{ cn }}-item @mega {% if manual_alignment %}@position:{{ item.settings.position }}{% endif %} {{ Dropdown_nav_item_class }}" {{ item.shopify_attributes }}>
+                        <a class="{{ cn }}-link" href="{{ item.settings.title_link | default: '#' }}">
+                            {%- if item.settings.icon != 'none' -%}
+                                {% render 'icon', name: item.settings.icon, load: true %}
+                            {%- endif -%}
+                            {{ item.settings.title }}
+                            {{ Dropdown_link_caret }}
+                        </a>           
+                        <div class="{{ cn }}-dropdown @full">
+                            <div class="#container">
+                                <div class="{{ cn }}-dropdown-inner">
+                                    {% render 'main-nav-catalog',
+                                        src: item.settings.menu,
+                                        src_type: 'menu',
+                                        show_collection_bg: item.settings.show_collection_bg_image,
+                                        masonry_layout: item.settings.enable_masonry_layout,
+                                        sidebar_image_type: item.settings.sidebar_image_type,
+                                        show_collection_thumbnails: item.settings.show_collection_thumbnails,
+                                        columns: item.settings.columns,
+                                    %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% when "subcollections_catalog" %}
+                    {% liquid
+                        assign show_price = false
+                        assign show_item_count = false
+                        case item.settings.subcollection_info
+                            when 'price'
+                                assign show_price = true
+                            when 'count'
+                                assign show_item_count = true
+                        endcase
+                    %}
+                    <div {{ nav_selector_attr }} class="{{ cn }}-item @mega {% if manual_alignment %}@position:{{ item.settings.position }}{% endif %} {{ Dropdown_nav_item_class }}" {{ item.shopify_attributes }}>
+                        <a class="{{ cn }}-link" href="{{ item.settings.title_link | default: '#' }}">
+                            {%- if item.settings.icon != 'none' -%}
+                                {% render 'icon', name: item.settings.icon, load: true %}
+                            {%- endif -%}
+                            {{ item.settings.title }}
+                            {{ Dropdown_link_caret }}
+                        </a>           
+                        <div class="{{ cn }}-dropdown @full">
+                            <div class="#container">
+                                <div class="{{ cn }}-dropdown-inner">
+                                    {% render 'main-nav-catalog',
+                                        src: item.settings.menu
+                                        src_type: 'subcollections',
+                                        sidebar_image_type: item.settings.sidebar_image_type,
+                                        subcollection_image_src: item.settings.subcollection_image_src,
+                                        show_price: show_price,
+                                        show_item_count: show_item_count,
+                                        nav_card_image_position: item.settings.image_position,
+                                        show_collection_bg: item.settings.show_collection_bg_image,
+                                        columns: item.settings.columns
+                                    %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% when "products_catalog" %}
+                    <div {{ nav_selector_attr }} class="{{ cn }}-item @mega {% if manual_alignment %}@position:{{ item.settings.position }}{% endif %} {{ Dropdown_nav_item_class }}" {{ item.shopify_attributes }}>
+                        <a class="{{ cn }}-link" href="{{ item.settings.title_link | default: '#' }}">
+                            {%- if item.settings.icon != 'none' -%}
+                                {% render 'icon', name: item.settings.icon, load: true %}
+                            {%- endif -%}
+                            {{ item.settings.title }}
+                            {{ Dropdown_link_caret }}
+                        </a>           
+                        <div class="{{ cn }}-dropdown @full">
+                            <div class="#container">
+                                <div class="{{ cn }}-dropdown-inner">
+                                    {% render 'main-nav-catalog',
+                                        src: item.settings.collections
+                                        src_type: 'product_lists',
+                                        sidebar_image_type: item.settings.sidebar_image_type,
+                                        show_price: item.settings.show_product_price,
+                                        show_view_all: item.settings.show_view_all,
+                                        nav_card_image_position: item.settings.image_position,
+                                        show_collection_bg: item.settings.show_collection_bg_image,
+                                        columns: item.settings.columns,
+                                        rows: item.settings.rows
+                                    %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                
+                {% when "mega_menu" %}
+                    <div {{ nav_selector_attr }} class="{{ cn }}-item @mega {% if manual_alignment %}@position:{{ item.settings.position }}{% endif %} {{ Dropdown_nav_item_class }}" {{ item.shopify_attributes }}>
+                        <a class="{{ cn }}-link" href="{{ item.settings.title_link | default: '#' }}">
+                            {%- if item.settings.icon != 'none' -%}
+                                {% render 'icon', name: item.settings.icon, load: true %}
+                            {%- endif -%}
+                            {{ item.settings.title }}
+                            {{ Dropdown_link_caret }}
+                        </a>           
+                        <div class="{{ cn }}-dropdown">
+                            <div class="#container">
+                                <div class="{{ cn }}-dropdown-inner">
+                                    {% render 'main-nav-mega',
+                                        menu: item.settings.menu,
+                                        masonry_layout: item.settings.enable_masonry_layout,
+                                        columns: item.settings.columns,
+                                        show_collection_thumbnails: item.settings.show_collection_thumbnails,    
+                                        images_position: item.settings.images_position,
+                                        images_color_scheme: item.settings.images_color_scheme,
+                                        images_content_position: item.settings.images_content_position,
+                                        images_overlay: item.settings.images_overlay,
+                                        images_height: item.settings.images_height,
+                                        image_1: item.settings.image_1,
+                                        image_1_width: item.settings.image_1_width,
+                                        image_1_link: item.settings.image_1_link,
+                                        image_1_heading: item.settings.image_1_heading,
+                                        image_1_subheading: item.settings.image_1_subheading,
+                                        image_2: item.settings.image_2,
+                                        image_2_width: item.settings.image_2_width,
+                                        image_2_link: item.settings.image_2_link,
+                                        image_2_heading: item.settings.image_2_heading,
+                                        image_2_subheading: item.settings.image_2_subheading,
+                                    %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                {% when "browsing_history" %}
+                    {%- assign browsing_history_limit = 5 -%}
+                    <div {{ nav_selector_attr }} class="{{ cn }}-item @mega {% if manual_alignment %}@position:{{ item.settings.position }}{% endif %} {{ Dropdown_nav_item_class }}" {{ item.shopify_attributes }}>
+                        <a class="{{ cn }}-link" href="#">
+                            {%- if item.settings.icon != 'none' -%}
+                                {% render 'icon', name: item.settings.icon, load: true %}
+                            {%- endif -%}
+                            {{ item.settings.title }}
+                            {{ Dropdown_link_caret }}
+                        </a>           
+                        <div class="{{ cn }}-dropdown">
+                            <div class="#container">
+                                <div class="{{ cn }}-dropdown-inner">
+                                    {%- render 'main-nav-browsing-history', products_limit: browsing_history_limit -%}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                
+
+                {% when "drawer" %}
+                    {%- assign nav_drawer_id = 'nav-drawer-' | append: section.id | append: item.id -%}
+                    <div class="{{ cn }}-item {% if manual_alignment %}@position:{{ item.settings.position }}{% endif %}" {{ item.shopify_attributes }}>
+                        <modal-open tabindex="0" class="{{ cn }}-link" target="{{ nav_drawer_id }}" section-id="{{ section.id }}">
+                            {% render 'icon', name: 'burger' %}
+                            {{ item.settings.title }}
+                        </modal-open>
+                        {%- capture Drawer_content -%}
+                            {% render 'main-nav-drawer',
+                                menu: item.settings.menu,
+                                title: item.settings.title,
+                                thumbnails: item.settings.show_thumbnails,
+                                prefix: item.id
+                            %}
+                        {%- endcapture -%}
+                        {% render 'modal',
+                            id: nav_drawer_id,
+                            height: '100%',
+                            width: 'fit-content',
+                            animation: 'left',
+                            content: Drawer_content,
+                            show_close: false
+                        %}
+                    </div>
+                
+                {% when "image_with_text" %}
+                    <div {{ nav_selector_attr }} class="{{ cn }}-item @mega {% if manual_alignment %}@position:{{ item.settings.position }}{% endif %} {{ Dropdown_nav_item_class }}" {{ item.shopify_attributes }}>
+                        <a class="{{ cn }}-link" href="{{ item.settings.title_link | default: '#' }}">
+                            {%- if item.settings.icon != 'none' -%}
+                                {% render 'icon', name: item.settings.icon, load: true %}
+                            {%- endif -%}
+                            {{ item.settings.title }}
+                            {{ Dropdown_link_caret }}
+                        </a>           
+                        <div class="{{ cn }}-dropdown @full">
+                            <div class="{{ cn }}-dropdown-inner">
+                                {% render 'main-nav-image-with-text',
+                                    item: item
+                                %}
+                            </div>
+                        </div>
+                    </div>
+            {% endcase %}
+        {% endfor %}
+    </nav>
+</{{ NS }}>
+
+
+{%- if request.design_mode -%}
+    <script type="module">
+        const { Utils } = Global;
+        const { $active } = Utils;
+
+        class EditorNavBar extends window.Editor {
+            events = {
+                block: {
+                    select: this._onNavBarBlockSelect,
+                    deselect: this._onNavBarBlockDeselect
+                }
+            }
+
+            init() {
+                this._handleHover();
+            }
+
+            _handleHover() {
+                Array.from(document.querySelectorAll('.\\#main-nav-item')).map(this._deactivateActiveOnHover.bind(this))
+            }
+
+            _deactivateActiveOnHover(item) {
+                item.addEventListener('mouseover', () => {
+                    if (this.active) {
+                        this.active = undefined;
+                    }
+                })
+            }
+
+            _onNavBarBlockSelect(e) {
+                this.active = e.target;
+            }
+                
+            _onNavBarBlockDeselect(e) {
+                this.active = undefined;
+            }
+
+            set active(navEl) {
+                if (this._active) {
+                    $active(this._active, false);
+                    this._active = navEl;
+                    return
+                } 
+                $active(navEl);
+                this._active = navEl;
+            }
+            get active() {
+                return this._active;
+            }
+           
+        }
+        const navBarEditorUX = new EditorNavBar('{{ section.id }}');
+        navBarEditorUX.render();
+    </script>
+{%- endif -%}

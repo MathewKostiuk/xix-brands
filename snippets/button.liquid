@@ -1,0 +1,116 @@
+{%- liquid
+    comment
+        Props:
+            - text
+            - t_text
+            - link
+            - tag
+            - atts
+            - id
+            - name
+            - type
+            - value
+            - form
+            - color_scheme
+            - display_style -> enum: normal, link, outline, gradient
+            - text_color
+            - bg_color
+            - size
+            - use_shadow -> boolean
+            - spinner_size
+            - new_tab
+    endcomment
+
+    assign NS = 'button'
+    assign cn = '#' | append: NS
+    assign tag = tag | default: 'button'
+    assign tier = tier | default: 'primary'
+
+    if t_text != blank
+        assign text = t_text | t    
+    endif
+
+    assign display_style = display_style | default: 'normal'
+    assign use_shadow = use_shadow | default: true
+
+    case color_scheme
+        when 'warning'
+            assign bg_color = settings.color_warning
+        when 'danger'
+            assign bg_color = settings.color_danger
+        when 'success'
+            assign bg_color = settings.color_success
+    endcase
+
+    assign display_style = settings.button_primary_style
+    if tier == 'secondary'
+        assign display_style = settings.button_secondary_style
+    endif
+    if tier == 'link'
+        assign display_style = 'text'
+    endif
+
+    if bg_color != blank and text_color == blank
+        assign diff = bg_color | brightness_difference: '#ffffff'
+        if diff > 125
+            assign text_color = '#ffffff'
+        else
+            assign text_color = '#2d2d2d'
+        endif
+    endif
+    
+    if new_tab
+        assign new_tab_attr = 'target="_blank" rel="noopener noreferrer"'
+    endif
+-%}
+
+{%- capture Style -%}
+    {%- if text_color != blank -%}--{{ NS }}-text-color: {{ text_color }};{%- endif -%}
+    {%- if bg_color != blank -%}--{{ NS }}-bg-color: {{ bg_color }};--{{ NS }}-bg-hover-color: {{ bg_hover_color }};{%- endif -%}
+{%- endcapture -%}
+
+<{{tag}} 
+    class="{{ cn }} @tier:{{ tier }} @display-style:{{ display_style }} {% if size != blank %}@size:{{ size }}{% endif %} {% if block %}@block{% endif %}"
+    style="{{ Style }}"
+    {% if section_id %}
+        section-id="{{ section_id }}"
+    {% endif %}
+    {% if tag == 'a' %}
+        href="{{ link | default: "#" }}"
+    {% endif %}
+    {% if tag != 'button' and tag != 'a' %}
+        tabindex="0"
+    {% endif %}
+    {% if element != blank %}
+        data-element="{{ element }}"
+    {% endif %}
+    {% if id != blank %}
+        id="{{ id }}"
+    {% endif %}
+    {% if name != blank %}
+        name="{{ name }}"
+    {% endif %}
+    {% if type != blank %}
+        type="{{ type }}"
+    {% endif %}
+    {% if value != blank %}
+        value="{{ value }}"
+    {% endif %}
+    {% if form != blank %}
+        form="{{ form }}"
+    {% endif %}
+    {% if atts != blank %}
+       {{ atts }} 
+    {% endif %}>
+    {% if settings.button_show_arrow and no_arrow != true %}
+        <span class="{{ cn }}-text-with-arrow">
+            {{ text }}
+            {% render 'icon', name: 'angle-right' %}
+        </span>
+    {% else %}
+        {{ text }}
+    {% endif %}
+    {%- if loading -%}
+        {% render 'spinner', size: spinner_size %}
+    {%- endif -%}
+</{{tag}}> 

@@ -1,0 +1,118 @@
+{% liquid
+    assign NS = 'main-nav-catalog'
+    assign cn = '#' | append: NS 
+
+    assign cards_limit = 9
+    assign menu_items_thumbnail = false
+    case show_collection_thumbnails
+        when 'sidebar'
+            assign sidebar_thumbnail = true
+        when 'menu_items'
+            assign menu_items_thumbnail = true
+        when 'sidebar_menu_items'
+            assign sidebar_thumbnail = true
+            assign menu_items_thumbnail = true
+    endcase
+%}
+
+{% render 'load-css', file: NS %}
+
+<div class="{{ cn }}">
+    {% for menu_link in menu.links %}
+        {%- liquid
+            if menu_link.type == 'collection_link' 
+                assign parent_collection = menu_link.object
+            else
+                assign parent_collection = blank
+            endif
+            if sidebar_thumbnail and parent_collection
+                assign meta_thumbnail = parent_collection.metafields.theme.thumbnail
+                if meta_thumbnail.type == 'file_reference' and meta_thumbnail.value != blank
+                    assign thumbnail =  meta_thumbnail.value
+                else
+                    assign first_product = parent_collection.products[0] 
+                    assign thumbnail = first_product.featured_image 
+                endif
+            else
+                assign thumbnail = nil
+            endif
+            assign with_sub = false
+        -%}
+
+        {% capture Collection_cards %}
+            {% if use_metafields %}
+                {% for collection in parent_collection.metafields.theme.subcollections.value limit: cards_limit %}
+                    {% render 'collection-card-min'
+                        collection: collection,
+                        text_position: 'center',
+                        text_size: 'body',
+                        image_res: 150,
+                        shadow: false,
+                        show_thumbnail: menu_items_thumbnail
+                    %}
+                {% endfor %}
+            {% else %}
+                {% for collection_link in menu_link.links limit: cards_limit %}
+                    {% if collection_link.type == 'collection_link' %}
+                        {% render 'collection-card-min'
+                            collection: collection_link.object,
+                            text_position: 'center',
+                            text_size: 'body',
+                            image_res: 150,
+                            shadow: false,
+                            show_thumbnail: menu_items_thumbnail
+                        %}
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        {% endcapture %}
+
+        {% if Collection_cards != blank %}
+            {% assign with_sub = true %}
+        {% endif %}
+        
+        <div class="{{ cn }}-item">
+            <a class="{{ cn }}-sidebar-link" href="{{ menu_link.url }}">
+                {% if thumbnail %}
+                    <div class="{{ cn }}-sidebar-link-thumbnail">
+                        {% render 'media',
+                            image: thumbnail,
+                            image_res: 50,
+                            size: 'square'
+                        %}
+                    </div>
+                {% endif %}
+                {{ menu_link.title }}
+                {% if with_sub %}
+                    {% render 'icon', name: 'angle-right' %}
+                {% endif %}
+            </a>
+            <div class="{{ cn }}-sub">
+                <div class="{{ cn }}-sub-inner">
+                    {% if parent_collection.image != blank and show_collection_bg %}
+                        <div class="{{ cn }}-sub-overlay-wrapper">
+                            <img class="{{ cn }}-sub-overlay-image" src="{{ parent_collection.image | img_url: '1200x' }}" alt="{{ parent_collection.title }}">
+                            <div class="{{ cn }}-sub-overlay"></div>
+                        </div>
+                    {% endif %}
+                    {% if with_sub %}
+                        <div class="{{ cn }}-sub-content">
+                            <div class="#grid @type:columns" style="--columns: 3; --gap: 1rem;">
+                                {% render 'load-css', file: 'collection-card-min' %}
+                                {{ Collection_cards }}
+                            </div>
+                            <div class="{{ cn }}-sub-content-view-all">
+                                {%- render 'button',
+                                    t_text: 'sections.featured_collection.view_all',
+                                    tag: 'a',
+                                    tier: 'link',
+                                    link: collection.url
+                                -%}
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>

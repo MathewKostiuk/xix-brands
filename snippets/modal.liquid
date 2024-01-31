@@ -1,0 +1,104 @@
+{% liquid
+    # Props:
+    # - content:HTML
+    # - id:string
+    # x: left | center | right
+    # y: top | center | bottom
+    # animation: left | right | top | bottom | zoom
+    # show_close:boolean
+
+    assign NS = 'modal-container'
+    assign cn = "#" | append: NS 
+
+    unless show_close == false
+        assign show_close = true
+    endunless
+
+    if y == 'top'
+        assign y = 'start'
+    endif
+
+    if y == 'bottom'
+        assign y = 'end'
+    endif
+
+    if width == 'container'
+        assign width = 'var(--container-width)'
+    endif
+
+    if max_width == 'container'
+        assign max_width = 'var(--container-width)'
+    endif
+
+    case animation
+        when 'left'
+            assign animate_in = 'slide-in-left'
+            assign animate_out = 'slide-out-left'
+            if x == blank
+                assign x = 'left'
+            endif
+        when 'right'
+            assign animate_in = 'slide-in-right'
+            assign animate_out = 'slide-out-right'
+            if x == blank
+                assign x = 'right'
+            endif
+        when 'top'
+            assign animate_in = 'slide-in-top'
+            assign animate_out = 'slide-out-top'
+            if y == blank
+                assign y = 'start'
+            endif
+        when 'bottom'
+            assign animate_in = 'slide-in-bottom'
+            assign animate_out = 'slide-out-bottom'
+            if y == blank
+                assign y = 'end'
+            endif
+        when 'zoom'
+            assign animate_in = 'zoom-in'
+            assign animate_out = 'zoom-out'
+    endcase
+%}
+
+
+<{{ NS }} 
+    section-id="{{ section.id }}"
+    class="{{ cn }}" 
+    id="{{ id }}"
+    {% if remote_url != blank %}remote-url="{{ remote_url }}"{% endif %}
+    {% if remote_target != blank %}remote-target="{{ remote_target }}"{% endif %}
+    {% if remote_detach %}remote-detach{% endif %}
+    style="
+        {% if width %}--{{ NS }}-width: {{ width }};{% endif %}
+        {% if height %}--{{ NS }}-height: {{ height }};{% endif %}
+        {% if max_height %}--{{ NS }}-max-height: {{ max_height }};{% endif %}
+        {% if max_width %}--{{ NS }}-max-width: {{ max_width }};{% endif %}
+        {% if animation %}
+            --{{ NS }}-animate-in: {{ animate_in }};
+            --{{ NS }}-animate-out: {{ animate_out }};
+        {% endif %}
+        {% if x %}
+            --{{ NS }}-justify: {{ x }};
+        {% endif %}
+        {% if y %}
+            --{{ NS }}-align: {{ y }};
+        {% endif %}
+    "
+>
+    <dialog {% if open %}open{% endif %} data-element="dialog" class="{{ cn }}-dialog">
+        <div class="{{ cn }}-content" data-element="content">
+            {{ content }}
+        </div>
+        {% if remote_url != blank and remote_target != blank %}
+            <div class="{{ cn }}-spinner" data-element="spinner">
+                {% render 'spinner' %}
+            </div>
+        {% endif %}
+        {% if show_close %}
+            <modal-close class="{{ cn }}-dialog-close" section-id="{{ section.id }}">
+                {% render 'icon', name: 'x' %}
+            </modal-close>
+        {% endif %}
+    </dialog>
+</{{ NS }}>

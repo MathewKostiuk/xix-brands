@@ -1,0 +1,22 @@
+{%- comment -%}
+    Props:
+        products_limit: number
+{%- endcomment -%}
+
+{% liquid
+    assign NS = 'browsing-history-nav'
+    assign cn = '#' | append: NS
+    assign products_limit = products_limit | default: 5
+%}
+
+{% render 'load-css', file: NS %}
+
+<browsing-history-loader section-id="{{ section.id }}" req-section="r_product-card-nav" limit="{{ products_limit }}">
+    <browsing-history-nav class="{{ cn }}" section-id="{{ section.id }}">
+        <div data-element="content" class="#grid @type:columns @center" style="--columns: {{ products_limit }}; --columns-mobile: 1;"></div>
+        <h4 class="{{ cn }}-fallback">{{ 'general.browsing_history.fallback' | t }}</h4>
+    </browsing-history-nav>
+</browsing-history-loader>
+    
+<script type="module" src="{{ 'browsing-history-nav.js' | asset_url }}"></script>
+<script type="module" src="{{ 'browsing-history-loader.js' | asset_url }}"></script>

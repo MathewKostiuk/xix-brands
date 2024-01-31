@@ -1,0 +1,184 @@
+{
+  "sections": {
+    "header": {
+      "type": "s_page-header",
+      "disabled": true,
+      "settings": {
+        "color_scheme": "",
+        "image_size": "250px",
+        "mobile_image_size": "250px",
+        "bg_image_overlay": 30,
+        "text_position": "inside",
+        "custom_text": ""
+      }
+    },
+    "main": {
+      "type": "s_page",
+      "disabled": true,
+      "settings": {
+        "content_width": 80,
+        "font_scale": 100
+      }
+    },
+    "87b2f456-5c3b-4aa0-a4e7-441fd9cecb38": {
+      "type": "d_hero-image",
+      "blocks": {
+        "template--21452575834305__87b2f456-5c3b-4aa0-a4e7-441fd9cecb38-subheading-1": {
+          "type": "subheading",
+          "settings": {
+            "subheading": ""
+          }
+        },
+        "template--21452575834305__87b2f456-5c3b-4aa0-a4e7-441fd9cecb38-heading-1": {
+          "type": "heading",
+          "settings": {
+            "heading": "Cariboo Fire Centre",
+            "heading_scale": 120
+          }
+        },
+        "template--21452575834305__87b2f456-5c3b-4aa0-a4e7-441fd9cecb38-text-1": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Powered By XIX-Brands.<\/p>",
+            "enlarge_text": false
+          }
+        },
+        "template--21452575834305__87b2f456-5c3b-4aa0-a4e7-441fd9cecb38-buttons-1": {
+          "type": "buttons",
+          "settings": {
+            "mobile_hidden": false,
+            "info": "",
+            "f_button_label": "",
+            "f_button_link": "",
+            "f_button_tier": "primary",
+            "s_button_label": "",
+            "s_button_link": "",
+            "s_button_tier": "secondary"
+          }
+        }
+      },
+      "block_order": [
+        "template--21452575834305__87b2f456-5c3b-4aa0-a4e7-441fd9cecb38-subheading-1",
+        "template--21452575834305__87b2f456-5c3b-4aa0-a4e7-441fd9cecb38-heading-1",
+        "template--21452575834305__87b2f456-5c3b-4aa0-a4e7-441fd9cecb38-text-1",
+        "template--21452575834305__87b2f456-5c3b-4aa0-a4e7-441fd9cecb38-buttons-1"
+      ],
+      "custom_css": [
+        ".#hero {margin: 2000px;}",
+        ".#floating-content {justify-content: center;}"
+      ],
+      "settings": {
+        "color_scheme": "",
+        "section_layout": "full",
+        "image": "shopify:\/\/shop_images\/Cariboo_Fire_Center_Official_Custom_Apparel_Page_a539636e-fe8d-4eb8-a972-ddc7dfc32ab0.png",
+        "image_size": "origin",
+        "mobile_image": "shopify:\/\/shop_images\/Cariboo_Fire_Centre_Official_E-Store_Powered_By_XIX-Brands.png",
+        "mobile_image_size": "origin",
+        "overlay": 0,
+        "use_box": false,
+        "text_position": "center-left",
+        "mobile_offset": true
+      }
+    },
+    "ce6115ee-bf77-40c9-9991-e7ae9ee20575": {
+      "type": "d_featured-collection",
+      "blocks": {
+        "template--21452575834305__ce6115ee-bf77-40c9-9991-e7ae9ee20575-products-1": {
+          "type": "products",
+          "settings": {
+            "products_limit": 7,
+            "show_only_products_in_stock": false
+          }
+        },
+        "template--21452575834305__ce6115ee-bf77-40c9-9991-e7ae9ee20575-banner-1": {
+          "type": "banner",
+          "settings": {
+            "color_scheme": "",
+            "image_overlay": 0,
+            "heading": "{{ section.settings.collection.title }}",
+            "heading_scale": 80,
+            "subheading": "",
+            "button": "Shop All",
+            "button_tier": "primary"
+          }
+        }
+      },
+      "block_order": [
+        "template--21452575834305__ce6115ee-bf77-40c9-9991-e7ae9ee20575-products-1",
+        "template--21452575834305__ce6115ee-bf77-40c9-9991-e7ae9ee20575-banner-1"
+      ],
+      "settings": {
+        "heading": "All Products",
+        "subheading": "",
+        "collection": "cariboo-fire-centre-all-products",
+        "slide_every": "row",
+        "slides_per_view": 3,
+        "section_button_label": ""
+      }
+    },
+    "f0c4b5d2-6b26-40bb-94ed-309e55c1182b": {
+      "type": "d_image-with-text",
+      "blocks": {
+        "template--21452575834305__f0c4b5d2-6b26-40bb-94ed-309e55c1182b-subheading-1": {
+          "type": "subheading",
+          "settings": {
+            "subheading": "Cariboo Fire Centre"
+          }
+        },
+        "template--21452575834305__f0c4b5d2-6b26-40bb-94ed-309e55c1182b-heading-1": {
+          "type": "heading",
+          "settings": {
+            "heading": "We’re responsible for coordinating wildfire response in the central interior of B.C.",
+            "heading_scale": 80
+          }
+        },
+        "template--21452575834305__f0c4b5d2-6b26-40bb-94ed-309e55c1182b-text-1": {
+          "type": "text",
+          "settings": {
+            "text": "<p>This area comprises of approximately 8.2 million hectares, stretching from Clinton, north to the Cottonwood River, east to Wells Gray Provincial Park, and west to Tweedsmuir Provincial Park, divided into two main climatic belts: the western dry belt and the eastern wet belt.As a result, a mixture of thinly grassed meadows, sagebrush and lone coniferous trees and well-spaced forests are found in the west of the region. In the east, there are extensive forests of cedar, hemlock, spruce and balsam trees, with a milder climate lying between the two belts.<\/p>",
+            "enlarge_text": false
+          }
+        }
+      },
+      "block_order": [
+        "template--21452575834305__f0c4b5d2-6b26-40bb-94ed-309e55c1182b-subheading-1",
+        "template--21452575834305__f0c4b5d2-6b26-40bb-94ed-309e55c1182b-heading-1",
+        "template--21452575834305__f0c4b5d2-6b26-40bb-94ed-309e55c1182b-text-1"
+      ],
+      "settings": {
+        "color_scheme": "main",
+        "section_layout": "full",
+        "image": "shopify:\/\/shop_images\/S.Powers.jpg",
+        "image_size": "550px",
+        "mobile_image_size": "350px",
+        "image_width": 50,
+        "image_position": "right",
+        "text_position": "center-center",
+        "pattern": "none",
+        "pattern_scale": 100,
+        "pattern_animation": "none"
+      }
+    },
+    "83088153-8499-4e6d-baed-7b98318f5aca": {
+      "type": "d_custom-html",
+      "settings": {
+        "heading": "FEEDBACK",
+        "subheading": "",
+        "section_layout": "default",
+        "html": "<p>If you have feedback for The Cariboo Fire Centre online clothing shop, or have suggestions for images, items, bulk orders or want a personalized online store for your crew or unit contact the info team via <a href=\"mailto:%20CAFCINT@gov.bc.ca\">CAFCINT@gov.bc.ca.<\/a><\/p>",
+        "font_scale": 100,
+        "text_align": "center",
+        "section_button_label": "",
+        "section_button_url": ""
+      }
+    }
+  },
+  "order": [
+    "header",
+    "main",
+    "87b2f456-5c3b-4aa0-a4e7-441fd9cecb38",
+    "ce6115ee-bf77-40c9-9991-e7ae9ee20575",
+    "f0c4b5d2-6b26-40bb-94ed-309e55c1182b",
+    "83088153-8499-4e6d-baed-7b98318f5aca"
+  ]
+}

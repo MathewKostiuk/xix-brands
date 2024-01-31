@@ -1,0 +1,72 @@
+.\#collection-toolbar {
+  --collection-toolbar-items-width: 30%;
+  margin-bottom: var(--glob-size-10);
+  padding-block: var(--glob-size-4);
+  background: var(--color-g-fg);
+  font-size: 1.1rem;
+  border-bottom: 1px solid var(--color-g-border);
+  border-top: 1px solid var(--color-g-border);
+  z-index: 9;
+}
+@media (max-width: 991px) {
+  .\#collection-toolbar {
+    --collection-toolbar-items-width: 40%;
+  }
+}
+.\#collection-toolbar.\@desktop-filters {
+  --sticky-offset: var(--header-height, 0px);
+  position: sticky;
+  top: calc(0rem + var(--sticky-offset));
+}
+@media (max-width: 991px) {
+  .\#collection-toolbar:not(.\@desktop-filters) {
+    --sticky-offset: var(--header-height, 0px);
+    position: sticky;
+    top: calc(0rem + var(--sticky-offset));
+  }
+}
+@media (min-width: 992px) {
+  .\#collection-toolbar:not(.\@desktop-filters) .\#collection-toolbar-filters-button {
+    display: none;
+  }
+}
+.\#collection-toolbar-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.\#collection-toolbar-header {
+  display: flex;
+  align-items: center;
+  gap: var(--glob-size-8);
+  font-family: var(--glob-subheading-family);
+  font-size: var(--glob-subheading-size);
+  font-weight: var(--glob-subheading-weight);
+  text-transform: var(--glob-subheading-transform);
+  letter-spacing: var(--glob-subheading-letter-spacing, normal);
+  opacity: var(--glob-subheading-opacity);
+  font-size: max(var(--glob-subheading-size, 1rem));
+}
+.\#collection-toolbar-filters-button {
+  width: var(--collection-toolbar-items-width);
+  display: flex;
+  align-items: center;
+  gap: var(--glob-size-2);
+  cursor: pointer;
+  font-family: var(--glob-subheading-family);
+  font-size: var(--glob-subheading-size);
+  font-weight: var(--glob-subheading-weight);
+  text-transform: var(--glob-subheading-transform);
+  letter-spacing: var(--glob-subheading-letter-spacing, normal);
+  opacity: var(--glob-subheading-opacity);
+  font-size: max(var(--glob-subheading-size, 1rem));
+}
+.\#collection-toolbar-filters-button .\#icon {
+  --size: 1.2em;
+}
+.\#collection-toolbar-sort {
+  width: var(--collection-toolbar-items-width);
+}
+.\#collection-toolbar-sort .\#collection-sort {
+  justify-content: end;
+}

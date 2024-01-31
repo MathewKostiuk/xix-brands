@@ -1,0 +1,67 @@
+{%- liquid
+    comment
+        Props:
+            - show_titles (Boolean)
+            - share_permalink (String)
+            - share_image (Image)
+            - share_title (String)
+            - use_brand_colors (Boolean)
+    endcomment
+
+    assign NS = 'share'
+    assign cn = '#' | append: NS
+
+    assign share_url = shop.url | append: share_permalink
+-%}
+
+{% render 'load-css', file: NS %}
+
+<div class="{{ cn }} {% if use_brand_colors %}@colors{% endif %}">
+    {%- if settings.share_facebook -%}
+        <a 
+            class="{{ cn }}-item @brand:facebook reset-link"
+            href="//www.facebook.com/sharer.php?u={{ share_url }}"
+            target="_blank" 
+        >
+            {% render 'icon', name: 'facebook' %}
+            <span class="{{ cn }}-title {% if show_titles == false %}visually-hidden{% endif %}">{{ 'general.share.facebook' | t }}</span>
+            <span class="visually-hidden">{{ 'general.social.alt_text.share_on_facebook' | t }}</span>
+            <span class="visually-hidden">{{ 'accessibility.link_messages.new_window' | t }}</span>
+        </a>
+    {%- endif -%}
+    {%- if settings.share_twitter -%}
+        <a 
+            class="{{ cn }}-item @brand:twitter reset-link"
+            href="//twitter.com/share?text={{ share_title | url_param_escape }}&amp;url={{ share_url }}"
+            target="_blank" 
+        >
+            {% render 'icon', name: 'x-twitter' %}
+            <span class="{{ cn }}-title {% if show_titles == false %}visually-hidden{% endif %}">{{ 'general.share.twitter' | t }}</span>
+            <span class="visually-hidden">{{ 'general.social.alt_text.share_on_twitter' | t }}</span>
+            <span class="visually-hidden">{{ 'accessibility.link_messages.new_window' | t }}</span>
+        </a>
+    {%- endif -%}
+    {%- if settings.share_pinterest -%}
+        <a 
+            class="{{ cn }}-item @brand:pinterest reset-link"
+            href="//pinterest.com/pin/create/button/?url={{ share_url }}}&amp;media={{ share_image | img_url: '1024x1024' }}&amp;description={{ share_title | url_param_escape }}"
+            target="_blank" 
+        >
+            {% render 'icon', name: 'pinterest' %}
+            <span class="{{ cn }}-title {% if show_titles == false %}visually-hidden{% endif %}">{{ 'general.share.pinterest' | t }}</span>
+            <span class="visually-hidden">{{ 'general.social.alt_text.share_on_pinterest' | t }}</span>
+            <span class="visually-hidden">{{ 'accessibility.link_messages.new_window' | t }}</span>
+        </a>
+    {%- endif -%}
+    {%- if settings.share_email -%}
+        <a 
+            class="{{ cn }}-item @brand:email reset-link"
+            href="mailto:?subject={{ share_title | url_param_escape }}&amp;body={{ share_url }}"
+            target="_blank"
+        >
+            {% render 'icon', name: 'mail', load: true %}
+            <span class="{{ cn }}-title {% if show_titles == false %}visually-hidden{% endif %}">{{ 'general.share.email' | t }}</span>
+            <span class="visually-hidden">{{ 'general.social.alt_text.share_by_email' | t }}</span>
+        </a>
+    {%- endif -%}
+</div>

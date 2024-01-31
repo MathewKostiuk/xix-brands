@@ -1,0 +1,78 @@
+.\#slideshow-blaze {
+  --slideshow-blaze-arrow-offset: var(--glob-size-3);
+  --slideshow-blaze-arrow-color: white;
+  --slideshow-blaze-arrow-size: 2rem;
+  --slideshow-blaze-pagination-color: white;
+}
+.\#slideshow-blaze-next, .\#slideshow-blaze-prev {
+  transition: var(--transition-base);
+  cursor: pointer;
+  user-select: none;
+  position: absolute;
+  z-index: 9;
+  top: 50%;
+  transform: translateY(-50%);
+  display: block;
+  border: none;
+  background: none;
+  color: var(--slideshow-blaze-arrow-color);
+  padding: 0;
+}
+@media (max-width: 991px) {
+  .\#slideshow-blaze-next, .\#slideshow-blaze-prev {
+    display: none;
+  }
+}
+.\#slideshow-blaze-next .\#icon, .\#slideshow-blaze-prev .\#icon {
+  width: var(--slideshow-blaze-arrow-size);
+  height: var(--slideshow-blaze-arrow-size);
+}
+.\#slideshow-blaze-prev {
+  left: var(--slideshow-blaze-arrow-offset);
+}
+.\#slideshow-blaze-next {
+  right: var(--slideshow-blaze-arrow-offset);
+}
+.\#slideshow-blaze-pagination {
+  position: absolute;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0.7rem;
+  pointer-events: none;
+}
+body.glob--layout-align-center .\#slideshow-blaze-pagination {
+  justify-content: center;
+}
+
+.\#slideshow-blaze-pagination > button {
+  pointer-events: auto;
+  transition: var(--transition-base);
+  cursor: pointer;
+  display: block;
+  background-color: var(--slideshow-blaze-pagination-color);
+  border: none;
+  text-indent: -9999999px;
+  opacity: 0.64;
+  width: 0.8695652174rem;
+  height: 0.8695652174rem;
+  border-radius: var(--glob-border-radius-inner);
+  box-shadow: var(--color-scheme-box-shadow-sm);
+}
+body.glob--border-radius-rounded .\#slideshow-blaze-pagination > button {
+  border-radius: 0.8695652174rem;
+}
+
+.\#slideshow-blaze-pagination > button.active {
+  opacity: 1;
+  width: 3.0434782609rem;
+}
+.\#slideshow-blaze-slider.start .\#slideshow-blaze-prev {
+  opacity: 0;
+  pointer-events: none;
+}
+.\#slideshow-blaze-slider.end .\#slideshow-blaze-next {
+  opacity: 0;
+  pointer-events: none;
+}

@@ -1,0 +1,357 @@
+{%- liquid
+    assign NS = 'product-card'
+    assign cn = '#' | append: NS
+    assign quick_view = true
+    assign no_params_product_url = product.url | split: '?' | first
+
+
+    unless settings.product_card_image_crop
+        assign image_fit = 'contain'
+    endunless
+    
+    assign carousel_count = 0
+    
+    if product
+        case settings.product_card_hover_action
+            when 'carousel'
+                for product_image in product.images limit: 5
+                    assign carousel_count = carousel_count | plus: 1
+                endfor
+            when 'alt_image'
+                assign alt_image = product.images[1]
+        endcase
+    endif
+
+    if settings.product_card_dim_unavailable and product.available == false
+        assign dim_product = true
+    endif
+
+    assign rating_value = product.metafields.reviews.rating.value
+    assign rating_value = rating_value | strip | plus: 0 | round: 1
+    assign onboarding_title = 'onboarding.product_title' | t
+    assign title = product.title | default: onboarding_title 
+    assign swatches_limit = 5
+    assign custom_badges = product.metafields.theme.custom_badges.value
+
+    if product.has_only_default_variant and product.available
+        assign single_available_variant = true
+    endif
+
+    assign quick_view = false
+    assign add_to_cart = false
+    case settings.product_card_express_button
+        when 'quick_view'
+            assign quick_view = true
+        when 'add_to_cart'
+            if single_available_variant
+                assign add_to_cart = true
+            endif
+        when 'all'
+            if single_available_variant
+                assign add_to_cart = true
+            else
+                assign quick_view = true
+            endif
+    endcase
+-%}
+
+{% if carousel_count > 1 %}
+    {% capture Carousel_tiles %}
+        <div class="{{ cn }}-carousel-tiles">
+            {% for i in (1..carousel_count) %}
+                <a tabindex="-1" href="{{ product.url }}" class="{{ cn }}-carousel-tile" data-carousel-tile="{{ i }}"></a>   
+            {% endfor %}
+        </div>
+    {% endcapture %}
+    {% capture Carousel_images %}
+        {% for i in (1..carousel_count) %}
+            {% unless forloop.first %}
+                <div data-carousel-image="{{ i }}" class="{{ cn }}-media-carousel load-hidden">
+                    {% assign carousel_image_index = i | minus: 1 %}
+                    {% assign carousel_image = product.images[carousel_image_index] %}
+                    {% render 'media', 
+                        image: carousel_image, 
+                        srcsize_desktop: image_srcsize_desktop,
+                        srcsize_mobile: image_srcsize_mobile,
+                        border_radius: media_border_radius,
+                        size: settings.product_card_image_size,
+                        image_fit: image_fit 
+                    %}
+                </div>
+            {% endunless %}
+        {% endfor %} 
+    {% endcapture %}
+    {% capture Carousel_pagination %}
+        <div class="{{ cn }}-carousel-pagination">
+            {% for i in (1..carousel_count) %}
+                <div class="{{ cn }}-carousel-pagination-item" data-carousel-pagination="{{ i }}">
+                    <span></span>
+                </div>   
+            {% endfor %}
+        </div>
+    {% endcapture %}
+{% endif %}
+
+{% capture Quick_action_button %}
+    {% if settings.product_card_enable_express_button %}
+        {% if settings.product_card_enable_express_add_to_cart and single_available_variant %}
+            {%- capture Button -%}
+                {% render 'button',
+                    t_text: 'products.product.add_to_cart',
+                    loading: true,
+                    atts: 'data-element="to-cart-button"',
+                    block: true,
+                    no_arrow: true,
+                    tier: settings.product_card_express_button_style
+                %}
+            {%- endcapture -%} 
+            {% render 'product-to-cart', 
+                trigger: Button, 
+                variant: product.first_available_variant
+            %} 
+        {% else %}
+            {% assign quick_view_modal_id = 'QuickViewModalId-' | append: product.id %}
+            {% assign quick_view_url = product.url | split: '?' | first | append: '?view=quick-view' %}
+            {% capture Quick_view_modal %}
+                {% render 'modal',
+                    id: quick_view_modal_id,
+                    remote_url: quick_view_url,
+                    remote_target: '#ProductQuickView',
+                    remote_detach: true,
+                    animation: 'zoom',
+                    show_close: false
+                %}
+            {% endcapture %}
+            {%- if product != false -%}
+                {% capture button_atts %} target="{{ quick_view_modal_id }}"{% endcapture %}
+            {%- endif -%}
+            {% render 'button',
+                tag: 'modal-open',
+                t_text: 'products.product.quick_view',
+                block: true,
+                atts: button_atts,
+                no_arrow: true,
+                section_id: section.id,
+                tier: settings.product_card_express_button_style
+            %}
+        {% endif %}
+    {% endif %}
+{% endcapture %}
+
+{%- if rating_value > 0 and settings.product_card_show_reviews -%}
+    {% if settings.product_card_review_counter %}
+        {% assign rating_count = product.metafields.reviews.rating_count %}
+    {% endif %}
+    {% if settings.product_card_rating_position == 'media' %}
+        {% capture Reviews_media %}
+            <div class="{{ cn }}-media-rating">
+                <div class="{{ cn }}-media-rating-icon">
+                    {% render 'icon', name: 'rating-star' %}
+                </div>
+                <div class="{{ cn }}-media-rating-value">{{ rating_value }}</div>
+                {% if rating_count != blank %}
+                    <div class="{{ cn }}-media-rating-count">{{ rating_count }}</div>
+                {% endif %}
+            </div>       
+        {% endcapture %}
+    {% else %}
+        {%- capture Reviews -%}
+            <div class="{{ cn }}-rating @position:{{ settings.product_card_rating_position }}">
+                {% render 'star-rating', 
+                    value: product.metafields.reviews.rating.value,
+                    count: rating_count
+                %}
+            </div>
+        {%- endcapture -%}
+    {% endif %}
+{%- endif -%}
+       
+{%- capture Badges -%}
+    {%- if settings.product_card_badge_sold_out and product.available == false -%}
+        <div class="#badge @type:sold-out">{{ 'products.product.sold_out' | t }}</div>
+    {%- endif -%}
+    {%- if settings.product_card_badge_sale and product.compare_at_price and product.available and product.compare_at_price != product.price -%}
+        <div class="#badge @type:sale">
+            {%- if settings.product_card_badge_sale_style == 'sign' or product.price_varies -%}
+                {{ 'products.product.on_sale' | t }}
+            {%- else -%}
+                {%- if settings.product_card_badge_sale_style == 'percentage' -%}
+                    {%- assign pct = product.price | times: 100 | divided_by: product.compare_at_price  -%}
+                    {%- assign saved_value = 100 | minus: pct | append: '%' -%}
+                    {{ 'products.product.saved_amount' | t: value: saved_value }}
+                {%- endif -%}
+                {%- if settings.product_card_badge_sale_style == 'absolute' -%}
+                    {%- assign saved_value = product.compare_at_price | minus: product.price | money_without_trailing_zeros -%}
+                    {{ 'products.product.saved_amount' | t: value: saved_value }}
+                {%- endif -%}
+            {%- endif -%}
+        </div>
+    {%- endif -%}
+{%- endcapture -%}
+
+{%- capture Custom_badges -%}
+    {% if custom_badges.size > 0 %}
+        <div class="{{ cn }}-custom-badges">
+            {%- for badge in custom_badges -%}
+                <span class="#badge @type:custom">{{ badge | strip }}</span>
+            {%- endfor -%}
+        </div>
+    {% endif %}
+{%- endcapture -%}
+
+{%- if settings.product_card_show_color_swatches and product -%}
+    {%- capture Color_swatches -%}
+        {% assign swatch_input_name = 'color-swatches' | append: product.id | append: section.id %}
+        {%- assign settings_color_option_names = settings.color_swatches_options | split: ',' | handleize -%}
+            {%- for product_option in product.options_with_values -%}
+                {%- assign option_name_handle = product_option.name | handleize -%}
+                {%- if settings_color_option_names contains option_name_handle  -%}
+                    {%- assign option_position = "option" | append: product_option.position -%}
+                    <div class="{{ cn }}-swatches @align:{{ settings.product_card_align }}">
+                        {%- for color_value in product_option.values limit: swatches_limit -%}
+                            {%- assign option_variant = product.variants | where: option_position, color_value | first -%}
+                            {%- if option_variant.image != blank -%}
+                                {% if option_variant.image == product.featured_image %}
+                                    {% assign active_swatch_image = true %}
+                                {% else %}
+                                    {% assign active_swatch_image = false %}
+                                {% endif %}
+                                {%- capture Swatch_variant_images -%}
+                                    {{ Swatch_variant_images }}
+                                    <div class="{{ cn }}-swatch-media" data-swatch-media-number="{{ forloop.index }}">
+                                        {% render 'media', 
+                                            image: option_variant.image, 
+                                            srcsize_desktop: image_srcsize_desktop,
+                                            srcsize_mobile: image_srcsize_mobile,
+                                            border_radius: media_border_radius,
+                                            size: settings.product_card_image_size,
+                                            image_fit: image_fit,
+                                            animate_lazy_loading: false
+                                        %} 
+                                    </div>
+                                {%- endcapture -%}
+                                {% assign swatch_id = color_value | handleize | append: product.id | append: section.id | append: forloop.index %}
+                                <label class="{{ cn }}-swatch" for="{{ swatch_id }}">
+                                <input class="{{ cn }}-swatch-input" {% if active_swatch_image %}checked{% endif %} type="radio" name="{{ swatch_input_name }}" id="{{ swatch_id }}" value="{{ forloop.index }}">
+                                    <span class="{{ cn }}-swatch-thumbnail" style="{%- render 'swatch-color-style', value: color_value -%}"></span>
+                                </label>
+                            {%- endif -%}
+                        {%- endfor -%}
+                        {%- if product_option.values.size > swatches_limit -%}
+                            {%- assign colors_remainder = product_option.values.size | minus: swatches_limit -%}
+                            <div class="{{ cn }}-swatches-remainder">
+                                {%- render 'icon', name: 'plus' -%}
+                                <span>{{ colors_remainder }}</span>
+                            </div>
+                        {%- endif -%}
+                    </div>
+                    {%- break -%}
+                {%- endif -%}
+            {%- endfor -%}
+    {%- endcapture -%}
+{%- endif -%}
+
+
+<div class="{{ cn }}">
+    {{ Quick_view_modal }}
+    {%- if product.url != blank -%}
+        <a href="{{ product.url }}" class="stretched-link">{{ product.title }}</a>
+    {%- endif -%}
+
+    {%- if Badges != blank -%}
+        <div class="{{ cn }}-badges @position:left">
+            {{ Badges }}
+        </div>
+    {%- endif -%}
+
+    {%- capture Price -%}
+        <div class="{{ cn }}-price">
+            {% render 'price', product: product %}
+        </div>
+    {%- endcapture -%}
+
+    <div class="{{ cn }}-media {% if settings.product_card_image_padding %}@padded{% endif %}">
+        {% if dim_product %}
+            <div class="{{ cn }}-media-dimmer"></div>
+        {% endif %}
+        {{ Reviews_media }}
+        {{ Carousel_tiles }} 
+        {%- if settings.product_card_darken_image -%}
+            <div class="{{ cn }}-media-overlay"></div>
+        {%- endif -%}
+        {% if Quick_action_button != blank and settings.product_card_express_button_display == 'media' %}
+            <div class="{{ cn }}-media-quick-action mobile-hidden">
+                {{ Quick_action_button }}
+            </div>
+        {% endif %}
+        <div class="{{ cn }}-media-inner">
+            {% render 'media', 
+                image: product.featured_image, 
+                srcsize_desktop: image_srcsize_desktop,
+                srcsize_mobile: image_srcsize_mobile,
+                border_radius: media_border_radius,
+                size: settings.product_card_image_size,
+                image_fit: image_fit,
+                placeholder: 'product-apparel',
+                placeholder_index: placeholder_index,
+            %}
+  
+        {%- if Swatch_variant_images != blank -%}
+            {{ Swatch_variant_images }}     
+        {%- endif -%}
+
+        {{ Carousel_images }}
+
+            {%- if alt_image != blank -%}
+                <div class="{{ cn }}-media-alt load-hidden">
+                    {% render 'media', 
+                        image: alt_image, 
+                        srcsize_desktop: image_srcsize_desktop,
+                        srcsize_mobile: image_srcsize_mobile,
+                        border_radius: media_border_radius,
+                        size: settings.product_card_image_size,
+                        image_fit: image_fit 
+                    %}
+                </div>
+            {%- endif -%}
+        </div>
+    </div>
+
+    {{ Carousel_pagination }}
+
+    <div class="{{ cn }}-caption">
+        {%- if settings.product_card_show_custom_badges and Custom_badges != blank -%}
+            {{ Custom_badges }}
+        {%- endif -%}
+        {%- if settings.product_card_rating_position == 'top' -%}
+            {{ Reviews }}
+        {%- endif -%}
+        {% if settings.product_card_show_vendor != blank %}
+            <p class="{{ cn }}-vendor">{{ product.vendor }}</p>
+        {% endif %}
+        {%- if settings.product_card_price_position == 'before' -%}
+            {{ Price }}
+        {%- endif -%}
+        <h3 class="{{ cn }}-title">
+            {% if settings.product_card_enable_title_truncation %}
+                <span class="#text-truncate" style="--text-truncate-lines: {{ settings.product_card_title_max_lines }}">
+                    {{ title }}
+                </span> 
+            {% else %}
+                {{ title }}
+            {% endif %}
+        </h3>
+        {%- if settings.product_card_price_position == 'after' -%}
+            {{ Price }}
+        {%- endif -%}
+        {%- if settings.product_card_rating_position == 'bottom' -%}
+            {{ Reviews }}
+        {%- endif -%}
+        {{ Color_swatches }}
+        {% if Quick_action_button != blank and settings.product_card_express_button_display == 'bottom' %}
+            <div class="{{ cn }}-quick-action mobile-hidden">
+                {{ Quick_action_button }}
+            </div>
+        {% endif %}
+    </div>
+</div>

@@ -1,0 +1,5 @@
+{%- liquid
+    assign NS = 'cart-total'    
+-%}
+<{{ NS }}>{{ cart.total_price | money }}</{{ NS }}>
+<script type="module" src="{{  NS | append: '.js' | asset_url }}"></script>

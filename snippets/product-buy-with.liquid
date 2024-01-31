@@ -1,0 +1,26 @@
+{%- liquid
+    assign NS = 'product-buy-with'
+    assign cn = '#' | append: NS
+    assign complementary_products = product.metafields.shopify--discovery--product_recommendation.complementary_products.value
+-%}
+
+{% if complementary_products.count > 0 %}
+    {% capture Complimentaries %}
+        {% for c_product in complementary_products %}
+            {% if c_product.available %}
+                {% render 'product-card-min',
+                    product: c_product,
+                    add_to_cart: true
+                %}
+            {% endif %}
+        {% endfor %}
+    {% endcapture %}
+{% endif %}
+
+{% if Complimentaries != blank %}
+    {% render 'load-css', file: 'product-buy-with' %}
+    {% render 'load-css', file: 'product-card-min' %}
+    <div class="{{ cn }}">
+        {{ Complimentaries }}
+    </div>
+{% endif %}

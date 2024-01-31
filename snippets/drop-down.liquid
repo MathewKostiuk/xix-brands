@@ -1,0 +1,23 @@
+{%- liquid
+    assign NS = 'drop-down'
+    assign cn = '#' | append: NS    
+-%}
+
+{% render 'load-css', file: NS, lazy: true %}
+
+<{{ NS }} section-id="{{ section.id }}" class="{{ cn }} initial-hidden"
+    {% if update_value %}update-value{% endif %}
+    {% if close_on_change %}close-on-change{% endif %}
+>
+    {%- unless select == false -%}
+        <select class="{{ cn }}-select load-hidden" data-element="select" name="{{ input_name }}" {% if form_id %}form="{{ form_id }}"{% endif %} id="{{ input_name }}-{{ section.id }}">
+            {{ options }}
+        </select>
+    {%- endunless -%}
+    <details class="{{ cn }}-details {% if lights_off %}lights-off-open{% endif %}" data-element="details">
+        <summary data-element="button">{{ toggle }}</summary>
+        <div class="{{ cn }}-menu @position:{{ position | default: 'bottom-center' }}" data-element="listbox">{{ menu }}</div>
+    </details>
+</{{ NS }}>
+
+<script type="module" src="{{ NS | append: '.js' | asset_url }}"></script>

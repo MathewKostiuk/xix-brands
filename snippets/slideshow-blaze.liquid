@@ -1,0 +1,48 @@
+{%- liquid
+    # Props:
+    # - slides (HTML)
+    # - show_navigation (Boolean)
+    # - show_pagination (Boolean)
+    # - swipe_on_desktop (Boolean)
+    # - loop (Boolean)
+    # - autoplay (Boolean)
+    # - autoplay_speed (Number)
+    # - initial_index (Number)
+
+    assign NS = 'slideshow-blaze'
+    assign cn = '#' | append: NS
+-%}
+
+{% render 'load-css', file: NS %}
+
+<{{NS}} 
+    class="{{ cn }}" 
+    section-id="{{ section.id }}" 
+    {% if swipe_on_desktop != false %}swipe-on-desktop{% endif %}
+    {% if loop %}loop{% endif %}
+    {% if autoplay %}autoplay-speed="{{ autoplay_speed | times: 1000 }}"{% endif %}
+    {% if initial_index %}initial-index="{{ initial_index }}"{% endif %}
+>
+    <div class="blaze-slider {{ cn }}-slider" style="--slides-to-show: 1; --slide-gap: 0px;" data-element="blaze">
+        <div class="blaze-container">
+            {% if show_navigation %}
+                <button class="blaze-next {{ cn }}-next" aria-label="{{ 'general.slider.next_slide' | t }}" data-element="nav">
+                    {% render 'icon', name: 'angle-right' %}
+                    </button>
+                    <button class="blaze-prev {{ cn }}-prev" aria-label="{{ 'general.slider.previous_slide' | t }}" data-element="nav">
+                        {% render 'icon', name: 'angle-left' %}
+                    </button>
+            {% endif %}
+            <div class="blaze-track-container {{ cn }}-track-container">
+                <div class="blaze-track">
+                    {{ slides }}
+                </div>
+            </div>
+            {% if show_pagination %}
+                <div class="#container blaze-pagination {{ cn }}-pagination"></div>
+            {% endif %}
+        </div>
+    </div>
+</{{NS}}>
+
+<script type="module" src="{{ NS | append: '.js' | asset_url }}"></script>

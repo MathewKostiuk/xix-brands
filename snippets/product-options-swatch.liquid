@@ -1,0 +1,42 @@
+{%- assign NS = 'product-options-swatch' -%}
+{%- assign cn = '#' | append: NS -%}
+
+{% render 'load-css', file: NS %}
+
+<div class="{{ cn }}">
+    {%- for value in option.values -%}
+        {% liquid
+            assign existed_variant = matched_options_variants | where: option_position, value | first 
+            
+            assign input_id = option.name | handleize | append: value | escape | handleize | append: section.id
+            assign cn_availability = ''
+            if existed_variant
+                if existed_variant.available == false
+                    assign cn_availability = '!sold-out'
+                endif
+            else
+                assign cn_availability = '!unavailable'
+                assign existed_variant = product.variants | where: option_position, value | first
+
+            endif 
+        %}
+        {%- assign input_id = option.name | handleize | append: value | escape | handleize | append: section.id -%}
+        <label class="{{ cn }}-item" for="{{ input_id }}">
+            <input 
+                id="{{ input_id }}"
+                type="radio"
+                class="{{ cn }}-item-input {% if src == 'buttons' %}visually-hidden{% endif %}  {{ cn_availability }}"
+                {% unless src == 'buttons' %}hidden{% endunless %}
+                data-option-value
+                data-option-index="{{ option.position | minus: 1 }}"
+                data-variant-id="{{ existed_variant.id }}"
+                data-variant-image-position="{{ existed_variant.featured_media.position }}"
+                name="{{ option.name }}"
+                value="{{ value | escape }}"
+                {% if option.selected_value == value %}checked{% endif %}
+            >
+                <div class="{{ cn }}-item-body" style="{%- render 'swatch-color-style', value: value -%}"></div>
+        </label>
+    {%- endfor -%}
+</div>
+

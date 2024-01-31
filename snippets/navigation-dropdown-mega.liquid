@@ -1,0 +1,21 @@
+<li class="{{ cn }}-item @mega" data-drop {{ block.shopify_attributes }}>
+    <a class="{{ cn }}-link" href="{{ block.settings.url }}">
+        {%- if block.settings.icon != blank -%}
+            <div class="{{ cn }}-item-icon">
+                {% render 'icon', 
+                    name: block.settings.icon,
+                    load: true
+                %}
+            </div>
+        {%- endif -%}                            
+        {{ block.settings.title }}
+        {{ dropdown_link_caret }}
+    </a>
+    <div class="{{ cn }}-dropdown @mega" {{ editor_attr }}>
+        <div class="{{ cn }}-mega">
+            <div class="#container">
+                {{ content }}
+            </div>
+        </div>
+    </div>
+</li>

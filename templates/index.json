@@ -1,0 +1,303 @@
+{
+  "sections": {
+    "030d6434-5cc7-4d89-a89d-7333c7343965": {
+      "type": "d_hero-image",
+      "blocks": {
+        "template--21452575736001__030d6434-5cc7-4d89-a89d-7333c7343965-subheading-1": {
+          "type": "subheading",
+          "settings": {
+            "subheading": ""
+          }
+        },
+        "template--21452575736001__030d6434-5cc7-4d89-a89d-7333c7343965-heading-1": {
+          "type": "heading",
+          "settings": {
+            "heading": "<strong>PRESSING TO BUILD YOUR BRAND<\/strong>",
+            "heading_scale": 80
+          }
+        },
+        "template--21452575736001__030d6434-5cc7-4d89-a89d-7333c7343965-text-1": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Your established branding, marketing and<\/p><p>promotional partner.<\/p>",
+            "enlarge_text": false
+          }
+        },
+        "template--21452575736001__030d6434-5cc7-4d89-a89d-7333c7343965-buttons-1": {
+          "type": "buttons",
+          "settings": {
+            "mobile_hidden": false,
+            "info": "",
+            "f_button_label": "DESIGN NOW",
+            "f_button_link": "shopify:\/\/collections\/all",
+            "f_button_tier": "primary",
+            "s_button_label": "",
+            "s_button_link": "",
+            "s_button_tier": "secondary"
+          }
+        }
+      },
+      "block_order": [
+        "template--21452575736001__030d6434-5cc7-4d89-a89d-7333c7343965-subheading-1",
+        "template--21452575736001__030d6434-5cc7-4d89-a89d-7333c7343965-heading-1",
+        "template--21452575736001__030d6434-5cc7-4d89-a89d-7333c7343965-text-1",
+        "template--21452575736001__030d6434-5cc7-4d89-a89d-7333c7343965-buttons-1"
+      ],
+      "settings": {
+        "color_scheme": "main",
+        "section_layout": "full",
+        "image": "shopify:\/\/shop_images\/XIX-Brands_Customize_Your_Own_Apparel.png",
+        "image_size": "450px",
+        "mobile_image": "shopify:\/\/shop_images\/Custom_Design_Your_Apparel_at_XIX-Brands.com.png",
+        "mobile_image_size": "350px",
+        "overlay": 0,
+        "use_box": false,
+        "text_position": "center-left",
+        "mobile_offset": true
+      }
+    },
+    "43ad8057-d75a-44b8-8950-3b120c61ceef": {
+      "type": "d_logo-list",
+      "blocks": {
+        "template--21452575736001__43ad8057-d75a-44b8-8950-3b120c61ceef-logo-1": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/The_Rugby_Shop_Blue_Shield_Logo.png",
+            "link": "https:\/\/therugbyshop.com"
+          }
+        },
+        "template--21452575736001__43ad8057-d75a-44b8-8950-3b120c61ceef-logo-2": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/Dunnenzies_Pizza_Company_E-Store_Powered_By_XIX-Brands_2.png",
+            "link": "shopify:\/\/pages\/dunnenzies-pizza-co"
+          }
+        },
+        "template--21452575736001__43ad8057-d75a-44b8-8950-3b120c61ceef-logo-3": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/train_station.jpg",
+            "link": ""
+          }
+        },
+        "template--21452575736001__43ad8057-d75a-44b8-8950-3b120c61ceef-logo-4": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/Cariboo-Fire-Center_Official_E-Store_at_XIX-Brands.png",
+            "link": "shopify:\/\/pages\/cariboo-fire-centre"
+          }
+        },
+        "template--21452575736001__43ad8057-d75a-44b8-8950-3b120c61ceef-logo-5": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/The_Rugby_Ref_Maroon_Shield.jpg",
+            "link": "https:\/\/therugbyref.com\/"
+          }
+        }
+      },
+      "block_order": [
+        "template--21452575736001__43ad8057-d75a-44b8-8950-3b120c61ceef-logo-1",
+        "template--21452575736001__43ad8057-d75a-44b8-8950-3b120c61ceef-logo-2",
+        "template--21452575736001__43ad8057-d75a-44b8-8950-3b120c61ceef-logo-3",
+        "template--21452575736001__43ad8057-d75a-44b8-8950-3b120c61ceef-logo-4",
+        "template--21452575736001__43ad8057-d75a-44b8-8950-3b120c61ceef-logo-5"
+      ],
+      "settings": {
+        "heading": "Our Trusted Partners",
+        "subheading": "",
+        "columns": 5,
+        "logo_height": 120,
+        "enable_grayscale_hover": false,
+        "section_button_label": "",
+        "section_button_url": ""
+      }
+    },
+    "c1364dc7-2aae-4a0d-9bfd-2d0c16570612": {
+      "type": "d_image-columns",
+      "blocks": {
+        "template--21452575736001__c1364dc7-2aae-4a0d-9bfd-2d0c16570612-column-1": {
+          "type": "column",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/Step_1._Choose_Your_Product.png",
+            "heading": "1. Choose Your Product",
+            "subheading": "",
+            "text": "",
+            "link": "",
+            "button_label": ""
+          }
+        },
+        "template--21452575736001__c1364dc7-2aae-4a0d-9bfd-2d0c16570612-column-2": {
+          "type": "column",
+          "settings": {
+            "heading": "2. Customize Your Design",
+            "subheading": "",
+            "text": "",
+            "link": "",
+            "button_label": ""
+          }
+        },
+        "template--21452575736001__c1364dc7-2aae-4a0d-9bfd-2d0c16570612-column-3": {
+          "type": "column",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/Step_1._Choose_Your_Product.png",
+            "heading": "3. ORDER",
+            "subheading": "",
+            "text": "",
+            "link": "",
+            "button_label": ""
+          }
+        }
+      },
+      "block_order": [
+        "template--21452575736001__c1364dc7-2aae-4a0d-9bfd-2d0c16570612-column-1",
+        "template--21452575736001__c1364dc7-2aae-4a0d-9bfd-2d0c16570612-column-2",
+        "template--21452575736001__c1364dc7-2aae-4a0d-9bfd-2d0c16570612-column-3"
+      ],
+      "disabled": true,
+      "settings": {
+        "heading": "How It Works",
+        "subheading": "",
+        "heading_scale": 70,
+        "enlarge_text": false,
+        "image_size": "square",
+        "columns": 3,
+        "align_blocks_height": true,
+        "button_tier": "primary"
+      }
+    },
+    "36a15c07-4500-4684-b448-14ab487c0fac": {
+      "type": "d_featured-collection",
+      "blocks": {
+        "template--21452575736001__36a15c07-4500-4684-b448-14ab487c0fac-products-1": {
+          "type": "products",
+          "settings": {
+            "products_limit": 7,
+            "show_only_products_in_stock": false
+          }
+        }
+      },
+      "block_order": [
+        "template--21452575736001__36a15c07-4500-4684-b448-14ab487c0fac-products-1"
+      ],
+      "settings": {
+        "heading": "XIX-Brands - Products",
+        "subheading": "",
+        "collection": "xix-brands-all-products",
+        "slide_every": "row",
+        "slides_per_view": 4,
+        "section_button_label": ""
+      }
+    },
+    "d_featured_collection_86V3Aj": {
+      "type": "d_featured-collection",
+      "blocks": {
+        "products_gBaieJ": {
+          "type": "products",
+          "settings": {
+            "products_limit": 7,
+            "show_only_products_in_stock": false
+          }
+        }
+      },
+      "block_order": [
+        "products_gBaieJ"
+      ],
+      "settings": {
+        "heading": "XIX-Brands 2024 Promotional Products",
+        "subheading": "",
+        "collection": "2024-promotional-products",
+        "slide_every": "row",
+        "slides_per_view": 4,
+        "section_button_label": ""
+      }
+    },
+    "d_featured_collection_UgTydx": {
+      "type": "d_featured-collection",
+      "blocks": {
+        "products_ARUH8X": {
+          "type": "products",
+          "settings": {
+            "products_limit": 7,
+            "show_only_products_in_stock": false
+          }
+        },
+        "banner_9Lcj4Y": {
+          "type": "banner",
+          "settings": {
+            "color_scheme": "main",
+            "image": "shopify:\/\/shop_images\/XIX_Stacked_Black_2_1_4444c238-3a9a-42ac-8f3c-a9a7392e7056.png",
+            "image_overlay": 90,
+            "heading": "{{ section.settings.collection.title }}",
+            "heading_scale": 75,
+            "subheading": "",
+            "button": "Shop",
+            "button_tier": "primary"
+          }
+        }
+      },
+      "block_order": [
+        "products_ARUH8X",
+        "banner_9Lcj4Y"
+      ],
+      "settings": {
+        "heading": "XIX-Brands - Novelty",
+        "subheading": "",
+        "collection": "xix-brands-novelty",
+        "slide_every": "row",
+        "slides_per_view": 4,
+        "section_button_label": ""
+      }
+    },
+    "84ef8e94-b0e6-485d-a6cd-c9e3b3129d31": {
+      "type": "d_promo-banner",
+      "blocks": {
+        "template--21452575736001__84ef8e94-b0e6-485d-a6cd-c9e3b3129d31-heading-1": {
+          "type": "heading",
+          "settings": {
+            "heading": "XIX-Brands",
+            "heading_scale": 100,
+            "subheading": ""
+          }
+        },
+        "template--21452575736001__84ef8e94-b0e6-485d-a6cd-c9e3b3129d31-text-1": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Pressing To Build Your Brand<\/p>"
+          }
+        },
+        "template--21452575736001__84ef8e94-b0e6-485d-a6cd-c9e3b3129d31-button-1": {
+          "type": "button",
+          "settings": {
+            "mobile_hidden": false,
+            "label": "Shop Now",
+            "link": "shopify:\/\/collections\/all",
+            "tier": "primary"
+          }
+        }
+      },
+      "block_order": [
+        "template--21452575736001__84ef8e94-b0e6-485d-a6cd-c9e3b3129d31-heading-1",
+        "template--21452575736001__84ef8e94-b0e6-485d-a6cd-c9e3b3129d31-text-1",
+        "template--21452575736001__84ef8e94-b0e6-485d-a6cd-c9e3b3129d31-button-1"
+      ],
+      "settings": {
+        "color_scheme": "",
+        "section_layout": "full",
+        "desktop_text_align": "center",
+        "link": "",
+        "pattern": "none",
+        "pattern_scale": 100,
+        "pattern_animation": "none"
+      }
+    }
+  },
+  "order": [
+    "030d6434-5cc7-4d89-a89d-7333c7343965",
+    "43ad8057-d75a-44b8-8950-3b120c61ceef",
+    "c1364dc7-2aae-4a0d-9bfd-2d0c16570612",
+    "36a15c07-4500-4684-b448-14ab487c0fac",
+    "d_featured_collection_86V3Aj",
+    "d_featured_collection_UgTydx",
+    "84ef8e94-b0e6-485d-a6cd-c9e3b3129d31"
+  ]
+}
