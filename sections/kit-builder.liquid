@@ -1,0 +1,23 @@
+{% render 'load-css', file: 'kit-builder' %}
+<script src="{{ 'kit-builder.js' | asset_url }}"></script>
+<script
+  src="https://api.kitbuilder.co.uk/api/bootstrapper?distributorId={{ section.settings.distributor_id }}&amp;key=c7389bcda8e5424ba40d12940aad4270"
+  async=""
+></script>
+<div id="kitBuilder" class="kit-builder-page">
+  <noscript>Kit Builder requires JavaScript to be enabled</noscript>
+</div>
+
+{% schema %}
+  {
+    "name": "Kit Builder Settings",
+    "settings": [
+      {
+        "type": "text",
+        "id": "distributor_id",
+        "label": "Distributor ID",
+        "default": "166787663"
+      }
+    ]
+  }
+  {% endschema %}

@@ -1,0 +1,30 @@
+{
+  "sections": {
+    "header": {
+      "type": "s_page-header",
+      "disabled": true,
+      "settings": {
+        "color_scheme": "",
+        "image_size": "250px",
+        "mobile_image_size": "250px",
+        "bg_image_overlay": 30,
+        "text_position": "inside",
+        "custom_text": ""
+      }
+    },
+    "main": {
+      "type": "s_page",
+      "settings": {
+        "content_width": 80,
+        "font_scale": 100
+      }
+    },
+    "kit-builder": {
+      "type": "kit-builder",
+      "settings": {
+        "distributor_id": "166787663"
+      }
+    }
+  },
+  "order": ["header", "main", "kit-builder"]
+}
