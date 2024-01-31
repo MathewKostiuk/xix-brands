@@ -422,3 +422,8 @@ body.glob--border-radius-rounded .\#product-card-swatch-thumbnail {
   border-radius: 50%;
   background: var(--color-g-text);
 }
+
+.kit-builder--customize {
+  margin-top: 0.5rem;
+  z-index: 20;
+}

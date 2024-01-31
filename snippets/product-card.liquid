@@ -8,9 +8,9 @@
     unless settings.product_card_image_crop
         assign image_fit = 'contain'
     endunless
-    
+
     assign carousel_count = 0
-    
+
     if product
         case settings.product_card_hover_action
             when 'carousel'
@@ -29,7 +29,7 @@
     assign rating_value = product.metafields.reviews.rating.value
     assign rating_value = rating_value | strip | plus: 0 | round: 1
     assign onboarding_title = 'onboarding.product_title' | t
-    assign title = product.title | default: onboarding_title 
+    assign title = product.title | default: onboarding_title
     assign swatches_limit = 5
     assign custom_badges = product.metafields.theme.custom_badges.value
 
@@ -53,13 +53,14 @@
                 assign quick_view = true
             endif
     endcase
+    assign kit_builder_id = product.metafields.kit_builder.product_id
 -%}
 
 {% if carousel_count > 1 %}
     {% capture Carousel_tiles %}
         <div class="{{ cn }}-carousel-tiles">
             {% for i in (1..carousel_count) %}
-                <a tabindex="-1" href="{{ product.url }}" class="{{ cn }}-carousel-tile" data-carousel-tile="{{ i }}"></a>   
+                <a tabindex="-1" href="{{ product.url }}" class="{{ cn }}-carousel-tile" data-carousel-tile="{{ i }}"></a>
             {% endfor %}
         </div>
     {% endcapture %}
@@ -69,24 +70,24 @@
                 <div data-carousel-image="{{ i }}" class="{{ cn }}-media-carousel load-hidden">
                     {% assign carousel_image_index = i | minus: 1 %}
                     {% assign carousel_image = product.images[carousel_image_index] %}
-                    {% render 'media', 
-                        image: carousel_image, 
+                    {% render 'media',
+                        image: carousel_image,
                         srcsize_desktop: image_srcsize_desktop,
                         srcsize_mobile: image_srcsize_mobile,
                         border_radius: media_border_radius,
                         size: settings.product_card_image_size,
-                        image_fit: image_fit 
+                        image_fit: image_fit
                     %}
                 </div>
             {% endunless %}
-        {% endfor %} 
+        {% endfor %}
     {% endcapture %}
     {% capture Carousel_pagination %}
         <div class="{{ cn }}-carousel-pagination">
             {% for i in (1..carousel_count) %}
                 <div class="{{ cn }}-carousel-pagination-item" data-carousel-pagination="{{ i }}">
                     <span></span>
-                </div>   
+                </div>
             {% endfor %}
         </div>
     {% endcapture %}
@@ -104,11 +105,11 @@
                     no_arrow: true,
                     tier: settings.product_card_express_button_style
                 %}
-            {%- endcapture -%} 
-            {% render 'product-to-cart', 
-                trigger: Button, 
+            {%- endcapture -%}
+            {% render 'product-to-cart',
+                trigger: Button,
                 variant: product.first_available_variant
-            %} 
+            %}
         {% else %}
             {% assign quick_view_modal_id = 'QuickViewModalId-' | append: product.id %}
             {% assign quick_view_url = product.url | split: '?' | first | append: '?view=quick-view' %}
@@ -152,12 +153,12 @@
                 {% if rating_count != blank %}
                     <div class="{{ cn }}-media-rating-count">{{ rating_count }}</div>
                 {% endif %}
-            </div>       
+            </div>
         {% endcapture %}
     {% else %}
         {%- capture Reviews -%}
             <div class="{{ cn }}-rating @position:{{ settings.product_card_rating_position }}">
-                {% render 'star-rating', 
+                {% render 'star-rating',
                     value: product.metafields.reviews.rating.value,
                     count: rating_count
                 %}
@@ -165,7 +166,7 @@
         {%- endcapture -%}
     {% endif %}
 {%- endif -%}
-       
+
 {%- capture Badges -%}
     {%- if settings.product_card_badge_sold_out and product.available == false -%}
         <div class="#badge @type:sold-out">{{ 'products.product.sold_out' | t }}</div>
@@ -219,15 +220,15 @@
                                 {%- capture Swatch_variant_images -%}
                                     {{ Swatch_variant_images }}
                                     <div class="{{ cn }}-swatch-media" data-swatch-media-number="{{ forloop.index }}">
-                                        {% render 'media', 
-                                            image: option_variant.image, 
+                                        {% render 'media',
+                                            image: option_variant.image,
                                             srcsize_desktop: image_srcsize_desktop,
                                             srcsize_mobile: image_srcsize_mobile,
                                             border_radius: media_border_radius,
                                             size: settings.product_card_image_size,
                                             image_fit: image_fit,
                                             animate_lazy_loading: false
-                                        %} 
+                                        %}
                                     </div>
                                 {%- endcapture -%}
                                 {% assign swatch_id = color_value | handleize | append: product.id | append: section.id | append: forloop.index %}
@@ -275,7 +276,7 @@
             <div class="{{ cn }}-media-dimmer"></div>
         {% endif %}
         {{ Reviews_media }}
-        {{ Carousel_tiles }} 
+        {{ Carousel_tiles }}
         {%- if settings.product_card_darken_image -%}
             <div class="{{ cn }}-media-overlay"></div>
         {%- endif -%}
@@ -285,8 +286,8 @@
             </div>
         {% endif %}
         <div class="{{ cn }}-media-inner">
-            {% render 'media', 
-                image: product.featured_image, 
+            {% render 'media',
+                image: product.featured_image,
                 srcsize_desktop: image_srcsize_desktop,
                 srcsize_mobile: image_srcsize_mobile,
                 border_radius: media_border_radius,
@@ -295,22 +296,22 @@
                 placeholder: 'product-apparel',
                 placeholder_index: placeholder_index,
             %}
-  
+
         {%- if Swatch_variant_images != blank -%}
-            {{ Swatch_variant_images }}     
+            {{ Swatch_variant_images }}
         {%- endif -%}
 
         {{ Carousel_images }}
 
             {%- if alt_image != blank -%}
                 <div class="{{ cn }}-media-alt load-hidden">
-                    {% render 'media', 
-                        image: alt_image, 
+                    {% render 'media',
+                        image: alt_image,
                         srcsize_desktop: image_srcsize_desktop,
                         srcsize_mobile: image_srcsize_mobile,
                         border_radius: media_border_radius,
                         size: settings.product_card_image_size,
-                        image_fit: image_fit 
+                        image_fit: image_fit
                     %}
                 </div>
             {%- endif -%}
@@ -336,7 +337,7 @@
             {% if settings.product_card_enable_title_truncation %}
                 <span class="#text-truncate" style="--text-truncate-lines: {{ settings.product_card_title_max_lines }}">
                     {{ title }}
-                </span> 
+                </span>
             {% else %}
                 {{ title }}
             {% endif %}
@@ -352,6 +353,11 @@
             <div class="{{ cn }}-quick-action mobile-hidden">
                 {{ Quick_action_button }}
             </div>
+        {% endif %}
+        {% if kit_builder_id %}
+            <a href="/pages/kitbuilder#/customise/{{ kit_builder_id }}" class="kit-builder--customize #button @tier:secondary @display-style:solid_with_border @size:sm @block">
+              <span class="text">{{ 'products.product.customize' | t }}</span>
+            </a>
         {% endif %}
     </div>
 </div>

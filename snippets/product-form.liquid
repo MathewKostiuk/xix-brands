@@ -1,7 +1,7 @@
 {%- liquid
     assign NS = 'product-form'
     assign cn = '#' | append: NS
-    assign section_id = section_id | default: section.id 
+    assign section_id = section_id | default: section.id
     assign show_stock_notifier = false
     if use_stock_notifier
         for variant in product.variants
@@ -11,13 +11,14 @@
             endunless
         endfor
     endif
-    
+
     assign variant_picker_block = section.blocks | where: "type", "variant_selector" | first
 
     assign gift_card_recipient_feature = false
     if show_gift_card_recipient and product.gift_card?
         assign gift_card_recipient_feature = true
     endif
+    assign kit_builder_id = product.metafields.kit_builder.product_id
 -%}
 
 {% render 'load-css', file: NS %}
@@ -25,11 +26,11 @@
 {% if show_stock_alert %}
     {% render 'load-css', file: 'product-stock-notifier', lazy: variant.available %}
 {% endif %}
-   
+
 {% unless quick_view %}
     <noscript>
         {%- if product.has_only_default_variant or variant_picker_block == blank -%}
-            <input type="hidden" name="id" form="{{ product_form_id }}" value="{{ variant.id }}" />        
+            <input type="hidden" name="id" form="{{ product_form_id }}" value="{{ variant.id }}" />
         {%- else -%}
             <select style="
                 display: block;
@@ -111,13 +112,14 @@
                         {% endif %}
                         {%- endcomment -%}
 
-                        {% render 'product-to-cart', 
-                            trigger: Button, 
+                        {% render 'product-to-cart',
+                            trigger: Button,
                             variant: variant,
                             form_child: true
                         %}
                     </div>
-                    
+
+
                     {% if show_dynamic_checkout and gift_card_recipient_feature == false %}
                         <product-dynamic-checkout section-id="{{ section_id }}">
                             {{ form | payment_button }}
@@ -128,15 +130,20 @@
             {% else %}
                 {{ Button }}
                 {% if show_stock_notifier %}
-                    {% render 'product-stock-notifier', 
+                    {% render 'product-stock-notifier',
                         product: product,
                         contact_form_id: contact_form_id
                     %}
                 {% endif %}
             {% endif %}
+            {% if kit_builder_id %}
+                <a href="/pages/kitbuilder#/customise/{{ kit_builder_id }}" class="kit-builder--customize #button @tier:secondary @display-style:solid_with_border @size:lg @block">
+                  <span class="text">{{ 'products.product.customize' | t }}</span>
+                </a>
+            {% endif %}
         </product-variant-listener>
     {%- endform -%}
-</{{NS}}>  
+</{{NS}}>
 
 {% if show_stock_notifier %}
     <script type="module" src="{{ 'contact-form-submiter.js' | asset_url }}"></script>
@@ -147,4 +154,3 @@
 {% if show_dynamic_checkout %}
     <script type="module" src="{{ 'product-dynamic-checkout.js' | asset_url }}"></script>
 {% endif %}
-
