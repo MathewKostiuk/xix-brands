@@ -5,7 +5,7 @@
     "primaryLocale": "en",
     "adminMode": false
   },
-  "tsPublished": 1704916637,
+  "tsPublished": 1706826892,
   "declaration": {
     "showPurpose": false,
     "showProvider": false,
@@ -330,7 +330,7 @@
     },
     "position": "top",
     "theme": "wired",
-    "revokable": true,
+    "revokable": false,
     "animateRevokable": false,
     "revokableReset": false,
     "revokableLogoUrl": "https:\/\/cdn.shopify.com\/s\/files\/1\/0516\/1261\/4849\/t\/29\/assets\/pandectes-reopen-logo.png?v=1704915378",

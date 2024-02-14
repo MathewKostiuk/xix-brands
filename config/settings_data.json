@@ -1,6 +1,7 @@
 {
   "current": {
     "free_shipping_min_amount": 0,
+    "stock_threshold": 5,
     "color_accent": "#434343",
     "color_sale_price": "#383838",
     "color_product_badge_sale": "#383838",
@@ -17,12 +18,13 @@
     "color_footer_heading": "#fff",
     "color_footer_text": "#ffffff",
     "type_body_font": "inter_n4",
-    "type_body_size": 19,
+    "type_body_size": 20,
     "type_body_line_height": 1.1,
-    "type_heading_font": "rajdhani_n4",
+    "type_heading_font": "rajdhani_n6",
     "type_heading_size": 46,
     "type_heading_letter_spacing": 25,
-    "type_section_heading_scale": 85,
+    "type_section_heading_scale": 60,
+    "type_page_title_scale": 100,
     "type_heading_uppercase": true,
     "type_subheading_font": "body",
     "type_subheading_scale": 90,
@@ -92,7 +94,7 @@
     "product_card_review_counter": false,
     "product_card_rating_position": "top",
     "product_price_variable_display": "min",
-    "scroll_to_top_button": true,
+    "scroll_to_top_button": false,
     "carousel_show_pagination": false,
     "carousel_offset_display": "none",
     "predictive_search_src_page": true,
@@ -114,6 +116,72 @@
     "colors_outline_button_labels": "#121212",
     "colors_background_1": "#FFFFFF",
     "colors_background_2": "#F3F3F3",
+    "sections": {
+      "s_product-quick-view": {
+        "type": "s_product-quick-view",
+        "blocks": {
+          "s_product-quick-view-0": {
+            "type": "title",
+            "settings": {
+              "heading_scale": 80,
+              "enable_text_truncation": true,
+              "max_lines": 3,
+              "badges_display": "before",
+              "badges_scale": 100
+            }
+          },
+          "s_product-quick-view-1": {
+            "type": "rating",
+            "settings": {
+              "show_count": true
+            }
+          },
+          "s_product-quick-view-2": {
+            "type": "price",
+            "settings": {
+              "show_savings": true,
+              "text_scale": 200,
+              "bold_text": false,
+              "show_taxes": true
+            }
+          },
+          "s_product-quick-view-3": {
+            "type": "variant_selector",
+            "settings": {
+              "show_variant_image": "none",
+              "color_swatches": false,
+              "price_display": "diff",
+              "swatches_grid_columns": "auto",
+              "show_stock_alert": false
+            }
+          },
+          "s_product-quick-view-4": {
+            "type": "buy_buttons",
+            "settings": {
+              "show_dynamic_checkout": true
+            }
+          }
+        },
+        "block_order": [
+          "s_product-quick-view-0",
+          "s_product-quick-view-1",
+          "s_product-quick-view-2",
+          "s_product-quick-view-3",
+          "s_product-quick-view-4"
+        ],
+        "settings": {
+          "use_image_crop": true,
+          "gallery_width": 50
+        }
+      },
+      "s_gift-card": {
+        "type": "s_gift-card",
+        "settings": {
+          "logo": "shopify:\/\/shop_images\/XIX-Brands-Logo_Horizontal_1230b560-2626-46c0-9f56-a745eaed67ad.png",
+          "logo_width": 100
+        }
+      }
+    },
     "content_for_index": [
 
     ],
@@ -126,6 +194,12 @@
       },
       "659792091439989800": {
         "type": "shopify:\/\/apps\/bss-product-variants-options\/blocks\/bss-po-script\/2c446099-c349-4e73-80cd-49c9770b7807",
+        "disabled": false,
+        "settings": {
+        }
+      },
+      "5918445685253060206": {
+        "type": "shopify:\/\/apps\/bundler\/blocks\/bundler-script-append\/7a6ae1b8-3b16-449b-8429-8bb89a62c664",
         "disabled": false,
         "settings": {
         }

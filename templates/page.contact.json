@@ -14,7 +14,7 @@
     "main": {
       "type": "s_page",
       "settings": {
-        "content_width": 80,
+        "content_width": 100,
         "font_scale": 100
       }
     },
@@ -51,7 +51,7 @@
         "template--15251332431906__95e70b35-5499-4923-bc8f-0d25402732ca-phone_number-1": {
           "type": "phone_number",
           "settings": {
-            "width": "4",
+            "width": "6",
             "label": "Phone number",
             "placeholder": "",
             "is_required": false
@@ -62,7 +62,7 @@
           "settings": {
             "width": "12",
             "label": "Please Choose One Of The Following",
-            "options": "I am interested in making a bulk order, I have a question about an existing order I made, Other"
+            "options": ",I am interested in making a bulk order, I have a question about an existing order I made, Other"
           }
         },
         "template--15251332431906__95e70b35-5499-4923-bc8f-0d25402732ca-textarea-1": {
@@ -88,8 +88,8 @@
         "heading": "",
         "subheading": "",
         "content_width": 100,
-        "image": "shopify:\/\/shop_images\/XIX_Stacked_Black_2_1.png",
-        "image_width": 45,
+        "image": "shopify:\/\/shop_images\/XIX_Stacked_Black_3_2.png",
+        "image_width": 50,
         "image_position": "right"
       }
     }

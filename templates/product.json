@@ -107,7 +107,7 @@
         "gallery_width": 64,
         "enable_image_zoom": true,
         "autoplay_video": false,
-        "sticky_add_to_cart": false,
+        "sticky_add_to_cart": true,
         "image_expand": true,
         "show_product_specs": false,
         "product_specs": "<p>Brand: {{ product.vendor }}<\/p><p>Title: {{ product.title }}<\/p>",

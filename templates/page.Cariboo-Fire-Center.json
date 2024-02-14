@@ -98,7 +98,7 @@
             "heading": "{{ section.settings.collection.title }}",
             "heading_scale": 80,
             "subheading": "",
-            "button": "Shop All",
+            "button": "Shop",
             "button_tier": "primary"
           }
         }
@@ -112,7 +112,7 @@
         "subheading": "",
         "collection": "cariboo-fire-centre-all-products",
         "slide_every": "row",
-        "slides_per_view": 3,
+        "slides_per_view": 4,
         "section_button_label": ""
       }
     },

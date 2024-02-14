@@ -248,6 +248,99 @@
         "section_button_label": ""
       }
     },
+    "d_testimonials_LVzFtR": {
+      "type": "d_testimonials",
+      "blocks": {
+        "testimonial_AjCnxt": {
+          "type": "testimonial",
+          "settings": {
+            "author_image": "shopify:\/\/shop_images\/The_Rugby_Shop_Blue_Shield_Logo_450x450_7d058599-fb9f-4cd5-afa0-7421e45dd2ea.png",
+            "author_name": "Garth",
+            "heading": "TheRugbyShop.com",
+            "text": "We have been working with XIX-Brands For Years; Easy, Quick, and Friendly.",
+            "star_count": "5",
+            "product": ""
+          }
+        }
+      },
+      "block_order": [
+        "testimonial_AjCnxt"
+      ],
+      "settings": {
+        "heading": "OUR HAPPY CUSTOMERS",
+        "subheading": "",
+        "slides_per_view": 3,
+        "show_stars": true,
+        "section_button_label": "",
+        "section_button_link": ""
+      }
+    },
+    "d_contact_form_rrBiga": {
+      "type": "d_contact-form",
+      "blocks": {
+        "text_b4ffrL": {
+          "type": "text",
+          "settings": {
+            "width": "6",
+            "label": "First Name",
+            "placeholder": "",
+            "is_required": true
+          }
+        },
+        "text_jcLxxF": {
+          "type": "text",
+          "settings": {
+            "width": "6",
+            "label": "Last Name",
+            "placeholder": "",
+            "is_required": true
+          }
+        },
+        "email_YTMgyp": {
+          "type": "email",
+          "settings": {
+            "width": "6",
+            "label": "Email",
+            "placeholder": "",
+            "is_required": true
+          }
+        },
+        "phone_number_4MqJn9": {
+          "type": "phone_number",
+          "settings": {
+            "width": "6",
+            "label": "Phone Number",
+            "placeholder": "",
+            "is_required": false
+          }
+        },
+        "textarea_JVi49A": {
+          "type": "textarea",
+          "settings": {
+            "width": "12",
+            "label": "Message",
+            "placeholder": "Please describe in more details how we can help you.",
+            "rows": 3,
+            "is_required": true
+          }
+        }
+      },
+      "block_order": [
+        "text_b4ffrL",
+        "text_jcLxxF",
+        "email_YTMgyp",
+        "phone_number_4MqJn9",
+        "textarea_JVi49A"
+      ],
+      "settings": {
+        "heading": "Get in touch today",
+        "subheading": "",
+        "content_width": 100,
+        "image": "shopify:\/\/shop_images\/XIX_Stacked_Black_3_2.png",
+        "image_width": 50,
+        "image_position": "left"
+      }
+    },
     "84ef8e94-b0e6-485d-a6cd-c9e3b3129d31": {
       "type": "d_promo-banner",
       "blocks": {
@@ -298,6 +391,8 @@
     "36a15c07-4500-4684-b448-14ab487c0fac",
     "d_featured_collection_86V3Aj",
     "d_featured_collection_UgTydx",
+    "d_testimonials_LVzFtR",
+    "d_contact_form_rrBiga",
     "84ef8e94-b0e6-485d-a6cd-c9e3b3129d31"
   ]
 }
