@@ -3,6 +3,10 @@
   min-height: 100vh;
 }
 
+.shopify-section #kitBuilder .kb-wrapper {
+  overflow: hidden !important;
+}
+
 .shopify-section #kitBuilder .kb-wrapper div,
 .shopify-section #kitBuilder .kb-wrapper span,
 .shopify-section #kitBuilder .kb-wrapper p,
@@ -66,7 +70,7 @@
   counter-increment: steps!important;
   content: counter(steps)!important;
   display: block;
-  font-size: 1.5rem;
+  font-size: 16px;
   top: 0;
   right: 0;
   left: 0;
@@ -91,12 +95,8 @@
 }
 
 .shopify-section #kitBuilder .kb-wrapper .kb-wizard-breadcrumbs .kb-wizard-breadcrumb.kb-wizard-breadcrumb-active a::before {
-  background-color: var(--bg-color);
+  background-color: #1B1B1B;
   color: white;
-}
-
-.shopify-section #kitBuilder .kb-wrapper .kb-wizard-breadcrumbs .kb-wizard-breadcrumb.kb-wizard-breadcrumb-active a .kb-wizard-breadcrumb-inner {
-  font-weight: 500;
 }
 
 .shopify-section #kitBuilder .kb-wrapper .kb-preview-panel,
@@ -148,11 +148,6 @@
   display: none;
 }
 
-.kit-builder-page .kb-group-add-name-number .kb-wizard-form-field-type-editor,
-.kit-builder-page .kb-button-single-item-checkout-final-page {
-  display: none !important;
-}
-
 .kit-builder-page .kb-single-item-checkout {
   display: flex;
   flex-direction: column;
@@ -192,4 +187,96 @@ body #kitBuilder .kb-wrapper .kb-customise-page .kb-change-view-button::after {
   flex-direction: column;
   align-items: center;
   gap: 1rem;
+}
+
+body #kitBuilder .kb-wrapper .kb-buttons {
+  align-items: center;
+}
+
+body #kitBuilder .kb-wrapper .kb-button {
+  --button-border-width: min(.15em, 2px);
+  --button-text-decoration: none;
+  --button-inline-spacing: min(1.25em, 25px);
+  --button-block-spacing: min(1em, 20px);
+  --button-bg-color: var(--color-scheme-primary-button-bg);
+  --button-bg-hover-color: var(--color-scheme-primary-button-bg-hover);
+  --button-text-color: var(--color-scheme-primary-button-text);
+  --button-border-color: var(--color-scheme-primary-button-border);
+  --button-link-color: var(--color-scheme-links);
+  --button-wide-mult: 1.5;
+  border-radius: var(--glob-border-radius-base) !important;
+  padding-inline: calc(var(--button-inline-spacing) * var(--button-wide-mult)) !important;
+  border: var(--button-border-width) solid var(--button-border-color) !important;
+  background: var(--button-bg-color) !important;
+  color: var(--button-text-color) !important;
+  font-family: var(--glob-button-family) !important;
+  font-size: var(--glob-button-size) !important;
+  font-weight: var(--glob-button-weight) !important;
+  text-transform: var(--glob-button-transform) !important;
+  letter-spacing: var(--glob-button-letter-spacing, normal) !important;
+  word-spacing: max(var(--glob-button-letter-spacing) * 1.1,.25em) !important;
+  transition: var(--transition-base) !important;
+  line-height: 1 !important;
+  text-align: center !important;
+  text-decoration: var(--button-text-decoration) !important;
+  text-underline-offset: 0.15em !important;
+  padding: 1em 2em !important;
+  position: relative;
+  min-width: auto !important;
+}
+
+body #kitBuilder .kb-wrapper .kb-button-next:after {
+  content: "";
+  display: inline-block;
+  background-image: url('data:image/svg+xml;utf8,<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="white" viewBox="0 0 24 38.4" width="24" height="38.4"><title>angle-right</title><path d="M20.895 17.505c0.938 0.938 0.938 2.46 0 3.397l-12 12c-0.938 0.938 -2.46 0.938 -3.397 0s-0.938 -2.46 0 -3.397L15.802 19.2 5.505 8.895c-0.938 -0.938 -0.938 -2.46 0 -3.397s2.46 -0.938 3.397 0l12 12z"/></svg>');
+  background-repeat: no-repeat;
+  background-size: contain;
+  color: #fff;
+  stroke: #fff;
+  width: 16px;
+  height: 16px;
+  fill: #fff;
+  vertical-align: top;
+  stroke-width: var(--glob-icon-stroke-width);
+  stroke-linecap: var(--glob-icon-linecap);
+  stroke-linejoin: var(--glob-icon-linejoin);
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+}
+
+body #kitBuilder .kb-wrapper .kb-button-prev,
+body #kitBuilder .kb-wrapper .kb-button-single-item-checkout-prev {
+  background-color: var(--color-g-bg) !important;
+  border: 0 !important;
+  color: var(--color-g-text) !important;
+}
+
+body #kitBuilder .kb-wrapper .kb-button-prev:after,
+body #kitBuilder .kb-wrapper .kb-button-single-item-checkout-prev:after {
+  content: "";
+  display: inline-block;
+  background-image: url('data:image/svg+xml;utf8,<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="black" viewBox="0 0 24 38.4" width="24" height="38.4"><title>angle-right</title><path d="M20.895 17.505c0.938 0.938 0.938 2.46 0 3.397l-12 12c-0.938 0.938 -2.46 0.938 -3.397 0s-0.938 -2.46 0 -3.397L15.802 19.2 5.505 8.895c-0.938 -0.938 -0.938 -2.46 0 -3.397s2.46 -0.938 3.397 0l12 12z"/></svg>');
+  background-repeat: no-repeat;
+  background-size: contain;
+  color: #000000;
+  stroke: #000000;
+  width: 16px;
+  height: 16px;
+  fill: #000000;
+  vertical-align: top;
+  stroke-width: var(--glob-icon-stroke-width);
+  stroke-linecap: var(--glob-icon-linecap);
+  stroke-linejoin: var(--glob-icon-linejoin);
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translateY(50%);
+  rotate: 180deg;
+}
+
+body #kitBuilder .kb-wrapper .kb-wizard-breadcrumb-active .kb-wizard-breadcrumb-inner {
+  text-decoration: underline !important;
+  font-weight: 600 !important;
 }

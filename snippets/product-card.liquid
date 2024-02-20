@@ -355,9 +355,16 @@
             </div>
         {% endif %}
         {% if kit_builder_id %}
-            <a href="/pages/kitbuilder#/customise/{{ kit_builder_id }}" class="kit-builder--customize #button @tier:secondary @display-style:solid_with_border @size:sm @block">
-              <span class="text">{{ 'products.product.customize' | t }}</span>
-            </a>
+            {% liquid
+                assign link = '/pages/kitbuilder#/customise/' | append: kit_builder_id
+                assign text = 'products.product.customize' | t
+            %}
+            {% render 'button',
+                tier: 'primary',
+                text: text,
+                link: link,
+                tag: 'a'
+            %}
         {% endif %}
     </div>
 </div>

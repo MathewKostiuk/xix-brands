@@ -4,10 +4,16 @@
   src="https://api.kitbuilder.co.uk/api/bootstrapper?distributorId={{ section.settings.distributor_id }}&amp;key=c7389bcda8e5424ba40d12940aad4270"
   async=""
 ></script>
-<div id="kitBuilder" class="kit-builder-page">
+<div
+  id="kitBuilder"
+  class="kit-builder-page #container @width:default"
+  style="
+    --button-color: #d51640;
+  "
+>
   <noscript>Kit Builder requires JavaScript to be enabled</noscript>
 </div>
-
+<product-to-cart></product-to-cart>
 {% schema %}
   {
     "name": "Kit Builder Settings",

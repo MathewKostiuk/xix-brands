@@ -10,6 +10,17 @@ function toggleTeamDetails() {
   }
 }
 
+function addedToCart({ variantId }) {
+  const productToCartEl = document.querySelector("product-to-cart");
+  const item = {
+    id: variantId,
+    quantity: 1,
+    selling_plan: "",
+    properties: {},
+  };
+  productToCartEl.addToCart([item], variantId);
+}
+
 document.addEventListener("KitBuilderLoaded", function () {
   repeatUntilTrueOrMaxAttempts(
     automaticPreviewViewBackOnPlayerNameOrNumberChange
@@ -28,6 +39,7 @@ document.addEventListener("KitBuilderLoaded", function () {
     customCallbacks: {
       webhookAddSingleItemToCartCallback: async function (data) {
         const response = JSON.parse(data.content);
+        console.log({ data, response });
         const addToCartResponse = await fetch("/cart/add.js", {
           method: "POST",
           headers: {
@@ -44,7 +56,7 @@ document.addEventListener("KitBuilderLoaded", function () {
         });
         if (addToCartResponse.status === 200) {
           const responseJSON = await addToCartResponse.json();
-          // addedToCart();
+          addedToCart({ variantId: response.variantId });
         }
       },
     },
