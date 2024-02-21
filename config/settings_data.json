@@ -192,14 +192,14 @@
         "settings": {
         }
       },
-      "659792091439989800": {
-        "type": "shopify:\/\/apps\/bss-product-variants-options\/blocks\/bss-po-script\/2c446099-c349-4e73-80cd-49c9770b7807",
+      "5918445685253060206": {
+        "type": "shopify:\/\/apps\/bundler\/blocks\/bundler-script-append\/7a6ae1b8-3b16-449b-8429-8bb89a62c664",
         "disabled": false,
         "settings": {
         }
       },
-      "5918445685253060206": {
-        "type": "shopify:\/\/apps\/bundler\/blocks\/bundler-script-append\/7a6ae1b8-3b16-449b-8429-8bb89a62c664",
+      "11944173544948763772": {
+        "type": "shopify:\/\/apps\/bss-b2b-lock-hide-price\/blocks\/bss-login\/2f6e9bdf-2dd6-42c6-8d67-58be57506f80",
         "disabled": false,
         "settings": {
         }
