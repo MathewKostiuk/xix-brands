@@ -10,7 +10,7 @@ function toggleTeamDetails() {
   }
 }
 
-function addedToCart({ variantId }) {
+function addToCart({ variantId }) {
   const productToCartEl = document.querySelector("product-to-cart");
   const item = {
     id: variantId,
@@ -40,24 +40,7 @@ document.addEventListener("KitBuilderLoaded", function () {
       webhookAddSingleItemToCartCallback: async function (data) {
         const response = JSON.parse(data.content);
         console.log({ data, response });
-        const addToCartResponse = await fetch("/cart/add.js", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            items: [
-              {
-                id: response.variantId,
-                quantity: 1,
-              },
-            ],
-          }),
-        });
-        if (addToCartResponse.status === 200) {
-          const responseJSON = await addToCartResponse.json();
-          addedToCart({ variantId: response.variantId });
-        }
+        addToCart({ variantId: response.variantId });
       },
     },
   });

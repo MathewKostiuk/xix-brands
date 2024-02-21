@@ -427,3 +427,7 @@ body.glob--border-radius-rounded .\#product-card-swatch-thumbnail {
   margin-top: 0.5rem;
   z-index: 20;
 }
+
+#kit-builder-link {
+  z-index: 20;
+}
