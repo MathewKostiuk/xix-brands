@@ -7,11 +7,12 @@
     {% render 'load-css', file: NS %}
 {% endunless %}
 
-<div class="{{ cn }} {% if show_savings %}@show-savings{% endif %} {% if bold_text %}@bold-text{% endif %}" 
+<div class="{{ cn }} {% if show_savings %}@show-savings{% endif %} {% if bold_text %}@bold-text{% endif %}"
     style="--{{ NS }}-font-size: {{ text_scale | default: 100 | times: 0.01 }}rem;">
     <div class="{{ cn }}-value">
         {% render 'price',
             variant: variant,
+            product: product,
             show_save_price: show_savings,
             show_titles: show_savings
         %}

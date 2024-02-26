@@ -43,7 +43,7 @@
         "pagination_type": "default",
         "show_sort_dropdown": true,
         "show_active_filters": true,
-        "sidebar_as_drawer": false,
+        "sidebar_as_drawer": true,
         "sidebar_width": 20
       }
     }

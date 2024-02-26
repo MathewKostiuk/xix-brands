@@ -88,7 +88,11 @@
 >
     {%- form 'product', product, id: product_form_id, novalidate: 'novalidate', data-type: 'add-to-cart-form' -%}
         <product-variant-listener section-id="{{ section_id }}" id="b-{{ id }}" emptyable>
-            {% if variant.available %}
+            {% if kit_builder_id %}
+                <a href="/pages/kitbuilder#/customise/{{ kit_builder_id }}" class="kit-builder--customize #button @tier:secondary @display-style:solid_with_border @size:lg @block">
+                  <span class="text">{{ 'products.product.customize' | t }}</span>
+                </a>
+            {% elsif variant.available %}
                 <div class="form">
                     {%- if product.has_only_default_variant or variant_picker_block == blank -%}
                         <input type="hidden" name="id" value="{{ variant.id }}">
@@ -135,11 +139,6 @@
                         contact_form_id: contact_form_id
                     %}
                 {% endif %}
-            {% endif %}
-            {% if kit_builder_id %}
-                <a href="/pages/kitbuilder#/customise/{{ kit_builder_id }}" class="kit-builder--customize #button @tier:secondary @display-style:solid_with_border @size:lg @block">
-                  <span class="text">{{ 'products.product.customize' | t }}</span>
-                </a>
             {% endif %}
         </product-variant-listener>
     {%- endform -%}

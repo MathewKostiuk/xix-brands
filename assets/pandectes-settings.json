@@ -1,11 +1,11 @@
 {
   "store": {
     "plan": "basic",
-    "theme": "Multi",
+    "theme": "[1.0.0] Kit Builder Integration",
     "primaryLocale": "en",
     "adminMode": false
   },
-  "tsPublished": 1706826892,
+  "tsPublished": 1708730585,
   "declaration": {
     "showPurpose": false,
     "showProvider": false,
@@ -318,7 +318,7 @@
       "imprintHref": "\/",
       "close": "&#10005;",
       "target": "",
-      "logo": "<img class=\"cc-banner-logo\" height=\"40\" width=\"40\" src=\"https:\/\/cdn.shopify.com\/s\/files\/1\/0516\/1261\/4849\/t\/29\/assets\/pandectes-logo.png?v=1704915377\" alt=\"XIX Brands\" \/>"
+      "logo": "<img class=\"cc-banner-logo\" height=\"40\" width=\"40\" src=\"https:\/\/cdn.shopify.com\/s\/files\/1\/0516\/1261\/4849\/t\/35\/assets\/pandectes-logo.png?v=1708546970\" alt=\"XIX Brands\" \/>"
     },
     "window": "<div role=\"dialog\" aria-live=\"polite\" aria-label=\"cookieconsent\" aria-describedby=\"cookieconsent:desc\" id=\"pandectes-banner\" class=\"cc-window-wrapper cc-top-wrapper\"><div class=\"pd-cookie-banner-window cc-window {{classes}}\"><!--googleoff: all-->{{children}}<!--googleon: all--><\/div><\/div>",
     "compliance": {
@@ -333,7 +333,7 @@
     "revokable": false,
     "animateRevokable": false,
     "revokableReset": false,
-    "revokableLogoUrl": "https:\/\/cdn.shopify.com\/s\/files\/1\/0516\/1261\/4849\/t\/29\/assets\/pandectes-reopen-logo.png?v=1704915378",
+    "revokableLogoUrl": "https:\/\/cdn.shopify.com\/s\/files\/1\/0516\/1261\/4849\/t\/35\/assets\/pandectes-reopen-logo.png?v=1708546971",
     "revokablePlacement": "bottom-left",
     "revokableMarginHorizontal": 15,
     "revokableMarginVertical": 15,
@@ -464,7 +464,7 @@
         "firstParty": true,
         "retention": "1 day(s)",
         "expires": 1,
-        "unit": "declSession",
+        "unit": "declDays",
         "purpose": {
           "en": "Used for managing customer privacy settings."
         }

@@ -22,15 +22,20 @@
 {%- endcapture -%}
 
 {% liquid
-  
-  assign target = variant | default: product
 
+  assign target = variant | default: product
+  assign is_kit_builder = false
+  assign price_display = product.metafields.kit_builder.price_display
+  assign kit_builder_id = product.metafields.kit_builder.product_id
+  if kit_builder_id
+    assign is_kit_builder = true
+  endif
   if target == product
     assign unit_target = product.selected_or_first_available_variant
   else
     assign unit_target = target
   endif
-  
+
   if target.selected_selling_plan_allocation
     assign target = target.selected_selling_plan_allocation
   endif
@@ -41,7 +46,7 @@
   assign placeholder_price = 1999
   assign show_zeros = settings.product_price_trailing_zeros
   assign show_free_price_string = settings.product_price_zero_use_string
-  
+
   unless display_units == false
     assign display_units = true
   endunless
@@ -106,9 +111,14 @@
     endif
   endif
 %}
+{% render 'load-css', file: 'product-price' %}
 
-
-<dl class="{{ cn }}">
+<dl
+  class="
+    {{ cn }}
+    {% if is_kit_builder %}kit-builder__price{% endif %}
+  "
+>
   <div class="{{ cn }}-item @regular {% if target.compare_at_price > target.price %}@on-sale{% endif %} {% if target.price_varies == true %}@variable{% endif %}">
     <dt class="{{ cn }}-item-heading {% unless show_titles %}visually-hidden{% endunless %}">
       {%- if compare_price -%}
@@ -118,7 +128,11 @@
       {%- endif -%}
     </dt>
     <dd class="{{ cn }}-item-value">
-      <span class="{{ cn }}-value">{{ price }}</span>
+      {% if price_display != blank %}
+        <span class="{{ cn }}-value kit-builder__price-display">{{ price_display | metafield_tag }}</span>
+      {% else %}
+        <span class="{{ cn }}-value">{{ price }}</span>
+      {% endif %}
     </dd>
   </div>
   {%- if compare_price -%}

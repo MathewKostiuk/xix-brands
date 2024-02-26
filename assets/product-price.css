@@ -64,3 +64,11 @@
 .\#product-price .\#price-item-value {
   margin: 0;
 }
+
+.kit-builder__price .\#price-value:not(.kit-builder__price-display) {
+  display: none;
+}
+
+.\#product-card .kit-builder__price {
+  margin-bottom: 1rem;
+}

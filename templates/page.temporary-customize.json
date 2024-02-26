@@ -1,5 +1,88 @@
 {
   "sections": {
+    "d_hero_image_xEhmdR": {
+      "type": "d_hero-image",
+      "blocks": {
+        "heading_E6BpB6": {
+          "type": "heading",
+          "settings": {
+            "heading": "Customizer",
+            "heading_scale": 250
+          }
+        }
+      },
+      "block_order": [
+        "heading_E6BpB6"
+      ],
+      "settings": {
+        "color_scheme": "main",
+        "section_layout": "container",
+        "image": "shopify:\/\/shop_images\/XIX-Brands-Logo_Horizontal.png",
+        "image_size": "origin",
+        "mobile_image_size": "origin",
+        "overlay": 90,
+        "use_box": false,
+        "text_position": "center-center",
+        "mobile_offset": false
+      }
+    },
+    "d_image_with_text_mVfLKE": {
+      "type": "d_image-with-text",
+      "blocks": {
+        "subheading_UCqtXE": {
+          "type": "subheading",
+          "settings": {
+            "subheading": "It's Finally Here!"
+          }
+        },
+        "heading_4Fem8F": {
+          "type": "heading",
+          "settings": {
+            "heading": "XIX-Brands Apparel Customizer",
+            "heading_scale": 120
+          }
+        },
+        "text_W7nNir": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Design your custom apparel with XIX-Brands customizer.  Choose from a variety of garment styles, add your content, and checkout.  It's as easy as that!<\/p>",
+            "enlarge_text": true
+          }
+        },
+        "buttons_ncBAqF": {
+          "type": "buttons",
+          "settings": {
+            "info": "",
+            "f_button_label": "Start Designing",
+            "f_button_link": "shopify:\/\/collections\/customizer",
+            "f_button_tier": "primary",
+            "s_button_label": "",
+            "s_button_link": "",
+            "s_button_tier": "secondary"
+          }
+        }
+      },
+      "block_order": [
+        "subheading_UCqtXE",
+        "heading_4Fem8F",
+        "text_W7nNir",
+        "buttons_ncBAqF"
+      ],
+      "disabled": true,
+      "settings": {
+        "color_scheme": "main",
+        "section_layout": "container",
+        "image": "shopify:\/\/shop_images\/XIX-Brands_Stacked_Logo_-_xix-brands.com.png",
+        "image_size": "450px",
+        "mobile_image_size": "origin",
+        "image_width": 50,
+        "image_position": "left",
+        "text_position": "center-center",
+        "pattern": "none",
+        "pattern_scale": 100,
+        "pattern_animation": "none"
+      }
+    },
     "header": {
       "type": "s_page-header",
       "disabled": true,
@@ -32,6 +115,19 @@
         "section_button_url": ""
       }
     },
+    "d_custom_html_JP7i6D": {
+      "type": "d_custom-html",
+      "settings": {
+        "heading": "",
+        "subheading": "",
+        "section_layout": "default",
+        "html": "<meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Create Your Own Kit<\/title>\n    <style>\n        body {\n            text-align: center;\n        }\n\n        h1 {\n            margin-top: 20px;\n        }\n\n        .step-container {\n            display: flex;\n            justify-content: center;\n            margin-top: 20px;\n        }\n\n        .step {\n            width: 30%;\n            text-align: center;\nmargin: 0 10px 0 10px\n\n        }\n\n        img {\n            max-width: 100%;\n            height: auto;\n        }\n\n        p {\n            font-size: 14px;\n        }\n    <\/style>\n\n\n    <h1>3 Easy Steps To Customize Your Apparel<\/h1>\n\n    <div class=\"step-container\">\n        <div class=\"step\">\n            <img src=\"https:\/\/cdn.shopify.com\/s\/files\/1\/2559\/6730\/files\/Step_1_-_Choose_Your_Apparel.png?v=1706134182\" alt=\"Step 1 Image\">\n            <p><strong>Step 1:<\/strong> Choose Your Apparel.<\/p>\n        <\/div>\n\n        <div class=\"step\">\n            <img src=\"https:\/\/cdn.shopify.com\/s\/files\/1\/2559\/6730\/files\/Step_2_-_Customize_Your_Apparel.png?v=1706132227\" alt=\"Step 2 Image\">\n            <p><strong>Step 2:<\/strong> Customize It.<\/p>\n        <\/div>\n\n        <div class=\"step\">\n            <img src=\"https:\/\/cdn.shopify.com\/s\/files\/1\/2559\/6730\/files\/Step_3_-_Checkout_And_Ship_To_Your_Door.png?v=1706130129\" alt=\"Step 3 Image\">\n            <p><strong>Step 3:<\/strong> Checkout and Ship To Your Door.<\/p>\n        <\/div>\n    <\/div>",
+        "font_scale": 100,
+        "text_align": "center",
+        "section_button_label": "",
+        "section_button_url": ""
+      }
+    },
     "d_featured_collection_zVwhnn": {
       "type": "d_featured-collection",
       "blocks": {
@@ -47,10 +143,10 @@
           "settings": {
             "color_scheme": "",
             "image_overlay": 0,
-            "heading": "{{ section.settings.collection.title }}",
-            "heading_scale": 80,
+            "heading": "Shop All Custom Apparel",
+            "heading_scale": 60,
             "subheading": "",
-            "button": "Shop All",
+            "button": "Shop",
             "button_tier": "primary"
           }
         }
@@ -59,50 +155,24 @@
         "products_fy7qw8",
         "banner_3N3hK4"
       ],
+      "disabled": true,
       "settings": {
-        "heading": "Featured collection",
+        "heading": "Customizable Apparel",
         "subheading": "",
         "collection": "customizer",
         "slide_every": "row",
         "slides_per_view": 4,
         "section_button_label": ""
       }
-    },
-    "d_hero_image_xEhmdR": {
-      "type": "d_hero-image",
-      "settings": {
-        "color_scheme": "",
-        "section_layout": "container",
-        "image": "shopify:\/\/shop_images\/XIX-Brands-Logo_Horizontal.png",
-        "image_size": "origin",
-        "mobile_image_size": "origin",
-        "overlay": 0,
-        "use_box": false,
-        "text_position": "center-center",
-        "mobile_offset": false
-      }
-    },
-    "d_custom_html_JP7i6D": {
-      "type": "d_custom-html",
-      "disabled": true,
-      "settings": {
-        "heading": "",
-        "subheading": "",
-        "section_layout": "default",
-        "html": "<meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Create Your Own Kit<\/title>\n    <style>\n        body {\n            text-align: center;\n        }\n\n        h1 {\n            margin-top: 20px;\n        }\n\n        .step-container {\n            display: flex;\n            justify-content: center;\n            margin-top: 20px;\n        }\n\n        .step {\n            width: 30%;\n            text-align: center;\nmargin: 0 10px 0 10px\n\n        }\n\n        img {\n            max-width: 100%;\n            height: auto;\n        }\n\n        p {\n            font-size: 14px;\n        }\n    <\/style>\n\n\n    <h1>3 Easy Steps To Creating Your Own Kit<\/h1>\n\n    <div class=\"step-container\">\n        <div class=\"step\">\n            <img src=\"https:\/\/cdn.shopify.com\/s\/files\/1\/2559\/6730\/files\/Step_1_-_Choose_Your_Apparel.png?v=1706134182\" alt=\"Step 1 Image\">\n            <p><strong>Step 1:<\/strong> Choose Your Apparel.<\/p>\n        <\/div>\n\n        <div class=\"step\">\n            <img src=\"https:\/\/cdn.shopify.com\/s\/files\/1\/2559\/6730\/files\/Step_2_-_Customize_Your_Apparel.png?v=1706132227\" alt=\"Step 2 Image\">\n            <p><strong>Step 2:<\/strong> Customize It.<\/p>\n        <\/div>\n\n        <div class=\"step\">\n            <img src=\"https:\/\/cdn.shopify.com\/s\/files\/1\/2559\/6730\/files\/Step_3_-_Checkout_And_Ship_To_Your_Door.png?v=1706130129\" alt=\"Step 3 Image\">\n            <p><strong>Step 3:<\/strong> Checkout and Ship To Your Door.<\/p>\n        <\/div>\n    <\/div>",
-        "font_scale": 100,
-        "text_align": "center",
-        "section_button_label": "",
-        "section_button_url": ""
-      }
     }
   },
   "order": [
+    "d_hero_image_xEhmdR",
+    "d_image_with_text_mVfLKE",
     "header",
     "main",
     "d_custom_liquid_WFJfEY",
-    "d_featured_collection_zVwhnn",
-    "d_hero_image_xEhmdR",
-    "d_custom_html_JP7i6D"
+    "d_custom_html_JP7i6D",
+    "d_featured_collection_zVwhnn"
   ]
 }
